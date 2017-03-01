@@ -4,6 +4,7 @@ import android.com.galatube.model.GEMenu.GEMenu;
 import android.com.galatube.model.GEMenu.GEMenuAdapter;
 import android.com.galatube.model.GEMenu.GESharedMenu;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -40,12 +41,14 @@ import java.util.ArrayList;
 public class GEMainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     DrawerLayout            mDrawer;
+    private LinearLayout mSettingLayout;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mSettingLayout=(LinearLayout)findViewById(R.id.setting_base_adapter);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -81,6 +84,13 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         });
 
         initialisePagesForMenu(lMenuItems.get(0));
+        mSettingLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(GEMainMenuActivity.this,SettingActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
