@@ -1,5 +1,8 @@
 package android.com.galatube;
 
+import android.content.Intent;
+import android.os.StrictMode;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,7 +10,18 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class SettingActivity extends AppCompatActivity implements View.OnClickListener{
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+
+import static android.view.View.VISIBLE;
+
+public class SettingActivity extends AppCompatActivity implements View.OnClickListener,GoogleApiClient.OnConnectionFailedListener{
     private TextView mClose_Setting;
     private LinearLayout mGoogleSignIn;
     private LinearLayout mGoogleSignOut;
@@ -23,6 +37,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     private LinearLayout mTwitterlEvent;
     private LinearLayout mInstagram;
     private LinearLayout mGooglelEvent;
+    private GoogleApiClient googleApiClient;
+    private static final int REQ_CODE=9001;
+    private TextView mGoogleSignInTv;
 
 
     @Override
@@ -45,6 +62,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         mTwitterlEvent=(LinearLayout)findViewById(R.id.twitterEvent);
         mInstagram=(LinearLayout)findViewById(R.id.instagramEvent);
         mGooglelEvent=(LinearLayout)findViewById(R.id.googleEvent);
+        mGoogleSignInTv=(TextView)findViewById(R.id.GoogleSignIn_tv);
+        mGoogleSignOut.setVisibility(View.GONE);
+        mSignView.setVisibility(View.GONE);
         mGoogleSignIn.setOnClickListener(this);
         mGoogleSignOut.setOnClickListener(this);
         mVideolEvent.setOnClickListener(this);
@@ -58,6 +78,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         mTwitterlEvent.setOnClickListener(this);
         mInstagram.setOnClickListener(this);
         mGooglelEvent.setOnClickListener(this);
+        GoogleSignInOptions signInOptions=new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        googleApiClient=new GoogleApiClient.Builder(this).enableAutoManage(this,this).addApi(Auth.GOOGLE_SIGN_IN_API,signInOptions).build();
 
 
     }
@@ -66,12 +88,10 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.google_signin:
-                mGoogleSignOut.setVisibility(v.VISIBLE);
-                mSignView.setVisibility(v.VISIBLE);
+                signIn();
                 break;
             case R.id.google_signout:
-                mGoogleSignOut.setVisibility(v.GONE);
-                mSignView.setVisibility(v.GONE);
+                signOut();
                 break;
             case R.id.videoEvent:
                 Log.i("videoevent","videoevent");
@@ -107,5 +127,61 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 Log.i("googleEvent","googleEvent");
                 break;
         }
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    public void signIn(){
+        Intent intent=Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+        startActivityForResult(intent,REQ_CODE);
+    }
+
+
+    public void signOut(){
+      Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
+          @Override
+          public void onResult(@NonNull Status status) {
+              updateUi(false);
+          }
+      });
+    }
+
+    public void handleResult(GoogleSignInResult result){
+           if (result.isSuccess()){
+               GoogleSignInAccount account=result.getSignInAccount();
+               String name=account.getDisplayName();
+               String email=account.getEmail();
+               String image =account.getPhotoUrl().toString();
+               mGoogleSignInTv.setText(email);
+               updateUi(true);
+           }
+        else
+           {
+               updateUi(false);
+           }
+    }
+
+    public void updateUi(boolean isLogin){
+      if (isLogin){
+          mGoogleSignOut.setVisibility(View.VISIBLE);
+          mSignView.setVisibility(View.VISIBLE);
+      }
+        else {
+          mGoogleSignOut.setVisibility(View.GONE);
+          mSignView.setVisibility(View.GONE);
+          mGoogleSignInTv.setText("GoogleSignIn");
+      }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+         if(requestCode==REQ_CODE){
+             GoogleSignInResult result=Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+             handleResult(result);
+         }
     }
 }
