@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "386488481151",
+    "project_id": "gala-eye-160206"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:386488481151:android:b898368f5aba22a8",
+        "android_client_info": {
+          "package_name": "android.com.galatube"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "386488481151-np5gqqlmn3jkdr7s275p1tptvlhgdnmr.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "386488481151-cu9k86dcgrb7tm7d9k046uounleu5f2r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "android.com.galatube",
+            "certificate_hash": "3503a4c6c80958c20412e4858643a2dcb5086604"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzCxGV0ZMXp-TxIdCG8ASL0bf0rpbGGn4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
