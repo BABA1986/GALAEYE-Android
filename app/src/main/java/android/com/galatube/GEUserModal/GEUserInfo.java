@@ -14,26 +14,40 @@ public class GEUserInfo
      private  String mUserEmail;
      private  String mUserImageUrl;
 
-    public String getUserName(String UserName)
+    public void setUserName(String userName)
     {
-        this.mUserName=UserName;
+        this.mUserName = userName;
+    }
+
+    public String getUserName()
+    {
         return mUserName;
     }
 
-    public String getmUserId(String userId){
-        this.mUserId=userId;
+    public void setmUserId(String userID)
+    {
+        this.mUserId = userID;
+    }
+
+    public String getmUserId()
+    {
         return mUserId;
     }
 
+    public void setUserEmail(String email)
+    {
+        this.mUserEmail = email;
+    }
 
-    public String getUserEmail(String email){
-        this.mUserEmail=email;
+    public String getUserEmail(){
         return mUserEmail;
     }
 
-
-    public String getmUserImageUrl(String url){
+    public void setmUserImageUrl(String url){
         this.mUserImageUrl=url;
+    }
+
+    public String getmUserImageUrl(){
         return mUserImageUrl;
     }
 }
