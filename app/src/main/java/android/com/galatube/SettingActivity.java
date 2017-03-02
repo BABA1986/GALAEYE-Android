@@ -172,6 +172,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
            if (result.isSuccess()){
                GoogleSignInAccount account=result.getSignInAccount();
                String name=account.getDisplayName();
+               String tokenId=account.getIdToken();
                String email=account.getEmail();
                String image =account.getPhotoUrl().toString();
                mGoogleSignInTv.setText(email);

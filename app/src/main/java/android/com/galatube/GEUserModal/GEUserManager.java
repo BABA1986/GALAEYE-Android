@@ -10,11 +10,25 @@ public class GEUserManager
 
     void saveState()
     {
-        //Save mUserInfo values in shared
+
     }
 
-   /* Public void setUserEmail(String email)
-{
+    public void setUserName(String name)
+    {
 
-}*/
+    }
+
+    public void setUserId(String userId){
+
+    }
+
+    public void setUserEmail(String email)
+    {
+
+    }
+
+    public void setUserImageUrl(String Url)
+    {
+
+    }
 }

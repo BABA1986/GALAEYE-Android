@@ -1,21 +1,39 @@
 package android.com.galatube.GEUserModal;
 
+import static android.R.attr.name;
+import static android.R.attr.thickness;
+
 /**
- * Created by RaviNITKon 02/03/17.
+ * Created by RaviNITK on 02/03/17.
  */
 
 public class GEUserInfo
+{
+     private  String mUserName;
+     private  String mUserId;
+     private  String mUserEmail;
+     private  String mUserImageUrl;
 
-{/*
-    Private String                  mUserId;
-    Private String                  email;
-    @property(nonatomic, copy)NSString*         name;
-    @property(nonatomic, strong)NSURL*          imageUrl;
-    @property(nonatomic, copy)NSString*         clientId;
-    @property(nonatomic, copy)NSString*         accessToken;
-    @property(nonatomic, strong)NSDate*         accessTokenExpDate;
-    @property(nonatomic, copy)NSString*         idToken;
-    @property(nonatomic, strong)NSDate*         idTokenExpDate;
-    @property(nonatomic, copy)NSString*         refreshToken;*/
+    public String getUserName(String UserName)
+    {
+        this.mUserName=UserName;
+        return mUserName;
+    }
 
+    public String getmUserId(String userId){
+        this.mUserId=userId;
+        return mUserId;
+    }
+
+
+    public String getUserEmail(String email){
+        this.mUserEmail=email;
+        return mUserEmail;
+    }
+
+
+    public String getmUserImageUrl(String url){
+        this.mUserImageUrl=url;
+        return mUserImageUrl;
+    }
 }
