@@ -23,9 +23,18 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -38,18 +47,31 @@ import java.util.ArrayList;
  * Created by deepak on 30/11/16.
  */
 
-public class GEMainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class GEMainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,View.OnClickListener,GoogleApiClient.OnConnectionFailedListener{
 
     DrawerLayout            mDrawer;
     private LinearLayout mSettingLayout;
+    private LinearLayout mGoogleNavigationSignIn;
+    private TextView mWelcom_SignIn;
+    private TextView mSignIn_Navigation;
+    private ImageView mUserIv;
+    private GoogleApiClient googleApiClient;
+    private static final int REQ_CODE=9001;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mGoogleNavigationSignIn=(LinearLayout)findViewById(R.id.Google_Navigation_Header);
+        mWelcom_SignIn=(TextView)findViewById(R.id.welcome_tv);
+        mSignIn_Navigation=(TextView)findViewById(R.id.signIn_tv);
+        mUserIv=(ImageView)findViewById(R.id.imageView);
+        mUserIv.setOnClickListener(this);
         mSettingLayout=(LinearLayout)findViewById(R.id.setting_base_adapter);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mSettingLayout.setOnClickListener(this);
+        mGoogleNavigationSignIn.setOnClickListener(this);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawer.addDrawerListener(toggle);
@@ -84,13 +106,9 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         });
 
         initialisePagesForMenu(lMenuItems.get(0));
-        mSettingLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(GEMainMenuActivity.this,SettingActivity.class);
-                startActivity(intent);
-            }
-        });
+        GoogleSignInOptions signInOptions=new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        googleApiClient=new GoogleApiClient.Builder(this).enableAutoManage(this,this).addApi(Auth.GOOGLE_SIGN_IN_API,signInOptions).build();
+
     }
 
     @Override
@@ -124,5 +142,59 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    @Override
+    public void onClick(View v)
+    {
+        switch (v.getId()){
+            case R.id.setting_base_adapter:
+                Intent intent=new Intent(GEMainMenuActivity.this,SettingActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.Google_Navigation_Header:
+                signIn();
+                break;
+
+        }
+    }
+    public void signIn(){
+        Intent intent=Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+        startActivityForResult(intent,REQ_CODE);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==REQ_CODE){
+            GoogleSignInResult result=Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleResult(result);
+        }
+    }
+
+    private void handleResult(GoogleSignInResult result) {
+        if (result.isSuccess()){
+            GoogleSignInAccount account=result.getSignInAccount();
+            String name=account.getDisplayName();
+            String email=account.getEmail();
+            String image =account.getPhotoUrl().toString();
+            mWelcom_SignIn.setText(name);
+            mSignIn_Navigation.setText(email);
+            Glide.with(this).load(image).into(mUserIv);
+            updateUi(true);
+        }
+        else
+        {
+            updateUi(false);
+        }
+    }
+
+    private void updateUi(boolean IsLogin) {
+        if (IsLogin){
+            return;
+        }
+    }
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }

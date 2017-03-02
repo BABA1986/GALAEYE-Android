@@ -67,32 +67,30 @@
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:id="@+id/videoEvent"
-            android:weightSum="3"
+            android:weightSum="1"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:text="Video Quality"
                 android:textColor="#4e4d4d"
                 android:layout_weight="1"
                 android:layout_marginLeft="15dp"
+                android:layout_gravity="center"
                 android:textSize="17sp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Auto"
-                android:layout_weight="1"
                 android:layout_gravity="center"
                 android:textSize="17sp"
-                android:layout_marginLeft="180dp"/>
+               />
             <ImageView
                 android:layout_width="22dp"
                 android:layout_height="22dp"
-                android:layout_weight="1"
-                android:layout_marginLeft="4dp"
                 android:src="@drawable/right_arrow"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                />
         </LinearLayout>
         <View
             android:layout_width="match_parent"
@@ -103,7 +101,7 @@
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:id="@+id/themeEvent"
-            android:weightSum="2"
+            android:weightSum="1"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
@@ -118,9 +116,8 @@
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:src="@drawable/right_arrow"
-                android:layout_marginLeft="172dp"
                 android:layout_gravity="center"
-                android:layout_weight="1"/>
+                />
 
         </LinearLayout>
         <View
@@ -131,15 +128,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="42dp"
-            android:weightSum="2"
+            android:weightSum="1"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:text="Allow Notification"
                 android:textColor="#4e4d4d"
                 android:layout_weight="1"
+                android:layout_gravity="center"
                 android:layout_marginLeft="15dp"
                 android:textSize="17sp"/>
             <Switch
@@ -148,8 +145,7 @@
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:layout_gravity="center"
-                android:layout_marginLeft="180dp"
-                android:gravity="left"/>
+                android:gravity="end"/>
 
         </LinearLayout>
         <View
@@ -161,12 +157,12 @@
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:id="@+id/disclaimerEvent"
-            android:weightSum="2"
+            android:weightSum="1"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
                 android:text="Disclaimer"
                 android:textColor="#4e4d4d"
                 android:layout_weight="1"
@@ -176,9 +172,8 @@
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:src="@drawable/right_arrow"
-                android:layout_marginLeft="238dp"
                 android:layout_gravity="center"
-                android:layout_weight="1"/>
+                />
         </LinearLayout>
         <View
             android:layout_width="match_parent"
@@ -188,13 +183,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="42dp"
-            android:weightSum="2"
+            android:weightSum="1"
             android:id="@+id/aboutEvent"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
                 android:text="About"
                 android:textColor="#4e4d4d"
                 android:layout_weight="1"
@@ -204,9 +199,8 @@
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:src="@drawable/right_arrow"
-                android:layout_marginLeft="267dp"
                 android:layout_gravity="center"
-                android:layout_weight="1"/>
+                />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

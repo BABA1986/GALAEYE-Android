@@ -28,7 +28,7 @@
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/navigation_header"
+                android:id="@+id/Google_Navigation_Header"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/nav_header_height"
                 android:background="@android:color/holo_blue_bright"
@@ -49,15 +49,17 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:id="@+id/welcome_tv"
                     android:paddingTop="@dimen/nav_header_vertical_spacing"
-                    android:text="Android Studio"
+                    android:text="Welcome"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/signIn_tv"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="android.studio@android.com" />
+                    android:layout_marginTop="5dp"
+                    android:layout_height="match_parent"
+                    android:text="SignIN" />
 
             </LinearLayout>
 
@@ -65,7 +67,7 @@
                 android:id="@+id/left_drawer_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/navigation_header"
+                android:layout_below="@+id/Google_Navigation_Header"
                 android:layout_above="@+id/setting_base_adapter"
                 android:divider="#FFFFFF"></ListView>
 

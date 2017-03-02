@@ -1,5 +1,6 @@
 package android.com.galatube;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
@@ -10,12 +11,14 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
@@ -40,6 +43,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     private GoogleApiClient googleApiClient;
     private static final int REQ_CODE=9001;
     private TextView mGoogleSignInTv;
+    private ProgressDialog mProgressDialog;
 
 
     @Override
@@ -90,6 +94,19 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.google_signin:
+                OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
+                    // If the user has not previously signed in on this device or the sign-in has expired,
+                    // this asynchronous branch will attempt to sign in the user silently.  Cross-device
+                    // single sign-on will occur in this branch.
+                    showProgressDialog();
+                    opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+                        @Override
+                        public void onResult(GoogleSignInResult googleSignInResult) {
+                            hideProgressDialog();
+                            handleResult(googleSignInResult);
+                        }
+                    });
+
                 signIn();
                 break;
             case R.id.google_signout:
@@ -158,6 +175,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                String email=account.getEmail();
                String image =account.getPhotoUrl().toString();
                mGoogleSignInTv.setText(email);
+               /*Glide.with(this).load(image).into();*/
                updateUi(true);
            }
         else
@@ -181,9 +199,25 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-         if(requestCode==REQ_CODE){
-             GoogleSignInResult result=Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-             handleResult(result);
-         }
+        hideProgressDialog();
+        if (requestCode == REQ_CODE) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleResult(result);
+        }
+    }
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage("Please Wait...");
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
     }
 }
