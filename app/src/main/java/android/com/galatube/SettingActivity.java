@@ -1,6 +1,7 @@
 package android.com.galatube;
 
 import android.app.ProgressDialog;
+import android.com.galatube.GEUserModal.GEUserManager;
 import android.content.Intent;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
@@ -82,12 +83,16 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         mTwitterlEvent.setOnClickListener(this);
         mInstagram.setOnClickListener(this);
         mGooglelEvent.setOnClickListener(this);
+        GEUserManager lGEUsermanager=GEUserManager.getInstance(getApplicationContext());
+        if (lGEUsermanager.getmUserInfo().getUserEmail().length() != 0)
+        {
+            updateUi(true);
+        }
+            // GoogleApiClient
+        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).build();
 
-        // GoogleApiClient
-        GoogleSignInOptions signInOptions=new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
-        googleApiClient=new GoogleApiClient.Builder(this).enableAutoManage(this,this).addApi(Auth.GOOGLE_SIGN_IN_API,signInOptions).build();
-
-
+        Auth.GoogleSignInApi.silentSignIn(googleApiClient);
     }
 
     @Override
@@ -111,6 +116,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.google_signout:
                 signOut();
+
                 break;
             case R.id.videoEvent:
                 Log.i("videoevent","videoevent");
@@ -175,7 +181,11 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                String tokenId=account.getIdToken();
                String email=account.getEmail();
                String image =account.getPhotoUrl().toString();
-               mGoogleSignInTv.setText(email);
+               GEUserManager lGEUserManager = GEUserManager.getInstance(getApplicationContext());
+               lGEUserManager.setUserName(name);
+               lGEUserManager.setUserId(tokenId);
+               lGEUserManager.setUserEmail(email);
+               lGEUserManager.setUserImageUrl(image);
                /*Glide.with(this).load(image).into();*/
                updateUi(true);
            }
@@ -189,6 +199,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
       if (isLogin){
           mGoogleSignOut.setVisibility(View.VISIBLE);
           mSignView.setVisibility(View.VISIBLE);
+          GEUserManager lGEUserManager = GEUserManager.getInstance(getApplicationContext());
+          mGoogleSignInTv.setText(lGEUserManager.getmUserInfo().getUserEmail());
       }
         else {
           mGoogleSignOut.setVisibility(View.GONE);

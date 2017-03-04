@@ -2,6 +2,9 @@ package android.com.galatube.GEUserModal;
 
 import android.com.galatube.GEYoutubeEvents.GEEventListObj;
 import android.com.galatube.GEYoutubeEvents.GEEventManager;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import java.util.ArrayList;
 
@@ -11,21 +14,54 @@ import java.util.ArrayList;
 
 public class GEUserManager
 {
-    GEUserInfo              mUserInfo;
+    private GEUserInfo              mUserInfo;
+    static Context                  mContext;
 
-    private static GEUserManager ourInstance = new GEUserManager();
+    private static GEUserManager ourInstance = null;
 
-    public static GEUserManager getInstance() {
+    public static GEUserManager getInstance(Context context) {
+        mContext = context;
+
+        if (ourInstance == null)
+            ourInstance = new GEUserManager(context);
         return ourInstance;
     }
 
-    private GEUserManager() {
+    private GEUserManager(Context context) {
+        initUserInfo();
+    }
+
+    public GEUserInfo getmUserInfo() {
+        return mUserInfo;
+    }
+
+    void initUserInfo()
+    {
         mUserInfo = new GEUserInfo();
+        SharedPreferences sharedPreferences=mContext.getSharedPreferences("MyPreference",Context.MODE_PRIVATE);
+        String lUserName = sharedPreferences.getString("UserName","");
+        mUserInfo.setUserName(lUserName);
+
+        String lUserId = sharedPreferences.getString("UserId","");
+        mUserInfo.setmUserId(lUserId);
+
+        String lEmail = sharedPreferences.getString("UserEmail","");
+        mUserInfo.setUserEmail(lEmail);
+
+        String lImageUrl = sharedPreferences.getString("UserImageUrl","");
+        mUserInfo.setmUserImageUrl(lImageUrl);
     }
 
     void saveState()
     {
-
+        SharedPreferences lPreferences = mContext.getSharedPreferences("MyPreference",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=lPreferences.edit();
+        editor.putString("UserName",mUserInfo.getUserName());
+        editor.putString("UserId",mUserInfo.getmUserId());
+        editor.putString("UserEmail",mUserInfo.getUserEmail());
+        editor.putString("UserImageUrl",mUserInfo.getmUserImageUrl());
+        editor.apply();
+        editor.commit();
     }
 
     public void setUserName(String name)
@@ -42,13 +78,13 @@ public class GEUserManager
 
     public void setUserEmail(String email)
     {
-        mUserInfo.setmUserId(email);
+        mUserInfo.setUserEmail(email);
         saveState();
     }
 
     public void setUserImageUrl(String Url)
     {
-        mUserInfo.setmUserId(Url);
+        mUserInfo.setmUserImageUrl(Url);
         saveState();
     }
 }
