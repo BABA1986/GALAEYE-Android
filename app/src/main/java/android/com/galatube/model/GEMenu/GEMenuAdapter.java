@@ -4,6 +4,11 @@ import android.com.galatube.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,10 +81,23 @@ public class GEMenuAdapter extends BaseAdapter {
             InputStream lInputStream = mContext.getAssets().open("images/gala_icon_hdpi.png");
             Bitmap lBitmap = BitmapFactory.decodeStream(lInputStream);
             lHolder.mImageView.setImageBitmap(lBitmap);
+            changeBitmapColor(lBitmap, lHolder.mImageView, Color.GREEN);
         } catch (IOException e) {
 //            handle exception
         }
 
         return convertView;
+    }
+
+    private void changeBitmapColor(Bitmap sourceBitmap, ImageView image, int color) {
+        Bitmap resultBitmap = Bitmap.createBitmap(sourceBitmap, 0, 0,
+                sourceBitmap.getWidth() - 1, sourceBitmap.getHeight() - 1);
+        Paint p = new Paint();
+        ColorFilter filter = new LightingColorFilter(color, 1);
+        p.setColorFilter(filter);
+        image.setImageBitmap(resultBitmap);
+
+        Canvas canvas = new Canvas(resultBitmap);
+        canvas.drawBitmap(resultBitmap, 0, 0, p);
     }
 }

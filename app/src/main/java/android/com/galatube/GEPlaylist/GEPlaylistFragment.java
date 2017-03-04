@@ -21,6 +21,11 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
+import com.google.api.services.youtube.model.Playlist;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Ravi on 01/02/17.
  */
@@ -118,6 +123,11 @@ public class GEPlaylistFragment extends Fragment implements GEEventListner, GEOn
     }
 
     @Override
+    public void playlistsItemsLoadedFromPlaylist(String playlistID, boolean success) {
+
+    }
+
+    @Override
     public void loadMoreItems(RecyclerView.Adapter adapter) {
 
     }
@@ -126,7 +136,20 @@ public class GEPlaylistFragment extends Fragment implements GEEventListner, GEOn
     public void onRecyclerItemClicked(View view, RecyclerView.ViewHolder viewHolder, int position)
     {
         Log.d("YC", "Could not initialize:");
+        GEPlaylistManager lMamager = GEPlaylistManager.getInstance();
+        GEPlaylistObj listObj = lMamager.playlistListObjForInfo(mChannelName);
+        ArrayList<GEPlaylistPage> listPages = listObj.getmPlayListListPages();
+        int lPageIndex = (position >= 50) ? position/50 : 0;
+        GEPlaylistPage lPage = listPages.get(lPageIndex);
+        List<Playlist> lResults = lPage.getmPlaylistList();
+        int lPosition = position - lPageIndex*50;
+        Playlist lResult = lResults.get(lPosition);
+
+
         Intent lIntent = new Intent(getActivity(), GEPlaylistVideolistActivity.class);
+        lIntent.putExtra("PlaylistName", lResult.getSnippet().getTitle());
+        lIntent.putExtra("PlaylistChannelName", lResult.getSnippet().getChannelTitle());
+        lIntent.putExtra("PlaylistID", lResult.getId());
         startActivity(lIntent);
     }
 }

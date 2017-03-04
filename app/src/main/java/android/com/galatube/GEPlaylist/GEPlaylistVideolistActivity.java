@@ -7,6 +7,7 @@ import android.com.galatube.GEYoutubeEvents.GEOnLoadMore;
 import android.com.galatube.GEYoutubeEvents.GERecyclerItemClickListner;
 import android.com.galatube.GEYoutubeEvents.GEServiceManager;
 import android.com.galatube.R;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +28,9 @@ import com.google.api.services.youtube.model.Playlist;
 public class GEPlaylistVideolistActivity extends AppCompatActivity implements GEEventListner, GEOnLoadMore, GERecyclerItemClickListner
 {
     GEServiceManager                    mServiceManager;
-    Playlist                            mPlaylist;
+    String                              mPlaylistID;
+    String                              mPlaylistName;
+    String                              mPlaylistChannelName;
     private RecyclerView                mPlaylistVideoListView;
     ProgressBar                         mListProgressBar;
 
@@ -35,13 +38,21 @@ public class GEPlaylistVideolistActivity extends AppCompatActivity implements GE
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.geplaylistvideolist);
+        Intent lIntent = getIntent();
+        mPlaylistName = lIntent.getStringExtra("PlaylistName");
+        mPlaylistID = lIntent.getStringExtra("PlaylistID");
+        mPlaylistChannelName = lIntent.getStringExtra("PlaylistChannelName");
+
         mPlaylistVideoListView = (RecyclerView)findViewById(R.id.recycler_view_videolistid);
         mPlaylistVideoListView.setHasFixedSize(true);
         mPlaylistVideoListView
                 .setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-        GEPlaylistListAdapter lAdapter2 = new GEPlaylistListAdapter(this, this, this, "colorstv");
+        GEPlaylistVideolistAdapter lAdapter2 = new GEPlaylistVideolistAdapter(this, mPlaylistID, this);
         mPlaylistVideoListView.setAdapter(lAdapter2); // set adapter on recyclerview
         lAdapter2.notifyDataSetChanged(); // Notify the adapter
+
+        mServiceManager = new GEServiceManager(this, this);
+        mServiceManager.loadPlaylistItemsAsync(mPlaylistID);
         startLodingIndicator();
     }
 
@@ -62,6 +73,10 @@ public class GEPlaylistVideolistActivity extends AppCompatActivity implements GE
         }
     }
 
+    private void stopLodingIndicator() {
+        mListProgressBar.setVisibility(View.INVISIBLE);
+    }
+
     @Override
     public void eventsLoadedFromChannel(String channelID, GEEventTypes eventType, boolean success)
     {
@@ -72,6 +87,11 @@ public class GEPlaylistVideolistActivity extends AppCompatActivity implements GE
     public void playlistsLoadedFromChannel(String channelSource, boolean success)
     {
 
+    }
+
+    @Override
+    public void playlistsItemsLoadedFromPlaylist(String playlistID, boolean success) {
+        mPlaylistVideoListView.getAdapter().notifyDataSetChanged();
     }
 
     @Override

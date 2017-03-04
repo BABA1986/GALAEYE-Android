@@ -164,6 +164,11 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
     }
 
     @Override
+    public void playlistsItemsLoadedFromPlaylist(String playlistID, boolean success) {
+
+    }
+
+    @Override
     public void loadMoreItems(RecyclerView.Adapter adapter) {
         GEEventListAdapter lAdapter = (GEEventListAdapter)adapter;
         if (lAdapter.getmEventType() == GEEventTypes.EFetchEventsCompleted)

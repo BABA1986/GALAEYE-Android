@@ -121,6 +121,11 @@ public class GEVideoListFragment extends Fragment implements GEEventListner, GEO
     }
 
     @Override
+    public void playlistsItemsLoadedFromPlaylist(String playlistID, boolean success) {
+
+    }
+
+    @Override
     public void loadMoreItems(RecyclerView.Adapter adapter) {
         mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsPopularCompleted);
     }

@@ -1,6 +1,12 @@
-package android.com.galatube.GEYoutubeEvents;
+package android.com.galatube.GEPlaylist;
 
-import android.com.galatube.*;
+import android.com.galatube.GEYoutubeEvents.GEEventListItemView;
+import android.com.galatube.GEYoutubeEvents.GEEventListObj;
+import android.com.galatube.GEYoutubeEvents.GEEventListPage;
+import android.com.galatube.GEYoutubeEvents.GEEventManager;
+import android.com.galatube.GEYoutubeEvents.GEEventTypes;
+import android.com.galatube.GEYoutubeEvents.GEOnLoadMore;
+import android.com.galatube.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.google.api.services.youtube.model.PlaylistItem;
 import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Thumbnail;
 import com.google.api.services.youtube.model.ThumbnailDetails;
@@ -19,59 +26,59 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by deepak on 29/01/17.
+ * Created by deepak on 02/03/17.
  */
 
-public class GEVideoListAdapter extends
+public class GEPlaylistVideolistAdapter extends
         RecyclerView.Adapter<GEEventListItemView> {
 
     private Context mContext;
-    private GEOnLoadMore    mLoadMoreListner;
-    private GEEventTypes    mEventType;
+    private GEOnLoadMore mLoadMoreListner;
+    private String mPlaylistID;
 
-    public GEVideoListAdapter(Context context, GEEventTypes eventType, GEOnLoadMore loadmoreListner) {
+    public GEPlaylistVideolistAdapter(Context context, String playlistID, GEOnLoadMore loadmoreListner) {
         this.mContext = context;
         this.mLoadMoreListner = loadmoreListner;
-        this.mEventType = eventType;
+        this.mPlaylistID = playlistID;
     }
 
-    public GEEventTypes getmEventType() {
-        return mEventType;
+    public String getmPlaylistID() {
+        return mPlaylistID;
     }
 
     @Override
     public int getItemCount() {
-        GEEventManager lMamager = GEEventManager.getInstance();
-        GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, android.com.galatube.GEConstants.GECHANNELID);
+        GEVideoListManager lMamager = GEVideoListManager.getInstance();
+        GEVideolistObj listObj = lMamager.playlistVideoObjForInfo(mPlaylistID);
         if (listObj == null) return 0;
-        ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
-        GEEventListPage lPage = listPages.get(listPages.size() - 1);
-        List<SearchResult> lResults = lPage.getmEventList();
+        ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
+        GEVideoListPage lPage = listPages.get(listPages.size() - 1);
+        List<PlaylistItem> lResults = lPage.getmPlayListItems();
         if (lResults.size() < 50 && listPages.size() == 1)
             return lResults.size();
         else if (lResults.size() < 50 && listPages.size() > 1)
-            return (listPages.size()-1)*50 + lResults.size();
+            return (listPages.size() - 1) * 50 + lResults.size();
 
-        return listPages.size()*50;
+        return listPages.size() * 50;
     }
 
     @Override
     public void onBindViewHolder(GEEventListItemView holder, int position) {
         GEEventListItemView lListItem = (GEEventListItemView) holder;// holder
 
-        GEEventManager lMamager = GEEventManager.getInstance();
-        GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, android.com.galatube.GEConstants.GECHANNELID);
-        ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
-        int lPageIndex = (position >= 50) ? position/50 : 0;
-        GEEventListPage lPage = listPages.get(lPageIndex);
-        List<SearchResult> lResults = lPage.getmEventList();
-        int lPosition = position - lPageIndex*50;
-        SearchResult lResult = lResults.get(lPosition);
+        GEVideoListManager lMamager = GEVideoListManager.getInstance();
+        GEVideolistObj listObj = lMamager.playlistVideoObjForInfo(mPlaylistID);
+        ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
+        int lPageIndex = (position >= 50) ? position / 50 : 0;
+        GEVideoListPage lPage = listPages.get(listPages.size() - 1);
+        List<PlaylistItem> lResults = lPage.getmPlayListItems();
+        int lPosition = position - lPageIndex * 50;
+        PlaylistItem lResult = lResults.get(lPosition);
         lListItem.mTitleView.setText(lResult.getSnippet().getTitle());
 
         ThumbnailDetails lThumbUrls = lResult.getSnippet().getThumbnails();
         Thumbnail lThumbnail = lThumbUrls.getHigh();
-        String lUrl = lThumbnail .getUrl();
+        String lUrl = lThumbnail.getUrl();
         ImageLoader imageLoader = ImageLoader.getInstance();
         // Load image, decode it to Bitmap and return Bitmap to callback
         try {
@@ -83,8 +90,7 @@ public class GEVideoListAdapter extends
 //            handle exception
         }
 
-        if (position == listPages.size()*50-1)
-        {
+        if (position == listPages.size() * 50 - 1) {
             mLoadMoreListner.loadMoreItems(this);
         }
     }
@@ -94,9 +100,9 @@ public class GEVideoListAdapter extends
         // This method will inflate the custom layout and return as viewholder
         LayoutInflater lInflater = LayoutInflater.from(viewGroup.getContext());
         ViewGroup lMainGroup = null;
-        GEEventManager lMamager = GEEventManager.getInstance();
-        GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, android.com.galatube.GEConstants.GECHANNELID);
-        ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
+        GEVideoListManager lMamager = GEVideoListManager.getInstance();
+        GEVideolistObj listObj = lMamager.playlistVideoObjForInfo(mPlaylistID);
+        ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
 
         lMainGroup = (ViewGroup) lInflater.inflate(
                 R.layout.gevideoitem, viewGroup, false);

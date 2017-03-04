@@ -15,7 +15,7 @@
         <activity
             android:name=".GELauncherActivity"
             android:label="Gala Eye"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
