@@ -26,6 +26,18 @@ public class GEUserManager
             ourInstance = new GEUserManager(context);
         return ourInstance;
     }
+    public void resetData(){
+        SharedPreferences sharedPreferences=mContext.getSharedPreferences("MyPreference",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+        editor.commit();
+
+        mUserInfo.setUserName("");
+        mUserInfo.setmUserId("");
+        mUserInfo.setUserEmail("");
+        mUserInfo.setmUserImageUrl("");
+    }
 
     private GEUserManager(Context context) {
         initUserInfo();

@@ -17,6 +17,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="42dp"
+            android:id="@+id/google_signinId"
+            android:visibility="gone"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:id="@+id/GoogleSignInId_tv"
+                android:text="Google SignIn"
+                android:textColor="#4e4d4d"
+                android:layout_marginLeft="15dp"
+                android:textSize="17sp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
             android:id="@+id/google_signin"
             android:orientation="vertical">
             <TextView

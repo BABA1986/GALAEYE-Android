@@ -2,15 +2,22 @@ package android.com.galatube;
 
 import android.app.ProgressDialog;
 import android.com.galatube.GEUserModal.GEUserManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.StrictMode;
+import android.os.UserManager;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.Auth;
@@ -45,6 +52,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     private static final int REQ_CODE=9001;
     private TextView mGoogleSignInTv;
     private ProgressDialog mProgressDialog;
+    private LinearLayout mGoogleSignInId;
+    private TextView mGoogleSignInIdTv;
 
 
     @Override
@@ -55,6 +64,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         getSupportActionBar().setElevation(0);
         mSignView=(View)findViewById(R.id.signout);
         mGoogleSignIn=(LinearLayout)findViewById(R.id.google_signin);
+        mGoogleSignInId=(LinearLayout)findViewById(R.id.google_signinId);
         mGoogleSignOut=(LinearLayout)findViewById(R.id.google_signout);
         mVideolEvent=(LinearLayout)findViewById(R.id.videoEvent);
         mThemelEvent=(LinearLayout)findViewById(R.id.themeEvent);
@@ -68,6 +78,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         mInstagram=(LinearLayout)findViewById(R.id.instagramEvent);
         mGooglelEvent=(LinearLayout)findViewById(R.id.googleEvent);
         mGoogleSignInTv=(TextView)findViewById(R.id.GoogleSignIn_tv);
+        mGoogleSignInIdTv=(TextView)findViewById(R.id.GoogleSignInId_tv);
         mGoogleSignOut.setVisibility(View.GONE);
         mSignView.setVisibility(View.GONE);
         mGoogleSignIn.setOnClickListener(this);
@@ -83,15 +94,17 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         mTwitterlEvent.setOnClickListener(this);
         mInstagram.setOnClickListener(this);
         mGooglelEvent.setOnClickListener(this);
+        mGoogleSignInId.setOnClickListener(this);
         GEUserManager lGEUsermanager=GEUserManager.getInstance(getApplicationContext());
         if (lGEUsermanager.getmUserInfo().getUserEmail().length() != 0)
         {
             updateUi(true);
+        }else if(lGEUsermanager.getmUserInfo().getUserEmail().length() == 0){
+
         }
             // GoogleApiClient
         GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).build();
-
         Auth.GoogleSignInApi.silentSignIn(googleApiClient);
     }
 
@@ -99,7 +112,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.google_signin:
-                OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
+
+                if(isNetworkStatusAvialable (getApplicationContext())) {
+                    OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
                     // If the user has not previously signed in on this device or the sign-in has expired,
                     // this asynchronous branch will attempt to sign in the user silently.  Cross-device
                     // single sign-on will occur in this branch.
@@ -112,10 +127,40 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                         }
                     });
 
-                signIn();
+                    signIn();
+                } else {
+
+                    AlertDialog.Builder builder =new AlertDialog.Builder(this);
+                    builder.setTitle("No Internet Connection");
+                    builder.setMessage("Please turn on Internet connection to continue");
+                    builder.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
+
                 break;
             case R.id.google_signout:
-                signOut();
+                if(isNetworkStatusAvialable (getApplicationContext())) {
+                    signOut();
+                } else {
+                    AlertDialog.Builder builder =new AlertDialog.Builder(this);
+                    builder.setTitle("No Internet Connection");
+                    builder.setMessage("Please turn on Internet connection to continue");
+                    builder.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+
+                }
 
                 break;
             case R.id.videoEvent:
@@ -166,6 +211,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
 
     public void signOut(){
+        GEUserManager lManager = GEUserManager.getInstance(getApplicationContext());
+        lManager.resetData();
       Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
           @Override
           public void onResult(@NonNull Status status) {
@@ -186,7 +233,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                lGEUserManager.setUserId(tokenId);
                lGEUserManager.setUserEmail(email);
                lGEUserManager.setUserImageUrl(image);
-               /*Glide.with(this).load(image).into();*/
                updateUi(true);
            }
         else
@@ -199,13 +245,16 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
       if (isLogin){
           mGoogleSignOut.setVisibility(View.VISIBLE);
           mSignView.setVisibility(View.VISIBLE);
+          mGoogleSignInId.setVisibility(View.VISIBLE);
+          mGoogleSignIn.setVisibility(View.GONE);
           GEUserManager lGEUserManager = GEUserManager.getInstance(getApplicationContext());
-          mGoogleSignInTv.setText(lGEUserManager.getmUserInfo().getUserEmail());
+          mGoogleSignInIdTv.setText(lGEUserManager.getmUserInfo().getUserEmail());
       }
         else {
           mGoogleSignOut.setVisibility(View.GONE);
           mSignView.setVisibility(View.GONE);
-          mGoogleSignInTv.setText("GoogleSignIn");
+          mGoogleSignInId.setVisibility(View.GONE);
+          mGoogleSignIn.setVisibility(View.VISIBLE);
       }
     }
 
@@ -232,5 +281,16 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.hide();
         }
+    }
+    public static boolean isNetworkStatusAvialable (Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null)
+        {
+            NetworkInfo netInfos = connectivityManager.getActiveNetworkInfo();
+            if(netInfos != null)
+                if(netInfos.isConnected())
+                    return true;
+        }
+        return false;
     }
 }

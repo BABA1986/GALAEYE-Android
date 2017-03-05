@@ -1,11 +1,16 @@
 package android.com.galatube;
 
+import android.com.galatube.GEUserModal.GEUserManager;
 import android.com.galatube.model.GEMenu.GEMenu;
 import android.com.galatube.model.GEMenu.GEMenuAdapter;
 import android.com.galatube.model.GEMenu.GESharedMenu;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -15,6 +20,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
@@ -27,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.Auth;
@@ -35,12 +42,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.api.client.http.InputStreamContent;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -57,6 +67,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     private ImageView mUserIv;
     private GoogleApiClient googleApiClient;
     private static final int REQ_CODE=9001;
+    private LinearLayout mGooGleHeader;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +115,11 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
                 initialisePagesForMenu(lMenuItems.get(position));
             }
         });
-
+        GEUserManager lGEUsermanager=GEUserManager.getInstance(getApplicationContext());
+        if (lGEUsermanager.getmUserInfo().getUserEmail().length() != 0)
+        {
+            updateUi(true);
+        }
         initialisePagesForMenu(lMenuItems.get(0));
         GoogleSignInOptions signInOptions=new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         googleApiClient=new GoogleApiClient.Builder(this).enableAutoManage(this,this).addApi(Auth.GOOGLE_SIGN_IN_API,signInOptions).build();
@@ -153,11 +168,32 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
                 startActivity(intent);
                 break;
             case R.id.Google_Navigation_Header:
-                signIn();
-                break;
+                if(isNetworkStatusAvialable (getApplicationContext())) {
+                    GEUserManager lGEUsermanager=GEUserManager.getInstance(getApplicationContext());
+                    if(lGEUsermanager.getmUserInfo().getUserEmail().length() == 0){
+                        signIn();
+                    }
 
+                } else {
+                    AlertDialog.Builder builder =new AlertDialog.Builder(this);
+                    builder.setTitle("No Internet Connection");
+                    builder.setMessage("Please turn on Internet connection to continue");
+                    builder.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+
+                }
+
+                break;
         }
     }
+
+
     public void signIn(){
         Intent intent=Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
         startActivityForResult(intent,REQ_CODE);
@@ -171,15 +207,17 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         }
     }
 
+
     private void handleResult(GoogleSignInResult result) {
         if (result.isSuccess()){
             GoogleSignInAccount account=result.getSignInAccount();
             String name=account.getDisplayName();
             String email=account.getEmail();
             String image =account.getPhotoUrl().toString();
-            mWelcom_SignIn.setText(name);
-            mSignIn_Navigation.setText(email);
-            Glide.with(this).load(image).into(mUserIv);
+            GEUserManager lGEUserManager = GEUserManager.getInstance(getApplicationContext());
+            lGEUserManager.setUserName(name);
+            lGEUserManager.setUserEmail(email);
+            lGEUserManager.setUserImageUrl(image);
             updateUi(true);
         }
         else
@@ -188,13 +226,53 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         }
     }
 
+
     private void updateUi(boolean IsLogin) {
         if (IsLogin){
-            return;
+            GEUserManager lGEUserManager = GEUserManager.getInstance(getApplicationContext());
+            mSignIn_Navigation.setText(lGEUserManager.getmUserInfo().getUserEmail());
+            mWelcom_SignIn.setText(lGEUserManager.getmUserInfo().getUserName());
+            Glide.with(this).load(lGEUserManager.getmUserInfo().getmUserImageUrl()).into(mUserIv);
+        }else{
+            mWelcom_SignIn.setText("Welcome");
+            mSignIn_Navigation.setText("SignIn");
+            try {
+                InputStream lInputStream = getAssets().open("images/userprofile.png");
+                Bitmap lBitmap = BitmapFactory.decodeStream(lInputStream);
+                mUserIv.setImageBitmap(lBitmap);
+            }
+            catch (IOException e) {
+//            handle exception
+            }
         }
     }
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        GEUserManager lGEUsermanager=GEUserManager.getInstance(getApplicationContext());
+        if (lGEUsermanager.getmUserInfo().getUserEmail().length() != 0)
+        {
+            updateUi(true);
+        }else {
+            updateUi(false);
+        }
+    }
+
+    public static boolean isNetworkStatusAvialable (Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null)
+        {
+            NetworkInfo netInfos = connectivityManager.getActiveNetworkInfo();
+            if(netInfos != null)
+                if(netInfos.isConnected())
+                    return true;
+        }
+        return false;
     }
 }

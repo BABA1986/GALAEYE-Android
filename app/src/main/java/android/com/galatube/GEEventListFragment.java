@@ -7,6 +7,9 @@ import android.com.galatube.GEYoutubeEvents.GEEventManager;
 import android.com.galatube.GEYoutubeEvents.GEEventTypes;
 import android.com.galatube.GEYoutubeEvents.GEOnLoadMore;
 import android.com.galatube.GEYoutubeEvents.GEServiceManager;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 /**
  * Created by deepak on 10/12/16.
@@ -32,6 +36,7 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
     private static RecyclerView     mCompletedEventListView;
     private int                     mPage;
     ProgressBar                     mProgressBar;
+    private View view;
 
     // Your developer key goes here
     public static GEEventListFragment newInstance(int page) {
@@ -55,7 +60,14 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.event_list_fragment, container, false);
+       /* if(isNetworkStatusAvialable (getContext())) {
+             view = inflater.inflate(R.layout.event_list_fragment, container, false);
+        } else {
+            view = inflater.inflate(R.layout.no_internet_event_fragment, container, false);
+
+        }*/
+       view = inflater.inflate(R.layout.event_list_fragment, container, false);
+
         return view;
     }
 
@@ -177,5 +189,16 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
             mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsUpcomming);
         else if (lAdapter.getmEventType() == GEEventTypes.EFetchEventsLive)
             mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsLive);
+    }
+    public static boolean isNetworkStatusAvialable (Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null)
+        {
+            NetworkInfo netInfos = connectivityManager.getActiveNetworkInfo();
+            if(netInfos != null)
+                if(netInfos.isConnected())
+                    return true;
+        }
+        return false;
     }
 }
