@@ -1,16 +1,14 @@
 package android.com.galatube;
 
 import android.com.galatube.GEUserModal.GEUserManager;
+import android.com.galatube.Connectivity.GENetworkState;
 import android.com.galatube.model.GEMenu.GEMenu;
 import android.com.galatube.model.GEMenu.GEMenuAdapter;
 import android.com.galatube.model.GEMenu.GESharedMenu;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -18,14 +16,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.Auth;
@@ -42,7 +35,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.api.client.http.InputStreamContent;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -74,6 +66,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         setContentView(R.layout.activity_main_menu);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setElevation(0);
         mGoogleNavigationSignIn=(LinearLayout)findViewById(R.id.Google_Navigation_Header);
         mWelcom_SignIn=(TextView)findViewById(R.id.welcome_tv);
         mSignIn_Navigation=(TextView)findViewById(R.id.signIn_tv);
@@ -160,36 +153,37 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     }
 
     @Override
-    public void onClick(View v)
-    {
-        switch (v.getId()){
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.setting_base_adapter:
-                Intent intent=new Intent(GEMainMenuActivity.this,SettingActivity.class);
+                Intent intent = new Intent(GEMainMenuActivity.this, SettingActivity.class);
                 startActivity(intent);
                 break;
             case R.id.Google_Navigation_Header:
-                if(isNetworkStatusAvialable (getApplicationContext())) {
-                    GEUserManager lGEUsermanager=GEUserManager.getInstance(getApplicationContext());
-                    if(lGEUsermanager.getmUserInfo().getUserEmail().length() == 0){
+                if (GENetworkState.isNetworkStatusAvialable(getApplicationContext())) {
+                    GEUserManager lGEUsermanager = GEUserManager.getInstance(getApplicationContext());
+                    if (lGEUsermanager.getmUserInfo().getUserEmail().length() == 0) {
                         signIn();
                     }
 
                 } else {
-                    AlertDialog.Builder builder =new AlertDialog.Builder(this);
-                    builder.setTitle("No Internet Connection");
-                    builder.setMessage("Please turn on Internet connection to continue");
-                    builder.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
+                    GEUserManager lGEUsermanager = GEUserManager.getInstance(getApplicationContext());
+                    if (lGEUsermanager.getmUserInfo().getUserEmail().length() == 0) {
 
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setTitle("No Internet Connection");
+                        builder.setMessage("Please turn on Internet connection to continue");
+                        builder.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+                    }
+                    break;
                 }
-
-                break;
         }
     }
 
@@ -264,15 +258,5 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         }
     }
 
-    public static boolean isNetworkStatusAvialable (Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager != null)
-        {
-            NetworkInfo netInfos = connectivityManager.getActiveNetworkInfo();
-            if(netInfos != null)
-                if(netInfos.isConnected())
-                    return true;
-        }
-        return false;
-    }
+
 }

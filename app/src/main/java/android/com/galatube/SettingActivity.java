@@ -2,13 +2,9 @@ package android.com.galatube;
 
 import android.app.ProgressDialog;
 import android.com.galatube.GEUserModal.GEUserManager;
-import android.content.Context;
+import android.com.galatube.Connectivity.GENetworkState;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.StrictMode;
-import android.os.UserManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -17,9 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -29,8 +23,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-
-import static android.view.View.VISIBLE;
 
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener,GoogleApiClient.OnConnectionFailedListener{
     private TextView mClose_Setting;
@@ -113,7 +105,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         switch (v.getId()){
             case R.id.google_signin:
 
-                if(isNetworkStatusAvialable (getApplicationContext())) {
+                if(GENetworkState.isNetworkStatusAvialable (getApplicationContext())) {
                     OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
                     // If the user has not previously signed in on this device or the sign-in has expired,
                     // this asynchronous branch will attempt to sign in the user silently.  Cross-device
@@ -145,7 +137,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
                 break;
             case R.id.google_signout:
-                if(isNetworkStatusAvialable (getApplicationContext())) {
+                if(GENetworkState.isNetworkStatusAvialable (getApplicationContext())) {
                     signOut();
                 } else {
                     AlertDialog.Builder builder =new AlertDialog.Builder(this);
@@ -281,16 +273,5 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.hide();
         }
-    }
-    public static boolean isNetworkStatusAvialable (Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager != null)
-        {
-            NetworkInfo netInfos = connectivityManager.getActiveNetworkInfo();
-            if(netInfos != null)
-                if(netInfos.isConnected())
-                    return true;
-        }
-        return false;
     }
 }

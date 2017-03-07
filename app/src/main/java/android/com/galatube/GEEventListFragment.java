@@ -1,5 +1,6 @@
 package android.com.galatube;
 
+import android.com.galatube.Connectivity.GENetworkState;
 import android.com.galatube.GEYoutubeEvents.GEEventListAdapter;
 import android.com.galatube.GEYoutubeEvents.GEEventListObj;
 import android.com.galatube.GEYoutubeEvents.GEEventListner;
@@ -22,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 /**
@@ -60,13 +62,15 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-       /* if(isNetworkStatusAvialable (getContext())) {
-             view = inflater.inflate(R.layout.event_list_fragment, container, false);
-        } else {
-            view = inflater.inflate(R.layout.no_internet_event_fragment, container, false);
 
-        }*/
-       view = inflater.inflate(R.layout.event_list_fragment, container, false);
+        view = inflater.inflate(R.layout.event_list_fragment, container, false);
+
+        if(!GENetworkState.isNetworkStatusAvialable(getContext()))
+        {
+            RelativeLayout lLayout = (RelativeLayout)view.findViewById(R.id.alleventlist);
+            View lNoInternetView = inflater.inflate(R.layout.no_internet_event_fragment, container, false);
+            lLayout.addView(lNoInternetView);
+        }
 
         return view;
     }
@@ -189,16 +193,5 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
             mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsUpcomming);
         else if (lAdapter.getmEventType() == GEEventTypes.EFetchEventsLive)
             mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsLive);
-    }
-    public static boolean isNetworkStatusAvialable (Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager != null)
-        {
-            NetworkInfo netInfos = connectivityManager.getActiveNetworkInfo();
-            if(netInfos != null)
-                if(netInfos.isConnected())
-                    return true;
-        }
-        return false;
     }
 }
