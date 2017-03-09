@@ -70,6 +70,7 @@ public class GEVideoListFragment extends Fragment implements GEEventListner, GEO
                     if(GENetworkState.isNetworkStatusAvialable(getContext())) {
 
                         lLayout.removeView(lNoInternetView);
+                        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsPopularCompleted);
                     }
                 }
             });

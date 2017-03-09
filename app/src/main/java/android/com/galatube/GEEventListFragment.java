@@ -81,12 +81,11 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
                     if(GENetworkState.isNetworkStatusAvialable(getContext())) {
 
                         lLayout.removeView(lNoInternetView);
+                        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsCompleted);
+                        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsLive);
+                        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsUpcomming);
                     }
-                    /*mPage = getArguments().getInt(GEConstants.ARG_PAGE);
-                    mEvtServiceManger = new GEServiceManager(getActivity(), getContext());
-                    mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsCompleted);
-                    mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsLive);
-                    mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsUpcomming);*/
+
                 }
             });
         }
@@ -99,24 +98,21 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
         super.onViewCreated(view, savedInstanceState);
         mLiveEventListView = (RecyclerView)view.findViewById(R.id.recycler_view_live);
         mLiveEventListView.setHasFixedSize(true);
-        mLiveEventListView
-                .setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
+        mLiveEventListView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
         GEEventListAdapter lAdapter = new GEEventListAdapter(getContext(), GEEventTypes.EFetchEventsLive,  this);
         mLiveEventListView.setAdapter(lAdapter);// set adapter on recyclerview
         lAdapter.notifyDataSetChanged();// Notify the adapter
 
         mUpcommingEventListView = (RecyclerView)view.findViewById(R.id.recycler_view_upcomming);
         mUpcommingEventListView.setHasFixedSize(true);
-        mUpcommingEventListView
-                .setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
+        mUpcommingEventListView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
         GEEventListAdapter lAdapter1 = new GEEventListAdapter(getContext(), GEEventTypes.EFetchEventsUpcomming,  this);
         mUpcommingEventListView.setAdapter(lAdapter1);// set adapter on recyclerview
         lAdapter1.notifyDataSetChanged();// Notify the adapter
 
         mCompletedEventListView = (RecyclerView)view.findViewById(R.id.recycler_view_completed);
         mCompletedEventListView.setHasFixedSize(true);
-        mCompletedEventListView
-                .setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
+        mCompletedEventListView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
         GEEventListAdapter lAdapter2 = new GEEventListAdapter(getContext(), GEEventTypes.EFetchEventsCompleted,  this);
         mCompletedEventListView.setAdapter(lAdapter2);// set adapter on recyclerview
         lAdapter2.notifyDataSetChanged();// Notify the adapter

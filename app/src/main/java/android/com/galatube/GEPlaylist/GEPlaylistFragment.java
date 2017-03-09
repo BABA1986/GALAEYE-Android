@@ -77,6 +77,7 @@ public class GEPlaylistFragment extends Fragment implements GEEventListner, GEOn
                     if(GENetworkState.isNetworkStatusAvialable(getContext())) {
 
                         lLayout.removeView(lNoInternetView);
+                        mServiceManger.loadPlaylistAsync(mChannelName);
                     }
                 }
             });
@@ -133,7 +134,8 @@ public class GEPlaylistFragment extends Fragment implements GEEventListner, GEOn
 
     private void stopLodingIndicator() {
 
-        mListProgressBar.setVisibility(View.INVISIBLE);
+        if(mListProgressBar != null)
+            mListProgressBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -143,6 +145,7 @@ public class GEPlaylistFragment extends Fragment implements GEEventListner, GEOn
     @Override
     public void playlistsLoadedFromChannel(String channelSource, boolean success) {
         mPlayListListView.getAdapter().notifyDataSetChanged();
+        stopLodingIndicator();
     }
 
     @Override
