@@ -36,10 +36,12 @@ public class GESubMenu
     }
 
     public String getmSubMenuSrc() {
+
         return mSubMenuSrc;
     }
 
     public String getmSubMenuType() {
+
         return mSubMenuType;
     }
 }

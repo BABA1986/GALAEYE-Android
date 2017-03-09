@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:background="#fff"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -40,7 +41,7 @@
         android:layout_height="63dp"
         android:elevation="10dp"
         android:layout_marginTop="35dp"
-        android:id="@+id/imageButton"
+        android:id="@+id/reload_page"
         android:src="@drawable/wifi_reload"
         android:background="@drawable/round_button"
         android:layout_below="@+id/textView"

@@ -1,5 +1,6 @@
 package android.com.galatube;
 
+import android.com.galatube.Connectivity.GENetworkState;
 import android.com.galatube.GEYoutubeEvents.GEVideoListAdapter;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
@@ -18,7 +19,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 /**
  * Created by deepak on 29/01/17.
@@ -30,6 +33,10 @@ public class GEVideoListFragment extends Fragment implements GEEventListner, GEO
     private static RecyclerView     mSearchVideoListView;
     private int                     mPage;
     ProgressBar                     mListProgressBar;
+    private View view;
+    private ImageButton mReloadPage;
+    private RelativeLayout lLayout;
+    private View lNoInternetView;
 
     // Your developer key goes here
     public static GEVideoListFragment newInstance(int page) {
@@ -50,7 +57,23 @@ public class GEVideoListFragment extends Fragment implements GEEventListner, GEO
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.ge_videolist_fragment, container, false);
+         view = inflater.inflate(R.layout.ge_videolist_fragment, container, false);
+        if(!GENetworkState.isNetworkStatusAvialable(getContext()))
+        {
+             lLayout = (RelativeLayout)view.findViewById(R.id.AllVideoList);
+             lNoInternetView = inflater.inflate(R.layout.no_internet_event_fragment, container, false);
+             mReloadPage=(ImageButton)lNoInternetView.findViewById(R.id.reload_page);
+             lLayout.addView(lNoInternetView);
+             mReloadPage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(GENetworkState.isNetworkStatusAvialable(getContext())) {
+
+                        lLayout.removeView(lNoInternetView);
+                    }
+                }
+            });
+        }
         return view;
     }
 
@@ -65,7 +88,6 @@ public class GEVideoListFragment extends Fragment implements GEEventListner, GEO
         GEVideoListAdapter lAdapter2 = new GEVideoListAdapter(getContext(), GEEventTypes.EFetchEventsPopularCompleted,  this);
         mSearchVideoListView.setAdapter(lAdapter2);// set adapter on recyclerview
         lAdapter2.notifyDataSetChanged();// Notify the adapter
-        startLodingIndicator(view);
     }
 
     @Override
@@ -113,6 +135,7 @@ public class GEVideoListFragment extends Fragment implements GEEventListner, GEO
     @Override
     public void eventsLoadedFromChannel(String channelID, GEEventTypes eventType, boolean success) {
         mSearchVideoListView.getAdapter().notifyDataSetChanged();
+        stopLodingIndicator();
     }
 
     @Override

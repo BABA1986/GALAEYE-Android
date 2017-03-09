@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -39,6 +40,9 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
     private int                     mPage;
     ProgressBar                     mProgressBar;
     private View view;
+    private ImageButton mReloadPage;
+    private RelativeLayout lLayout;
+    private View lNoInternetView;
 
     // Your developer key goes here
     public static GEEventListFragment newInstance(int page) {
@@ -67,9 +71,24 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
 
         if(!GENetworkState.isNetworkStatusAvialable(getContext()))
         {
-            RelativeLayout lLayout = (RelativeLayout)view.findViewById(R.id.alleventlist);
-            View lNoInternetView = inflater.inflate(R.layout.no_internet_event_fragment, container, false);
-            lLayout.addView(lNoInternetView);
+             lLayout = (RelativeLayout)view.findViewById(R.id.alleventlist);
+             lNoInternetView = inflater.inflate(R.layout.no_internet_event_fragment, container, false);
+             lLayout.addView(lNoInternetView);
+            mReloadPage=(ImageButton)lNoInternetView.findViewById(R.id.reload_page);
+            mReloadPage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(GENetworkState.isNetworkStatusAvialable(getContext())) {
+
+                        lLayout.removeView(lNoInternetView);
+                    }
+                    /*mPage = getArguments().getInt(GEConstants.ARG_PAGE);
+                    mEvtServiceManger = new GEServiceManager(getActivity(), getContext());
+                    mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsCompleted);
+                    mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsLive);
+                    mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsUpcomming);*/
+                }
+            });
         }
 
         return view;

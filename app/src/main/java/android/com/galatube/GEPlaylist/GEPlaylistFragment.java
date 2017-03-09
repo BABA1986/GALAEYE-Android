@@ -1,5 +1,6 @@
 package android.com.galatube.GEPlaylist;
 
+import android.com.galatube.Connectivity.GENetworkState;
 import android.com.galatube.GEConstants;
 import android.com.galatube.GEYoutubeEvents.GEEventListner;
 import android.com.galatube.GEYoutubeEvents.GEEventTypes;
@@ -19,7 +20,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.google.api.services.youtube.model.Playlist;
 
@@ -36,6 +39,10 @@ public class GEPlaylistFragment extends Fragment implements GEEventListner, GEOn
     private int                 mPage;
     private String              mChannelName;
     ProgressBar                 mListProgressBar;
+    private View view;
+    private RelativeLayout lLayout;
+    private View lNoInternetView;
+    private ImageButton mReloadPage;
 
     // Your developer key goes here
     public static GEPlaylistFragment newInstance(int page) {
@@ -58,7 +65,23 @@ public class GEPlaylistFragment extends Fragment implements GEEventListner, GEOn
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.ge_playlist_fragment, container, false);
+         view = inflater.inflate(R.layout.ge_playlist_fragment, container, false);
+        if(!GENetworkState.isNetworkStatusAvialable(getContext())){
+            lLayout = (RelativeLayout)view.findViewById(R.id.playlist);
+            lNoInternetView = inflater.inflate(R.layout.no_internet_event_fragment, container, false);
+            lLayout.addView(lNoInternetView);
+            mReloadPage=(ImageButton)lNoInternetView.findViewById(R.id.reload_page);
+            mReloadPage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(GENetworkState.isNetworkStatusAvialable(getContext())) {
+
+                        lLayout.removeView(lNoInternetView);
+                    }
+                }
+            });
+        }
+
         return view;
     }
 
@@ -72,7 +95,6 @@ public class GEPlaylistFragment extends Fragment implements GEEventListner, GEOn
         GEPlaylistListAdapter lAdapter2 = new GEPlaylistListAdapter(getContext(), this, this, mChannelName);
         mPlayListListView.setAdapter(lAdapter2);// set adapter on recyclerview
         lAdapter2.notifyDataSetChanged();// Notify the adapter
-        startLodingIndicator(view);
         mServiceManger.loadPlaylistAsync(mChannelName);
     }
 
@@ -110,6 +132,7 @@ public class GEPlaylistFragment extends Fragment implements GEEventListner, GEOn
     }
 
     private void stopLodingIndicator() {
+
         mListProgressBar.setVisibility(View.INVISIBLE);
     }
 
@@ -144,7 +167,6 @@ public class GEPlaylistFragment extends Fragment implements GEEventListner, GEOn
         List<Playlist> lResults = lPage.getmPlaylistList();
         int lPosition = position - lPageIndex*50;
         Playlist lResult = lResults.get(lPosition);
-
 
         Intent lIntent = new Intent(getActivity(), GEPlaylistVideolistActivity.class);
         lIntent.putExtra("PlaylistName", lResult.getSnippet().getTitle());
