@@ -58,8 +58,8 @@ public class GEEventListAdapter extends
 
     @Override
     public void onBindViewHolder(GEEventListItemView holder, int position) {
-        GEEventListItemView lListItem = (GEEventListItemView) holder;// holder
 
+        GEEventListItemView lListItem = (GEEventListItemView) holder;// holder
         GEEventManager lMamager = GEEventManager.getInstance();
         GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, GEConstants.GECHANNELID);
         ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();

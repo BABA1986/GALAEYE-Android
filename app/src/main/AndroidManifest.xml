@@ -4,9 +4,9 @@
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:allowBackup="true"
@@ -16,8 +16,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".GELauncherActivity"
-            android:label="Gala Eye"
-            >
+            android:label="Gala Eye">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,12 +26,13 @@
         <activity
             android:name=".GEIntroActivity"
             android:noHistory="true"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".GEMainMenuActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
-        <activity android:name=".GEPlaylist.GEPlaylistVideolistActivity"></activity>
-        <activity android:name=".SettingActivity"></activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity android:name=".GEPlaylist.GEPlaylistVideolistActivity" />
+        <activity android:name=".SettingActivity" />
+        <activity android:name=".GEThemeActvity"></activity>
     </application>
 
 </manifest>

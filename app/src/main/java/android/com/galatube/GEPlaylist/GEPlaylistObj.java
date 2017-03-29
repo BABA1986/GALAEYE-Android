@@ -33,10 +33,12 @@ public class GEPlaylistObj
 
     public String getmChannelSource()
     {
+
         return this.mChannelSource;
     }
 
     public ArrayList<GEPlaylistPage> getmPlayListListPages() {
+
         return mPlayListListPages;
     }
 

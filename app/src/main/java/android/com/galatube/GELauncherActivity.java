@@ -21,7 +21,7 @@ public class GELauncherActivity extends Activity
 
         GESharedMenu lSharedMenu = GESharedMenu.getInstance(getApplicationContext());
 
-        Thread t = new Thread(new Runnable() {
+        Thread t = new Thread(      new Runnable() {
             @Override
             public void run() {
                 //  Initialize SharedPreferences

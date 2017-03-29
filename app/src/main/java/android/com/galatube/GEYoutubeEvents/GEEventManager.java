@@ -24,7 +24,9 @@ public class GEEventManager {
     }
 
     public ArrayList<GEEventListObj> getmEventListObjs() {
+
         return mEventListObjs;
+
     }
 
     public String pageTokenForInfo(GEEventTypes eventType, String channelID)

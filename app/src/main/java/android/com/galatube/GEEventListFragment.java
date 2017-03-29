@@ -74,8 +74,8 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
              lLayout = (RelativeLayout)view.findViewById(R.id.alleventlist);
              lNoInternetView = inflater.inflate(R.layout.no_internet_event_fragment, container, false);
              lLayout.addView(lNoInternetView);
-            mReloadPage=(ImageButton)lNoInternetView.findViewById(R.id.reload_page);
-            mReloadPage.setOnClickListener(new View.OnClickListener() {
+             mReloadPage=(ImageButton)lNoInternetView.findViewById(R.id.reload_page);
+             mReloadPage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(GENetworkState.isNetworkStatusAvialable(getContext())) {

@@ -65,12 +65,12 @@ public class GEPlaylistManager {
 
         lGEPlaylistObj = playlistListObjForInfo(channelSource);
 
-        if(lGEPlaylistObj == null)
-        {
+        if(lGEPlaylistObj == null) {
             lGEPlaylistObj = new GEPlaylistObj(response, channelSource);
             mPlayListObjs.add(lGEPlaylistObj);
         }
         else
+
         {
             lGEPlaylistObj.addPlaylistListFromResponse(response);
         }

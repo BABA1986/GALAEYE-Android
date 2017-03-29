@@ -160,6 +160,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.themeEvent:
                 Log.i("themeEvent","themeEvent");
+                Intent intent=new Intent(SettingActivity.this,GEThemeActvity.class);
+                startActivity(intent);
                 break;
             case R.id.disclaimerEvent:
                 Log.i("disclaimerEvent","disclaimerEvent");
