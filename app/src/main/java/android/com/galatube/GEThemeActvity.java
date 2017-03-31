@@ -1,6 +1,11 @@
 package android.com.galatube;
 
+import android.com.galatube.GETheme.GEThemeManager;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -10,6 +15,8 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,8 +26,7 @@ public class GEThemeActvity extends AppCompatActivity {
     private ViewPager viewPager;
     private LinearLayout dotsLayout;
     private Button btnNext;
-    private int[] layouts;
-    private MyViewPagerAdapter myViewPagerAdapter;
+    private GEThemePageAdapter myViewPagerAdapter;
     private TextView[] dots;
 
     @Override
@@ -36,21 +42,14 @@ public class GEThemeActvity extends AppCompatActivity {
         // layouts of all GETheme
         // add few more layouts if you want
 
-        layouts = new int[]{
-                R.layout.ge_theme1,
-                R.layout.ge_theme2,
-                R.layout.ge_theme3,
-                R.layout.ge_theme4,
-                R.layout.ge_theme5
-        };
 
         // adding bottom dots
         addBottomDots(0);
-
-
-        myViewPagerAdapter = new MyViewPagerAdapter();
+        myViewPagerAdapter = new GEThemePageAdapter(this);
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
+        viewPager.setCurrentItem(GEThemeManager.getInstance(this).getmSelectedIndex());
+        applyTheme();
 
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +57,8 @@ public class GEThemeActvity extends AppCompatActivity {
                 // checking for last page
                 // if last page home screen will be launched
                 int current = getItem(+1);
-                if (current < layouts.length) {
+                int lThemeCount = GEThemeManager.getInstance(getBaseContext()).getThemesCount();
+                if (current < lThemeCount) {
                     // move to next screen
                     viewPager.setCurrentItem(current);
                 }
@@ -66,23 +66,35 @@ public class GEThemeActvity extends AppCompatActivity {
         });
     }
 
+    private void applyTheme()
+    {
+       ActionBar lActionBar = getSupportActionBar();
+        int lColor = GEThemeManager.getInstance(this).getSelectedNavColor();
+        ColorDrawable lColorDrawable = new ColorDrawable(lColor);
+        lActionBar.setBackgroundDrawable(lColorDrawable);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(GEThemeManager.getInstance(this).getSelectedNavColor());
+        }
+        for (int i = 0; i < dots.length; i++) {
+            dots[i].setTextColor(GEThemeManager.getInstance(this).getSelectedNavTextColor());
+        }
+    }
+
     private void addBottomDots(int currentPage) {
-        dots = new TextView[layouts.length];
-
-        int[] colorsActive = getResources().getIntArray(R.array.array_dot_active);
-        int[] colorsInactive = getResources().getIntArray(R.array.array_dot_inactive);
-
+        int lThemeCount = GEThemeManager.getInstance(getBaseContext()).getThemesCount();
+        dots = new TextView[lThemeCount];
         dotsLayout.removeAllViews();
         for (int i = 0; i < dots.length; i++) {
             dots[i] = new TextView(this);
             dots[i].setText(Html.fromHtml("&#8226;"));
             dots[i].setTextSize(35);
-            dots[i].setTextColor(colorsInactive[currentPage]);
             dotsLayout.addView(dots[i]);
         }
 
         if (dots.length > 0)
-            dots[currentPage].setTextColor(colorsActive[currentPage]);
+            dots[currentPage].setTextColor(GEThemeManager.getInstance(this).getSelectedNavTextColor());
     }
 
     private int getItem(int i) {
@@ -95,13 +107,15 @@ public class GEThemeActvity extends AppCompatActivity {
 
         @Override
         public void onPageSelected(int position) {
-
             addBottomDots(position);
-            if (position == layouts.length - 1) {
+            GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(position);
+            int lThemeCount = GEThemeManager.getInstance(getBaseContext()).getThemesCount();
+
+            if (position == lThemeCount - 1) {
                 btnNext.setVisibility(View.GONE);
             }
 
-            else if(position==layouts.length-2){
+            else if(position==lThemeCount-2){
                 btnNext.setVisibility(View.VISIBLE);
             }
 
@@ -110,6 +124,8 @@ public class GEThemeActvity extends AppCompatActivity {
                 // still pages are left
                 btnNext.setText(getString(R.string.next));
             }
+
+            applyTheme();
         }
 
         @Override
@@ -126,25 +142,33 @@ public class GEThemeActvity extends AppCompatActivity {
     /**
      * View pager adapter
      */
-    public class MyViewPagerAdapter extends PagerAdapter {
+    public class GEThemePageAdapter extends PagerAdapter {
         private LayoutInflater layoutInflater;
+        private Context                 mContext;
 
-        public MyViewPagerAdapter() {
-
+        public GEThemePageAdapter(Context context) {
+            mContext = context;
         }
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = layoutInflater.inflate(layouts[position], container, false);
+            View view = layoutInflater.inflate(R.layout.ge_theme1, container, false);
+            TextView lTextView = (TextView)view.findViewById(R.id.themenametextviewid);
+            GEThemeManager lThemeManager = GEThemeManager.getInstance(mContext);
+            lTextView.setText(lThemeManager.getThemeNameAtIndex(position));
+            lTextView.setTextColor(lThemeManager.getSelectedNavTextColorAtIndex(position));
+            view.setBackgroundColor(lThemeManager.getNavColorAtIndex(position));
             container.addView(view);
-
             return view;
         }
 
         @Override
-        public int getCount() {
-            return layouts.length;
+        public int getCount()
+        {
+            GEThemeManager lThemeManager = GEThemeManager.getInstance(mContext);
+            int lThemesCount = lThemeManager.getThemesCount();
+            return lThemesCount;
         }
 
         @Override

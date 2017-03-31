@@ -1,17 +1,25 @@
 package android.com.galatube;
 
 import android.app.ProgressDialog;
+import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.GEUserModal.GEUserManager;
 import android.com.galatube.Connectivity.GENetworkState;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
@@ -46,6 +54,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     private ProgressDialog mProgressDialog;
     private LinearLayout mGoogleSignInId;
     private TextView mGoogleSignInIdTv;
+    private View mSwitchBtn;
 
 
     @Override
@@ -54,6 +63,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_setting);
         getSupportActionBar().setTitle("Setting");
         getSupportActionBar().setElevation(0);
+        SharedPreferences sharedPreferences=getSharedPreferences("myTheme",MODE_PRIVATE);
+        GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
         mSignView=(View)findViewById(R.id.signout);
         mGoogleSignIn=(LinearLayout)findViewById(R.id.google_signin);
         mGoogleSignInId=(LinearLayout)findViewById(R.id.google_signinId);
@@ -71,6 +82,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         mGooglelEvent=(LinearLayout)findViewById(R.id.googleEvent);
         mGoogleSignInTv=(TextView)findViewById(R.id.GoogleSignIn_tv);
         mGoogleSignInIdTv=(TextView)findViewById(R.id.GoogleSignInId_tv);
+        mSwitchBtn=(Switch)findViewById(R.id.simpleSwitch);
         mGoogleSignOut.setVisibility(View.GONE);
         mSignView.setVisibility(View.GONE);
         mGoogleSignIn.setOnClickListener(this);
@@ -87,6 +99,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         mInstagram.setOnClickListener(this);
         mGooglelEvent.setOnClickListener(this);
         mGoogleSignInId.setOnClickListener(this);
+        applyTheme();
         GEUserManager lGEUsermanager=GEUserManager.getInstance(getApplicationContext());
         if (lGEUsermanager.getmUserInfo().getUserEmail().length() != 0)
         {
@@ -98,6 +111,21 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).build();
         Auth.GoogleSignInApi.silentSignIn(googleApiClient);
+    }
+
+    private void applyTheme() {
+
+        SharedPreferences sharedPreferences=getSharedPreferences("myTheme",MODE_PRIVATE);
+        GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
+        ActionBar lActionBar = getSupportActionBar();
+        int lColor = GEThemeManager.getInstance(this).getSelectedNavColor();
+        ColorDrawable lColorDrawable = new ColorDrawable(lColor);
+        lActionBar.setBackgroundDrawable(lColorDrawable);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(GEThemeManager.getInstance(this).getSelectedNavColor());
+        }
     }
 
     @Override

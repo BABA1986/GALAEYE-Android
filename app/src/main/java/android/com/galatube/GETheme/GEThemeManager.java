@@ -2,6 +2,7 @@ package android.com.galatube.GETheme;
 
 import android.com.galatube.model.GEMenu.GEMenu;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 
 import org.json.JSONArray;
@@ -39,7 +40,21 @@ public class GEThemeManager
     public void setmSelectedIndex(int selectedIndex) {
 
         mSelectedIndex = selectedIndex;
+        saveIndex(selectedIndex);
     }
+
+    public int getmSelectedIndex(){
+        return mSelectedIndex;
+    }
+
+
+    public void saveIndex(int position){
+        SharedPreferences sharedPreferences=mContext.getSharedPreferences("myTheme",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.putInt("MyThemePosition",position);
+        editor.commit();
+    }
+
 
     public void initialiseThemes()
     {
@@ -76,6 +91,32 @@ public class GEThemeManager
         }
 
         return lJSON;
+    }
+
+    public int getThemesCount()
+    {
+        return mThemes.size();
+    }
+
+    public int getNavColorAtIndex(int index)
+    {
+        GETheme lThemeInfo = mThemes.get(index);
+        String lColorStr = lThemeInfo.getmNavColor();
+        return Color.parseColor(lColorStr);
+    }
+
+    public int getSelectedNavTextColorAtIndex(int index)
+    {
+        GETheme lThemeInfo = mThemes.get(index);
+        String lColorStr = lThemeInfo.getmNavTextColor();
+        return Color.parseColor(lColorStr);
+    }
+
+    public String getThemeNameAtIndex(int index)
+    {
+        GETheme lThemeInfo = mThemes.get(index);
+        String lThemeName = lThemeInfo.getmThemeName();
+        return lThemeName;
     }
 
     public int getSelectedNavColor()
