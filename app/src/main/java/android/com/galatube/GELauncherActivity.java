@@ -1,12 +1,18 @@
 package android.com.galatube;
 
 import android.app.Activity;
+import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.model.GEMenu.GESharedMenu;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.content.SharedPreferences;
+import android.support.v7.app.ActionBar;
+import android.view.Window;
+import android.view.WindowManager;
 
 /**
  * Created by deepak on 30/11/16.
@@ -18,7 +24,7 @@ public class GELauncherActivity extends Activity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
-
+        applyTheme();
         GESharedMenu lSharedMenu = GESharedMenu.getInstance(getApplicationContext());
 
         Thread t = new Thread(      new Runnable() {
@@ -52,5 +58,15 @@ public class GELauncherActivity extends Activity
 
         // Start the thread
         t.start();
+    }
+
+    private void applyTheme() {
+        SharedPreferences sharedPreferences=getSharedPreferences("myTheme",MODE_PRIVATE);
+        GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(GEThemeManager.getInstance(this).getSelectedNavColor());
+        }
     }
 }

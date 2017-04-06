@@ -1,14 +1,18 @@
 package android.com.galatube.GEPlaylist;
 
+import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.GEYoutubeEvents.GEOnLoadMore;
 import android.com.galatube.GEYoutubeEvents.GERecyclerItemClickListner;
 import android.com.galatube.R;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.google.api.services.youtube.model.Playlist;
 import com.google.api.services.youtube.model.Thumbnail;
@@ -20,6 +24,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by deepak on 20/02/17.
  */
@@ -29,6 +35,7 @@ public class GEPlaylistListAdapter extends  RecyclerView.Adapter<GEPlaylistListI
     private GEOnLoadMore                mLoadMoreListner;
     private String                      mChannelName;
     private GERecyclerItemClickListner  mClickListener;
+    private RelativeLayout mGEplayListVideo;
 
     public GEPlaylistListAdapter(Context context,
                                  GEOnLoadMore loadmoreListner,
@@ -100,10 +107,8 @@ public class GEPlaylistListAdapter extends  RecyclerView.Adapter<GEPlaylistListI
         GEPlaylistManager lMamager = GEPlaylistManager.getInstance();
         GEPlaylistObj listObj = lMamager.playlistListObjForInfo(mChannelName);
         ArrayList<GEPlaylistPage> listPages = listObj.getmPlayListListPages();
-
-        lMainGroup = (ViewGroup) lInflater.inflate(
-                R.layout.ge_playlistitem, viewGroup, false);
-        GEPlaylistListItemView listHolder = new GEPlaylistListItemView(lMainGroup, mClickListener);
+        lMainGroup = (ViewGroup) lInflater.inflate(R.layout.ge_playlistitem, viewGroup, false);
+        GEPlaylistListItemView listHolder = new GEPlaylistListItemView(lMainGroup,mContext, mClickListener);
 
         try {
             InputStream lInputStream = mContext.getAssets().open("images/playlistIcon.png");

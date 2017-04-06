@@ -1,6 +1,7 @@
 package android.com.galatube.GEPlaylist;
 
 import android.app.Activity;
+import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.GEYoutubeEvents.GEEventListner;
 import android.com.galatube.GEYoutubeEvents.GEEventTypes;
 import android.com.galatube.GEYoutubeEvents.GEOnLoadMore;
@@ -8,14 +9,20 @@ import android.com.galatube.GEYoutubeEvents.GERecyclerItemClickListner;
 import android.com.galatube.GEYoutubeEvents.GEServiceManager;
 import android.com.galatube.R;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
@@ -54,6 +61,21 @@ public class GEPlaylistVideolistActivity extends AppCompatActivity implements GE
         mServiceManager = new GEServiceManager(this, this);
         mServiceManager.loadPlaylistItemsAsync(mPlaylistID);
         startLodingIndicator();
+        applyTheme();
+    }
+
+    private void applyTheme() {
+        SharedPreferences sharedPreferences=getSharedPreferences("myTheme",MODE_PRIVATE);
+        GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
+        ActionBar lActionBar = getSupportActionBar();
+        int lColor = GEThemeManager.getInstance(this).getSelectedNavColor();
+        ColorDrawable lColorDrawable = new ColorDrawable(lColor);
+        lActionBar.setBackgroundDrawable(lColorDrawable);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(GEThemeManager.getInstance(this).getSelectedNavColor());
+        }
     }
 
     private void startLodingIndicator()

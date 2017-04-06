@@ -176,6 +176,10 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
 
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        SharedPreferences sharedPreferences=getSharedPreferences("myTheme",MODE_PRIVATE);
+        GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
+        int lTextColor=GEThemeManager.getInstance(this).getSelectedNavTextColor();
+        tabLayout.setSelectedTabIndicatorColor(lTextColor);
         tabLayout.setupWithViewPager(viewPager);
     }
 
