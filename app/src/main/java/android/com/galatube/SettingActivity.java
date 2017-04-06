@@ -99,7 +99,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         mInstagram.setOnClickListener(this);
         mGooglelEvent.setOnClickListener(this);
         mGoogleSignInId.setOnClickListener(this);
-        applyTheme();
+
         GEUserManager lGEUsermanager=GEUserManager.getInstance(getApplicationContext());
         if (lGEUsermanager.getmUserInfo().getUserEmail().length() != 0)
         {
@@ -111,6 +111,12 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).build();
         Auth.GoogleSignInApi.silentSignIn(googleApiClient);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        applyTheme();
     }
 
     private void applyTheme() {

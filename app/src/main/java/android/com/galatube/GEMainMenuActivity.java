@@ -90,7 +90,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
                 this, mDrawer, mtoolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawer.addDrawerListener(toggle);
         toggle.syncState();
-        applyTheme();
+
         ImageLoader imageLoader = ImageLoader.getInstance();
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                 .bitmapConfig(Bitmap.Config.RGB_565)
@@ -128,7 +128,6 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         googleApiClient=new GoogleApiClient.Builder(this).enableAutoManage(this,this).addApi(Auth.GOOGLE_SIGN_IN_API,signInOptions).build();
 
     }
-
     private void applyTheme() {
         SharedPreferences sharedPreferences=getSharedPreferences("myTheme",MODE_PRIVATE);
         GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
@@ -280,6 +279,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     @Override
     protected void onStart() {
         super.onStart();
+        applyTheme();
         GEUserManager lGEUsermanager=GEUserManager.getInstance(getApplicationContext());
         if (lGEUsermanager.getmUserInfo().getUserEmail().length() != 0)
         {
