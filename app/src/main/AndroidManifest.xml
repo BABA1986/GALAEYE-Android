@@ -32,7 +32,8 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name=".GEPlaylist.GEPlaylistVideolistActivity" />
         <activity android:name=".SettingActivity" />
-        <activity android:name=".GEThemeActvity"></activity>
+        <activity android:name=".GEThemeActvity" />
+        <activity android:name=".GEWebView.WebViewActivity"></activity>
     </application>
 
 </manifest>
