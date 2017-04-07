@@ -28,11 +28,13 @@ public class GEVideoListAdapter extends
     private Context mContext;
     private GEOnLoadMore    mLoadMoreListner;
     private GEEventTypes    mEventType;
+    private String          mChannelId;
 
-    public GEVideoListAdapter(Context context, GEEventTypes eventType, GEOnLoadMore loadmoreListner) {
+    public GEVideoListAdapter(Context context, GEEventTypes eventType, GEOnLoadMore loadmoreListner, String channelId) {
         this.mContext = context;
         this.mLoadMoreListner = loadmoreListner;
         this.mEventType = eventType;
+        this.mChannelId = channelId;
     }
 
     public GEEventTypes getmEventType() {
@@ -42,7 +44,7 @@ public class GEVideoListAdapter extends
     @Override
     public int getItemCount() {
         GEEventManager lMamager = GEEventManager.getInstance();
-        GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, android.com.galatube.GEConstants.GECHANNELID);
+        GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, mChannelId);
         if (listObj == null) return 0;
         ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
         GEEventListPage lPage = listPages.get(listPages.size() - 1);
@@ -60,7 +62,7 @@ public class GEVideoListAdapter extends
         GEEventListItemView lListItem = (GEEventListItemView) holder;// holder
 
         GEEventManager lMamager = GEEventManager.getInstance();
-        GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, android.com.galatube.GEConstants.GECHANNELID);
+        GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, mChannelId);
         ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
         int lPageIndex = (position >= 50) ? position/50 : 0;
         GEEventListPage lPage = listPages.get(lPageIndex);
@@ -95,7 +97,7 @@ public class GEVideoListAdapter extends
         LayoutInflater lInflater = LayoutInflater.from(viewGroup.getContext());
         ViewGroup lMainGroup = null;
         GEEventManager lMamager = GEEventManager.getInstance();
-        GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, android.com.galatube.GEConstants.GECHANNELID);
+        GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, mChannelId);
         ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
 
         lMainGroup = (ViewGroup) lInflater.inflate(

@@ -6,6 +6,7 @@ import android.com.galatube.Connectivity.GENetworkState;
 import android.com.galatube.model.GEMenu.GEMenu;
 import android.com.galatube.model.GEMenu.GEMenuAdapter;
 import android.com.galatube.model.GEMenu.GESharedMenu;
+import android.com.galatube.model.GEMenu.GESubMenu;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,7 +26,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -34,6 +37,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.Auth;
@@ -69,6 +73,8 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     private LinearLayout mGooGleHeader;
     private Toolbar mtoolbar;
     private LinearLayout mTabToolbar;
+    private Menu         mActionBarMenu;
+    private int          mDrawerSelectedMenuIndex;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,12 +116,15 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         ArrayList<GEMenu> lMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
         ListView lListView = (ListView) findViewById(R.id.left_drawer_list);
         lListView.setAdapter(new GEMenuAdapter(this, lMenuItems));
-        lListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                mDrawerSelectedMenuIndex = position;
                 mDrawer.closeDrawers();
                 ArrayList<GEMenu> lMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
-                initialisePagesForMenu(lMenuItems.get(position));
+                initialisePagesForMenu(lMenuItems.get(position), "playlists");
             }
         });
         GEUserManager lGEUsermanager=GEUserManager.getInstance(getApplicationContext());
@@ -123,13 +132,15 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         {
             updateUi(true);
         }
-        initialisePagesForMenu(lMenuItems.get(0));
+
+        mDrawerSelectedMenuIndex = 0;
+        initialisePagesForMenu(lMenuItems.get(mDrawerSelectedMenuIndex), "playlists");
         GoogleSignInOptions signInOptions=new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         googleApiClient=new GoogleApiClient.Builder(this).enableAutoManage(this,this).addApi(Auth.GOOGLE_SIGN_IN_API,signInOptions).build();
 
     }
     private void applyTheme() {
-        SharedPreferences sharedPreferences=getSharedPreferences("myTheme",MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("myTheme",MODE_PRIVATE);
         GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
         ActionBar lActionBar = getSupportActionBar();
         int lColor = GEThemeManager.getInstance(this).getSelectedNavColor();
@@ -143,6 +154,16 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(GEThemeManager.getInstance(this).getSelectedNavColor());
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.playlistvideofilter, menu);//Menu Resource, Menu
+        mActionBarMenu = menu;
+        showOptionMenuIfRequired();
+        return true;
     }
 
     @Override
@@ -160,22 +181,64 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         }
     }
 
-    public void initialisePagesForMenu(GEMenu menuInfo)
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        ArrayList<GEMenu> lMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
+        GEMenu lMenu = lMenuItems.get(mDrawerSelectedMenuIndex);
+
+        switch (item.getItemId())
+        {
+            // action with ID action_refresh was selected
+            case R.id.playlistsfilter:
+                initialisePagesForMenu(lMenu, "playlists");
+                break;
+            // action with ID action_settings was selected
+            case R.id.videofilter:
+                initialisePagesForMenu(lMenu, "videos");
+                break;
+            default:
+                break;
+        }
+
+        return true;
+    }
+
+    //In Case of playlist tipe menu only
+    private void showOptionMenuIfRequired()
+    {
+        if (mActionBarMenu == null)
+            return;
+
+        boolean lShouldShow = false;
+        ArrayList<GEMenu> lMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
+        GEMenu lMenu = lMenuItems.get(mDrawerSelectedMenuIndex);
+        GESubMenu lSubMenu = lMenu.getmSubMenus().get(0);
+        String lSubMenuType = lSubMenu.getmSubMenuType();
+
+        if (lSubMenuType.equals("playlist") == true)
+            lShouldShow = true;
+
+        for (int i = 0; i < mActionBarMenu.size(); i++)
+            mActionBarMenu.getItem(i).setVisible(lShouldShow);
+    }
+
+    public void initialisePagesForMenu(GEMenu menuInfo, String filter)
     {
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         GEPageAdapter lAdapter = (GEPageAdapter)viewPager.getAdapter();
-
+        showOptionMenuIfRequired();
         if (lAdapter != null)
         {
-            lAdapter.reloadWithSubMenu(menuInfo.getmSubMenus());
+            lAdapter.reloadWithSubMenu(menuInfo.getmSubMenus(), filter);
             return;
         }
-        viewPager.setAdapter(new GEPageAdapter(getSupportFragmentManager(),
-                GEMainMenuActivity.this, menuInfo.getmSubMenus()));
 
+        viewPager.setAdapter(new GEPageAdapter(getSupportFragmentManager(),
+                GEMainMenuActivity.this, menuInfo.getmSubMenus(), filter));
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        SharedPreferences sharedPreferences=getSharedPreferences("myTheme",MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("myTheme", MODE_PRIVATE);
         GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
         int lTextColor=GEThemeManager.getInstance(this).getSelectedNavTextColor();
         tabLayout.setSelectedTabIndicatorColor(lTextColor);

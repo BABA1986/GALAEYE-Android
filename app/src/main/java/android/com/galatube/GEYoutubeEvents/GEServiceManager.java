@@ -66,10 +66,14 @@ public class GEServiceManager
                 query.setEventType("completed");
                 query.setOrder("viewCount");
             }
-            else {
+            else if (eventTypes == GEEventTypes.EFetchEventsCompleted)
+            {
                 query.setEventType("completed");
             }
+            else
+            {
 
+            }
             query.setFields("items(kind,id/kind,id/videoId,snippet/title,snippet/thumbnails),nextPageToken,pageInfo,prevPageToken");
         }catch(IOException e){
             Log.d("YC", "Could not initialize: "+e);
@@ -135,7 +139,7 @@ public class GEServiceManager
             ChannelListResponse response = query.execute();
             List<Channel> lChannels = response.getItems();
             if (lChannels.size() == 0)
-                return null;
+                return channelName;
             Channel lChannel = lChannels.get(0);
             return lChannel.getId();
         }catch(IOException e){
@@ -211,25 +215,26 @@ public class GEServiceManager
         }
     }
 
-    public void loadEventsAsync(final String channelID, GEEventTypes eventType)
+    public void loadEventsAsync(final String channelName, GEEventTypes eventType)
     {
-        final  String fChannelId = channelID;
+        final  String fChannelId = channelName;
         final  GEEventTypes fEventType = eventType;
         mHandler = new android.os.Handler();
         new Thread(){
             public void run(){
-                loadEvents(fChannelId, fEventType);
+                final String lChannelId = getChannelIdFromName(channelName);
+                loadEvents(lChannelId, fEventType, channelName);
                 mHandler.post(new Runnable(){
                     public void run(){
                         Log.d("YC", "Could not search: "+fEventType);
-                        mListner.eventsLoadedFromChannel(channelID, fEventType, true);
+                        mListner.eventsLoadedFromChannel(channelName, fEventType, true);
                     }
                 });
             }
         }.start();
     }
 
-    public void loadEvents(String channelID, GEEventTypes eventType)
+    public void loadEvents(String channelID, GEEventTypes eventType, String channelName)
     {
         GEEventManager lManager = GEEventManager.getInstance();
         String lNextPageToken = lManager.pageTokenForInfo(eventType, channelID);
@@ -241,7 +246,7 @@ public class GEServiceManager
         YouTube.Search.List query = eventQueryFor(eventType, channelID, lNextPageToken);
         try{
             SearchListResponse response = query.execute();
-            lManager.addEventSearchResponse(response, eventType, channelID);
+            lManager.addEventSearchResponse(response, eventType, channelName);
         }catch(IOException e){
             Log.d("YC", "Could not search: "+e);
         }

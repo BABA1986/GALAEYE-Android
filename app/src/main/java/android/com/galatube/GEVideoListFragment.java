@@ -2,16 +2,13 @@ package android.com.galatube;
 
 import android.com.galatube.Connectivity.GENetworkState;
 import android.com.galatube.GEYoutubeEvents.GEVideoListAdapter;
-import android.graphics.Color;
 import android.support.v4.app.Fragment;
-import android.com.galatube.GEYoutubeEvents.GEEventListAdapter;
 import android.com.galatube.GEYoutubeEvents.GEEventListner;
 import android.com.galatube.GEYoutubeEvents.GEEventTypes;
 import android.com.galatube.GEYoutubeEvents.GEOnLoadMore;
 import android.com.galatube.GEYoutubeEvents.GEServiceManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Gravity;
@@ -32,17 +29,26 @@ public class GEVideoListFragment extends Fragment implements GEEventListner, GEO
     private GEServiceManager        mEvtServiceManger;
     private static RecyclerView     mSearchVideoListView;
     private int                     mPage;
+    GEEventTypes                    mEventTypes;
+    String                          mChannelId;
     ProgressBar                     mListProgressBar;
     private View view;
     private ImageButton mReloadPage;
     private RelativeLayout lLayout;
     private View lNoInternetView;
 
+    public GEVideoListFragment(GEEventTypes eventType, String channelId)
+    {
+        mEventTypes = eventType;
+        mChannelId = channelId;
+    }
+
     // Your developer key goes here
-    public static GEVideoListFragment newInstance(int page) {
+    public static GEVideoListFragment newInstance(int page, GEEventTypes eventType, String channelId)
+    {
         Bundle args = new Bundle();
         args.putInt(GEConstants.ARG_PAGE1, page);
-        GEVideoListFragment lGEVideoListFragment = new GEVideoListFragment();
+        GEVideoListFragment lGEVideoListFragment = new GEVideoListFragment(eventType, channelId);
         lGEVideoListFragment.setArguments(args);
         return lGEVideoListFragment;
     }
@@ -70,7 +76,7 @@ public class GEVideoListFragment extends Fragment implements GEEventListner, GEO
                     if(GENetworkState.isNetworkStatusAvialable(getContext())) {
 
                         lLayout.removeView(lNoInternetView);
-                        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsPopularCompleted);
+                        mEvtServiceManger.loadEventsAsync(mChannelId, mEventTypes);
                     }
                 }
             });
@@ -86,7 +92,7 @@ public class GEVideoListFragment extends Fragment implements GEEventListner, GEO
         mSearchVideoListView.setHasFixedSize(true);
         mSearchVideoListView
                 .setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-        GEVideoListAdapter lAdapter2 = new GEVideoListAdapter(getContext(), GEEventTypes.EFetchEventsPopularCompleted,  this);
+        GEVideoListAdapter lAdapter2 = new GEVideoListAdapter(getContext(), mEventTypes,  this, mChannelId);
         mSearchVideoListView.setAdapter(lAdapter2);// set adapter on recyclerview
         lAdapter2.notifyDataSetChanged();// Notify the adapter
     }
@@ -105,7 +111,7 @@ public class GEVideoListFragment extends Fragment implements GEEventListner, GEO
         {
             startLodingIndicator(getView());
             mSearchVideoListView.getAdapter().notifyDataSetChanged();
-            mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsPopularCompleted);
+            mEvtServiceManger.loadEventsAsync(mChannelId, mEventTypes);
             //Only manually call onResume if fragment is already visible
             //Otherwise allow natural fragment lifecycle to call onResume
             onResume();
@@ -151,6 +157,6 @@ public class GEVideoListFragment extends Fragment implements GEEventListner, GEO
 
     @Override
     public void loadMoreItems(RecyclerView.Adapter adapter) {
-        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsPopularCompleted);
+        mEvtServiceManger.loadEventsAsync(mChannelId, mEventTypes);
     }
 }

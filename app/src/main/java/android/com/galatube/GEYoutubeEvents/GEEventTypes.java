@@ -9,6 +9,7 @@ public enum GEEventTypes {
     EFetchEventsCompleted,
     EFetchEventsUpcomming,
     EFetchEventsPopularCompleted,
+    EFetchEventsArchivedVideos,
     EFetchEventsLiked,
     EFetchEventsReminders,
     EFetchEventsLive,

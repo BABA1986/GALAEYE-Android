@@ -38,7 +38,8 @@ public class GEPlaylistManager {
         return lLastPage.getmNextPageToken();
     }
 
-    public boolean canFetchMore(String channelSource) {
+    public boolean canFetchMore(String channelSource)
+    {
         GEPlaylistObj lGEPlaylistObj = playlistListObjForInfo(channelSource);
         if (lGEPlaylistObj == null)
         {
