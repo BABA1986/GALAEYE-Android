@@ -6,6 +6,7 @@ import android.com.galatube.GEYoutubeEvents.GEEventListObj;
 import android.com.galatube.GEYoutubeEvents.GEEventListner;
 import android.com.galatube.GEYoutubeEvents.GEEventManager;
 import android.com.galatube.GEYoutubeEvents.GEEventTypes;
+import android.com.galatube.GEYoutubeEvents.GELiveEventListAdapter;
 import android.com.galatube.GEYoutubeEvents.GEOnLoadMore;
 import android.com.galatube.GEYoutubeEvents.GEServiceManager;
 import android.content.Context;
@@ -20,6 +21,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -99,10 +101,9 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
         mLiveEventListView = (RecyclerView)view.findViewById(R.id.recycler_view_live);
         mLiveEventListView.setHasFixedSize(true);
         mLiveEventListView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
-        GEEventListAdapter lAdapter = new GEEventListAdapter(getContext(), GEEventTypes.EFetchEventsLive,  this);
+        GELiveEventListAdapter lAdapter = new GELiveEventListAdapter(getContext(), GEEventTypes.EFetchEventsLive,  this);
         mLiveEventListView.setAdapter(lAdapter);// set adapter on recyclerview
         lAdapter.notifyDataSetChanged();// Notify the adapter
-
         mUpcommingEventListView = (RecyclerView)view.findViewById(R.id.recycler_view_upcomming);
         mUpcommingEventListView.setHasFixedSize(true);
         mUpcommingEventListView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
@@ -146,8 +147,9 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
         GEEventManager lMamager = GEEventManager.getInstance();
         LinearLayout lAllListLayout = (LinearLayout)fragmentView.findViewById(R.id.alllists);
         LinearLayout lLiveLayout = (LinearLayout)lAllListLayout.findViewById(R.id.livelistbase);
-
         GEEventListObj listObj = lMamager.eventListObjForInfo(GEEventTypes.EFetchEventsLive, GEConstants.GECHANNELID);
+        if (lMamager.getmEventListObjs().size()<10){
+        }
         if (listObj == null){
             lLiveLayout.setVisibility(View.GONE);
         }

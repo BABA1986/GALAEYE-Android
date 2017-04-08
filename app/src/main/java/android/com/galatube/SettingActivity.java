@@ -1,6 +1,7 @@
 package android.com.galatube;
 
 import android.app.ProgressDialog;
+import android.com.galatube.Connectivity.GEAlertDialog;
 import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.GEUserModal.GEUserManager;
 import android.com.galatube.Connectivity.GENetworkState;
@@ -157,17 +158,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                     signIn();
                 } else {
 
-                    AlertDialog.Builder builder =new AlertDialog.Builder(this);
-                    builder.setTitle("No Internet Connection");
-                    builder.setMessage("Please turn on Internet connection to continue");
-                    builder.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
+                    GEAlertDialog.checkForAlertbox(this);
                 }
 
                 break;
@@ -175,17 +166,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 if(GENetworkState.isNetworkStatusAvialable (getApplicationContext())) {
                     signOut();
                 } else {
-                    AlertDialog.Builder builder =new AlertDialog.Builder(this);
-                    builder.setTitle("No Internet Connection");
-                    builder.setMessage("Please turn on Internet connection to continue");
-                    builder.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
+                    GEAlertDialog.checkForAlertbox(this);
 
                 }
 
@@ -214,28 +195,35 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 Log.i("rateEvent","rateEvent");
                 break;
             case R.id.facebookEvent:
+
                 Intent intent1=new Intent(SettingActivity.this, WebViewActivity.class);
                 intent1.putExtra("Facebook",1);
                 startActivity(intent1);
                 Log.i("facebookEvent","facebookEvent");
                 break;
             case R.id.twitterEvent:
-                Intent intent2=new Intent(SettingActivity.this,WebViewActivity.class);
-                intent2.putExtra("Twitter",2);
-                startActivity(intent2);
-                Log.i("twitterEvent","twitterEvent");
+
+                    Intent intent2 = new Intent(SettingActivity.this, WebViewActivity.class);
+                    intent2.putExtra("Twitter", 2);
+                    startActivity(intent2);
+                    Log.i("twitterEvent", "twitterEvent");
+
                 break;
             case R.id.instagramEvent:
-                Intent intent3=new Intent(SettingActivity.this,WebViewActivity.class);
-                intent3.putExtra("Instagram",3);
-                startActivity(intent3);
-                Log.i("instagramEvent","instagramEvent");
+
+                    Intent intent3 = new Intent(SettingActivity.this, WebViewActivity.class);
+                    intent3.putExtra("Instagram", 3);
+                    startActivity(intent3);
+                    Log.i("instagramEvent", "instagramEvent");
+
                 break;
             case R.id.googleEvent:
-                Intent intent4=new Intent(SettingActivity.this,WebViewActivity.class);
-                intent4.putExtra("GooglePlus",4);
-                startActivity(intent4);
-                Log.i("googleEvent","googleEvent");
+
+                    Intent intent4 = new Intent(SettingActivity.this, WebViewActivity.class);
+                    intent4.putExtra("GooglePlus", 4);
+                    startActivity(intent4);
+                    Log.i("googleEvent", "googleEvent");
+
                 break;
         }
     }

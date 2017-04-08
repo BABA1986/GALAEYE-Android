@@ -81,7 +81,6 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         setContentView(R.layout.activity_main_menu);
          mtoolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mtoolbar);
-        getSupportActionBar().setElevation(0);
         mGoogleNavigationSignIn=(LinearLayout)findViewById(R.id.Google_Navigation_Header);
         mTabToolbar=(LinearLayout)findViewById(R.id.tab_toolbar);
         mWelcom_SignIn=(TextView)findViewById(R.id.welcome_tv);

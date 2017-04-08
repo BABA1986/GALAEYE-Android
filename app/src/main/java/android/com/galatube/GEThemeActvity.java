@@ -19,6 +19,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class GEThemeActvity extends AppCompatActivity {
@@ -78,7 +79,7 @@ public class GEThemeActvity extends AppCompatActivity {
             window.setStatusBarColor(GEThemeManager.getInstance(this).getSelectedNavColor());
         }
         for (int i = 0; i < dots.length; i++) {
-            dots[i].setTextColor(GEThemeManager.getInstance(this).getSelectedNavTextColor());
+            dots[i].setTextColor(GEThemeManager.getInstance(this).getSelectedNavColor());
         }
     }
 
@@ -110,19 +111,12 @@ public class GEThemeActvity extends AppCompatActivity {
             addBottomDots(position);
             GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(position);
             int lThemeCount = GEThemeManager.getInstance(getBaseContext()).getThemesCount();
-
             if (position == lThemeCount - 1) {
                 btnNext.setVisibility(View.GONE);
             }
 
             else if(position==lThemeCount-2){
-                btnNext.setVisibility(View.VISIBLE);
-            }
-
-            else
-            {
-                // still pages are left
-                btnNext.setText(getString(R.string.next));
+                btnNext.setVisibility(View.GONE);
             }
 
             applyTheme();
@@ -155,10 +149,11 @@ public class GEThemeActvity extends AppCompatActivity {
             layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = layoutInflater.inflate(R.layout.ge_theme1, container, false);
             TextView lTextView = (TextView)view.findViewById(R.id.themenametextviewid);
+            RelativeLayout lHeaderlout=(RelativeLayout)view.findViewById(R.id.header_lout);
             GEThemeManager lThemeManager = GEThemeManager.getInstance(mContext);
             lTextView.setText(lThemeManager.getThemeNameAtIndex(position));
             lTextView.setTextColor(lThemeManager.getSelectedNavTextColorAtIndex(position));
-            view.setBackgroundColor(lThemeManager.getNavColorAtIndex(position));
+            lHeaderlout.setBackgroundColor(lThemeManager.getNavColorAtIndex(position));
             container.addView(view);
             return view;
         }

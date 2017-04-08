@@ -20,17 +20,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by deepak on 16/01/17.
+ * Created by admin on 09/04/17.
  */
 
-public class GEEventListAdapter extends
-        RecyclerView.Adapter<GEEventListItemView> {
-
-    private Context         mContext;
+public class GELiveEventListAdapter extends
+        RecyclerView.Adapter<GELiveEventListItemView> {
+    private Context mContext;
     private GEOnLoadMore    mLoadMoreListner;
     private GEEventTypes    mEventType;
 
-    public GEEventListAdapter(Context context, GEEventTypes eventType, GEOnLoadMore loadmoreListner) {
+    public GELiveEventListAdapter(Context context, GEEventTypes eventType, GEOnLoadMore loadmoreListner) {
         this.mContext = context;
         this.mLoadMoreListner = loadmoreListner;
         this.mEventType = eventType;
@@ -41,24 +40,20 @@ public class GEEventListAdapter extends
     }
 
     @Override
-    public int getItemCount() {
+    public GELiveEventListItemView onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        LayoutInflater lInflater = LayoutInflater.from(viewGroup.getContext());
+        ViewGroup lMainGroup = null;
         GEEventManager lMamager = GEEventManager.getInstance();
-        GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, GEConstants.GECHANNELID);
-        if (listObj == null) return 0;
+        GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, android.com.galatube.GEConstants.GECHANNELID);
         ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
-        GEEventListPage lPage = listPages.get(listPages.size() - 1);
-        List<SearchResult> lResults = lPage.getmEventList();
-        if (lResults.size()>10){
-            return 10;
-        }else {
-            return lResults.size();
-        }
+        lMainGroup = (ViewGroup) lInflater.inflate(R.layout.ge_livelistitem, viewGroup, false);
+        GELiveEventListItemView listHolder = new GELiveEventListItemView(lMainGroup);
+        return listHolder;
     }
 
     @Override
-    public void onBindViewHolder(GEEventListItemView holder, int position) {
-
-        GEEventListItemView lListItem = (GEEventListItemView) holder;// holder
+    public void onBindViewHolder(GELiveEventListItemView holder, int position) {
+        GELiveEventListItemView lListItem = (GELiveEventListItemView) holder;// holder
         GEEventManager lMamager = GEEventManager.getInstance();
         GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, GEConstants.GECHANNELID);
         ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
@@ -68,7 +63,6 @@ public class GEEventListAdapter extends
         int lPosition = position - lPageIndex*50;
         SearchResult lResult = lResults.get(lPosition);
         lListItem.mTitleView.setText(lResult.getSnippet().getTitle());
-
         ThumbnailDetails lThumbUrls = lResult.getSnippet().getThumbnails();
         Thumbnail lThumbnail = lThumbUrls.getHigh();
         String lUrl = lThumbnail .getUrl();
@@ -87,18 +81,21 @@ public class GEEventListAdapter extends
         {
             mLoadMoreListner.loadMoreItems(this);
         }
+
     }
 
     @Override
-    public GEEventListItemView onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        // This method will inflate the custom layout and return as viewholder
-        LayoutInflater lInflater = LayoutInflater.from(viewGroup.getContext());
-        ViewGroup lMainGroup = null;
+    public int getItemCount() {
         GEEventManager lMamager = GEEventManager.getInstance();
         GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, android.com.galatube.GEConstants.GECHANNELID);
+        if (listObj == null) return 0;
         ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
-        lMainGroup = (ViewGroup) lInflater.inflate(R.layout.ge_listitem, viewGroup, false);
-        GEEventListItemView listHolder = new GEEventListItemView(lMainGroup);
-        return listHolder;
+        GEEventListPage lPage = listPages.get(listPages.size() - 1);
+        List<SearchResult> lResults = lPage.getmEventList();
+        if (lResults.size()>10){
+            return 10;
+        }else {
+            return lResults.size();
+        }
     }
 }

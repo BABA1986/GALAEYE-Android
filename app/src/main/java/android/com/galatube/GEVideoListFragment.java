@@ -37,18 +37,15 @@ public class GEVideoListFragment extends Fragment implements GEEventListner, GEO
     private RelativeLayout lLayout;
     private View lNoInternetView;
 
-    public GEVideoListFragment(GEEventTypes eventType, String channelId)
-    {
-        mEventTypes = eventType;
-        mChannelId = channelId;
-    }
 
     // Your developer key goes here
     public static GEVideoListFragment newInstance(int page, GEEventTypes eventType, String channelId)
     {
         Bundle args = new Bundle();
         args.putInt(GEConstants.ARG_PAGE1, page);
-        GEVideoListFragment lGEVideoListFragment = new GEVideoListFragment(eventType, channelId);
+        args.putString("channelid", channelId);
+        args.putInt("eventtype", eventType.ordinal());
+        GEVideoListFragment lGEVideoListFragment = new GEVideoListFragment();
         lGEVideoListFragment.setArguments(args);
         return lGEVideoListFragment;
     }
@@ -57,6 +54,8 @@ public class GEVideoListFragment extends Fragment implements GEEventListner, GEO
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPage = getArguments().getInt(GEConstants.ARG_PAGE1);
+        mChannelId = getArguments().getString("channelid");
+        mEventTypes = GEEventTypes.values()[getArguments().getInt("eventtype")];
         mEvtServiceManger = new GEServiceManager(this, getContext());
     }
 
