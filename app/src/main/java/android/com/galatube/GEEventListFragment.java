@@ -1,8 +1,10 @@
 package android.com.galatube;
 
 import android.com.galatube.Connectivity.GENetworkState;
+import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.GEYoutubeEvents.GEEventListAdapter;
 import android.com.galatube.GEYoutubeEvents.GEEventListObj;
+import android.com.galatube.GEYoutubeEvents.GEEventListPage;
 import android.com.galatube.GEYoutubeEvents.GEEventListner;
 import android.com.galatube.GEYoutubeEvents.GEEventManager;
 import android.com.galatube.GEYoutubeEvents.GEEventTypes;
@@ -28,6 +30,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.google.api.services.youtube.model.SearchResult;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by deepak on 10/12/16.
@@ -148,31 +155,61 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
         LinearLayout lAllListLayout = (LinearLayout)fragmentView.findViewById(R.id.alllists);
         LinearLayout lLiveLayout = (LinearLayout)lAllListLayout.findViewById(R.id.livelistbase);
         GEEventListObj listObj = lMamager.eventListObjForInfo(GEEventTypes.EFetchEventsLive, GEConstants.GECHANNELID);
-        if (lMamager.getmEventListObjs().size()<10){
-        }
-        if (listObj == null){
-            lLiveLayout.setVisibility(View.GONE);
+        if (listObj != null) {
+            ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
+            if (listPages != null && (listPages.size() > 0)) {
+                GEEventListPage lPage = listPages.get(0);
+                List<SearchResult> lResults = lPage.getmEventList();
+                Button lMoreLiveBtn = (Button) fragmentView.findViewById(R.id.live_more_button);
+                int lIsVisible = (lResults.size() < 10) ? fragmentView.GONE : fragmentView.VISIBLE;
+                lMoreLiveBtn.setVisibility(lIsVisible);
+                lMoreLiveBtn.setTextColor(GEThemeManager.getInstance(getContext()).getSelectedNavTextColor());
+                lMoreLiveBtn.setBackgroundColor(GEThemeManager.getInstance(getContext()).getSelectedNavColor());
+            }
+            lLiveLayout.setVisibility(View.VISIBLE);
         }
         else {
-            lLiveLayout.setVisibility(View.VISIBLE);
+            lLiveLayout.setVisibility(View.GONE);
         }
 
         lLiveLayout = (LinearLayout)lAllListLayout.findViewById(R.id.upcomminglistbase);
         listObj = lMamager.eventListObjForInfo(GEEventTypes.EFetchEventsUpcomming, GEConstants.GECHANNELID);
-        if (listObj == null){
-            lLiveLayout.setVisibility(View.GONE);
-        }
-        else {
+        if (listObj != null) {
+            ArrayList<GEEventListPage> lUpcomPage = listObj.getmEventListPages();
+            if (lUpcomPage.size() > 0) {
+                GEEventListPage lPage = lUpcomPage.get(0);
+                List<SearchResult> lResults = lPage.getmEventList();
+                Button lMoreUpcomBtn = (Button) fragmentView.findViewById(R.id.upcomming_more_button);
+                int lIsVisible = (lResults.size() < 10) ? fragmentView.GONE : fragmentView.VISIBLE;
+                lMoreUpcomBtn.setVisibility(lIsVisible);
+                lMoreUpcomBtn.setTextColor(GEThemeManager.getInstance(getContext()).getSelectedNavTextColor());
+                lMoreUpcomBtn.setBackgroundColor(GEThemeManager.getInstance(getContext()).getSelectedNavColor());
+            }
             lLiveLayout.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            lLiveLayout.setVisibility(View.GONE);
         }
 
         lLiveLayout = (LinearLayout)lAllListLayout.findViewById(R.id.completedlistbase);
         listObj = lMamager.eventListObjForInfo(GEEventTypes.EFetchEventsCompleted, GEConstants.GECHANNELID);
-        if (listObj == null){
-            lLiveLayout.setVisibility(View.GONE);
+        if (listObj != null) {
+            ArrayList<GEEventListPage> lCompPage = listObj.getmEventListPages();
+            if (lCompPage.size() > 0) {
+                GEEventListPage lPage = lCompPage.get(0);
+                List<SearchResult> lResults = lPage.getmEventList();
+                Button lMorecomBtn = (Button) fragmentView.findViewById(R.id.completed_more_button);
+                int lIsVisible = (lResults.size() < 10) ? fragmentView.GONE : fragmentView.VISIBLE;
+                lMorecomBtn.setVisibility(lIsVisible);
+                lMorecomBtn.setTextColor(GEThemeManager.getInstance(getContext()).getSelectedNavTextColor());
+                lMorecomBtn.setBackgroundColor(GEThemeManager.getInstance(getContext()).getSelectedNavColor());
+            }
+
+            lLiveLayout.setVisibility(View.VISIBLE);
         }
         else {
-            lLiveLayout.setVisibility(View.VISIBLE);
+            lLiveLayout.setVisibility(View.GONE);
         }
     }
 
