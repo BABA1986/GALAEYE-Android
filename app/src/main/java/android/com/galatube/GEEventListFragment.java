@@ -144,6 +144,12 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
         }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        refreshLayout(this.view);
+    }
+
     private void stopLodingIndicator()
     {
         mProgressBar.setVisibility(View.INVISIBLE);
