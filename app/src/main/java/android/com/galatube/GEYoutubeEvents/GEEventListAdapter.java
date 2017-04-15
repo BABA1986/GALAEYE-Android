@@ -29,11 +29,13 @@ public class GEEventListAdapter extends
     private Context         mContext;
     private GEOnLoadMore    mLoadMoreListner;
     private GEEventTypes    mEventType;
+    private GERecyclerItemClickListner  mClickListner;
 
-    public GEEventListAdapter(Context context, GEEventTypes eventType, GEOnLoadMore loadmoreListner) {
+    public GEEventListAdapter(Context context, GEEventTypes eventType, GEOnLoadMore loadmoreListner, GERecyclerItemClickListner clickListner) {
         this.mContext = context;
         this.mLoadMoreListner = loadmoreListner;
         this.mEventType = eventType;
+        this.mClickListner = clickListner;
     }
 
     public GEEventTypes getmEventType() {
@@ -98,7 +100,7 @@ public class GEEventListAdapter extends
         GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, android.com.galatube.GEConstants.GECHANNELID);
         ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
         lMainGroup = (ViewGroup) lInflater.inflate(R.layout.ge_listitem, viewGroup, false);
-        GEEventListItemView listHolder = new GEEventListItemView(lMainGroup);
+        GEEventListItemView listHolder = new GEEventListItemView(lMainGroup, mClickListner);
         return listHolder;
     }
 }

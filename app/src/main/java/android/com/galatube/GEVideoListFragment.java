@@ -1,6 +1,7 @@
 package android.com.galatube;
 
 import android.com.galatube.Connectivity.GENetworkState;
+import android.com.galatube.GEYoutubeEvents.GERecyclerItemClickListner;
 import android.com.galatube.GEYoutubeEvents.GEVideoListAdapter;
 import android.support.v4.app.Fragment;
 import android.com.galatube.GEYoutubeEvents.GEEventListner;
@@ -24,7 +25,7 @@ import android.widget.RelativeLayout;
  * Created by deepak on 29/01/17.
  */
 
-public class GEVideoListFragment extends Fragment implements GEEventListner, GEOnLoadMore
+public class GEVideoListFragment extends Fragment implements GEEventListner, GEOnLoadMore,GERecyclerItemClickListner
 {
     private GEServiceManager        mEvtServiceManger;
     private static RecyclerView     mSearchVideoListView;
@@ -91,7 +92,7 @@ public class GEVideoListFragment extends Fragment implements GEEventListner, GEO
         mSearchVideoListView.setHasFixedSize(true);
         mSearchVideoListView
                 .setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-        GEVideoListAdapter lAdapter2 = new GEVideoListAdapter(getContext(), mEventTypes,  this, mChannelId);
+        GEVideoListAdapter lAdapter2 = new GEVideoListAdapter(getContext(), mEventTypes,  this, mChannelId,this);
         mSearchVideoListView.setAdapter(lAdapter2);// set adapter on recyclerview
         lAdapter2.notifyDataSetChanged();// Notify the adapter
     }
@@ -157,5 +158,10 @@ public class GEVideoListFragment extends Fragment implements GEEventListner, GEO
     @Override
     public void loadMoreItems(RecyclerView.Adapter adapter) {
         mEvtServiceManger.loadEventsAsync(mChannelId, mEventTypes);
+    }
+
+    @Override
+    public void onRecyclerItemClicked(View view, RecyclerView.ViewHolder viewHolder, int position) {
+
     }
 }

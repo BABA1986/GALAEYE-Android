@@ -6,6 +6,7 @@ import android.com.galatube.GEYoutubeEvents.GEEventListPage;
 import android.com.galatube.GEYoutubeEvents.GEEventManager;
 import android.com.galatube.GEYoutubeEvents.GEEventTypes;
 import android.com.galatube.GEYoutubeEvents.GEOnLoadMore;
+import android.com.galatube.GEYoutubeEvents.GERecyclerItemClickListner;
 import android.com.galatube.R;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -35,11 +36,13 @@ public class GEPlaylistVideolistAdapter extends
     private Context mContext;
     private GEOnLoadMore mLoadMoreListner;
     private String mPlaylistID;
+    private GERecyclerItemClickListner  mClickListner;
 
-    public GEPlaylistVideolistAdapter(Context context, String playlistID, GEOnLoadMore loadmoreListner) {
+    public GEPlaylistVideolistAdapter(Context context, String playlistID, GEOnLoadMore loadmoreListner, GERecyclerItemClickListner clicklistner) {
         this.mContext = context;
         this.mLoadMoreListner = loadmoreListner;
         this.mPlaylistID = playlistID;
+        this.mClickListner = clicklistner;
     }
 
     public String getmPlaylistID() {
@@ -106,7 +109,7 @@ public class GEPlaylistVideolistAdapter extends
 
         lMainGroup = (ViewGroup) lInflater.inflate(
                 R.layout.gevideoitem, viewGroup, false);
-        GEEventListItemView listHolder = new GEEventListItemView(lMainGroup);
+        GEEventListItemView listHolder = new GEEventListItemView(lMainGroup, mClickListner);
         return listHolder;
     }
 }

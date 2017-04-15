@@ -1,8 +1,16 @@
 package android.com.galatube;
 
+import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.GEYoutubeEvents.*;
+import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.android.youtube.player.YouTubeBaseActivity;
@@ -13,13 +21,29 @@ import com.google.android.youtube.player.YouTubePlayerView;
 public class GEEventPlayActivity extends YouTubeBaseActivity implements
         YouTubePlayer.OnInitializedListener {
 
+    private Toolbar mToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_geevent_play);
+        mToolbar=(Toolbar)findViewById(R.id.GEtoobar);
+        applyTheme();
         YouTubePlayerView lYoutubePlayerView=(YouTubePlayerView)findViewById(R.id.youtube_view);
         lYoutubePlayerView.initialize(GEConstants.GEAPIKEY,this);
 
+    }
+
+    private void applyTheme() {
+        SharedPreferences sharedPreferences=getSharedPreferences("myTheme",MODE_PRIVATE);
+        GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
+        int lColor = GEThemeManager.getInstance(this).getSelectedNavColor();
+        mToolbar.setBackgroundColor(lColor);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(GEThemeManager.getInstance(this).getSelectedNavColor());
+        }
     }
 
     @Override
@@ -27,7 +51,7 @@ public class GEEventPlayActivity extends YouTubeBaseActivity implements
            youTubePlayer.setPlayerStateChangeListener(playerStateChangeListener);
            youTubePlayer.setPlaybackEventListener(playbackEventListener);
         if (!b){
-            youTubePlayer.cueVideo("");
+            youTubePlayer.cueVideo("YyKQ6uvFLtw");
         }
     }
 

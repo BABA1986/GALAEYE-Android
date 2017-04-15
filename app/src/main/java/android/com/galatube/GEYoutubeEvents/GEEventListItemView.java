@@ -13,16 +13,26 @@ import android.widget.TextView;
  * Created by deepak on 16/01/17.
  */
 
-public class GEEventListItemView extends RecyclerView.ViewHolder {
+public class GEEventListItemView extends RecyclerView.ViewHolder implements View.OnClickListener
+{
     // View holder for gridview recycler view as we used in listview
     public TextView mTitleView;
     public ImageView mImageView;
+    private GERecyclerItemClickListner  mClickListner;
 
-    public GEEventListItemView(View view) {
+
+    public GEEventListItemView(View view, GERecyclerItemClickListner clickListner) {
         super(view);
         // Find all views ids
 
         this.mTitleView = (TextView) view.findViewById(R.id.title);
         this.mImageView = (ImageView) view.findViewById(R.id.image);
+        this.mClickListner = clickListner;
+        view.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        mClickListner.onRecyclerItemClicked(v, this, getAdapterPosition());
     }
 }

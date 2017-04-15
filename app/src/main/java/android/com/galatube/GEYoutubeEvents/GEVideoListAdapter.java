@@ -22,16 +22,17 @@ import java.util.List;
  * Created by deepak on 29/01/17.
  */
 
-public class GEVideoListAdapter extends
-        RecyclerView.Adapter<GEEventListItemView> {
+public class GEVideoListAdapter extends RecyclerView.Adapter<GEEventListItemView> {
 
     private Context mContext;
     private GEOnLoadMore    mLoadMoreListner;
     private GEEventTypes    mEventType;
     private String          mChannelId;
+    private GERecyclerItemClickListner mItemClickListner;
 
-    public GEVideoListAdapter(Context context, GEEventTypes eventType, GEOnLoadMore loadmoreListner, String channelId) {
+    public GEVideoListAdapter(Context context, GEEventTypes eventType, GEOnLoadMore loadmoreListner, String channelId,GERecyclerItemClickListner itemClickListner) {
         this.mContext = context;
+        this.mItemClickListner=itemClickListner;
         this.mLoadMoreListner = loadmoreListner;
         this.mEventType = eventType;
         this.mChannelId = channelId;
@@ -102,7 +103,7 @@ public class GEVideoListAdapter extends
 
         lMainGroup = (ViewGroup) lInflater.inflate(
                 R.layout.gevideoitem, viewGroup, false);
-        GEEventListItemView listHolder = new GEEventListItemView(lMainGroup);
+        GEEventListItemView listHolder = new GEEventListItemView(lMainGroup,mItemClickListner);
         return listHolder;
     }
 }

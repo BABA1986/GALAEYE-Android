@@ -1,6 +1,10 @@
 package android.com.galatube;
 
 import android.com.galatube.Connectivity.GENetworkState;
+import android.com.galatube.GEPlaylist.GEPlaylistManager;
+import android.com.galatube.GEPlaylist.GEPlaylistObj;
+import android.com.galatube.GEPlaylist.GEPlaylistPage;
+import android.com.galatube.GEPlaylist.GEPlaylistVideolistActivity;
 import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.GEYoutubeEvents.GEEventListAdapter;
 import android.com.galatube.GEYoutubeEvents.GEEventListObj;
@@ -10,8 +14,10 @@ import android.com.galatube.GEYoutubeEvents.GEEventManager;
 import android.com.galatube.GEYoutubeEvents.GEEventTypes;
 import android.com.galatube.GEYoutubeEvents.GELiveEventListAdapter;
 import android.com.galatube.GEYoutubeEvents.GEOnLoadMore;
+import android.com.galatube.GEYoutubeEvents.GERecyclerItemClickListner;
 import android.com.galatube.GEYoutubeEvents.GEServiceManager;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -19,6 +25,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +38,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.api.services.youtube.model.Playlist;
 import com.google.api.services.youtube.model.SearchResult;
 
 import java.util.ArrayList;
@@ -40,7 +48,7 @@ import java.util.List;
  * Created by deepak on 10/12/16.
  */
 
-public class GEEventListFragment extends Fragment implements GEEventListner, GEOnLoadMore
+public class GEEventListFragment extends Fragment implements GEEventListner, GEOnLoadMore, GERecyclerItemClickListner
 {
     private GEServiceManager        mEvtServiceManger;
     private static RecyclerView     mLiveEventListView;
@@ -114,14 +122,13 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
         mUpcommingEventListView = (RecyclerView)view.findViewById(R.id.recycler_view_upcomming);
         mUpcommingEventListView.setHasFixedSize(true);
         mUpcommingEventListView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
-        GEEventListAdapter lAdapter1 = new GEEventListAdapter(getContext(), GEEventTypes.EFetchEventsUpcomming,  this);
+        GEEventListAdapter lAdapter1 = new GEEventListAdapter(getContext(), GEEventTypes.EFetchEventsUpcomming,  this, this);
         mUpcommingEventListView.setAdapter(lAdapter1);// set adapter on recyclerview
         lAdapter1.notifyDataSetChanged();// Notify the adapter
-
         mCompletedEventListView = (RecyclerView)view.findViewById(R.id.recycler_view_completed);
         mCompletedEventListView.setHasFixedSize(true);
         mCompletedEventListView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
-        GEEventListAdapter lAdapter2 = new GEEventListAdapter(getContext(), GEEventTypes.EFetchEventsCompleted,  this);
+        GEEventListAdapter lAdapter2 = new GEEventListAdapter(getContext(), GEEventTypes.EFetchEventsCompleted,  this, this);
         mCompletedEventListView.setAdapter(lAdapter2);// set adapter on recyclerview
         lAdapter2.notifyDataSetChanged();// Notify the adapter
         startLodingIndicator(view);
@@ -253,5 +260,11 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
             mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsUpcomming);
         else if (lAdapter.getmEventType() == GEEventTypes.EFetchEventsLive)
             mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsLive);
+    }
+
+    @Override
+    public void onRecyclerItemClicked(View view, RecyclerView.ViewHolder viewHolder, int position)
+    {
+        startActivity(new Intent(getActivity(),GEEventPlayActivity.class));
     }
 }

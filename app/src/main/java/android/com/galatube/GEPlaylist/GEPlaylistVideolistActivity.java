@@ -54,7 +54,7 @@ public class GEPlaylistVideolistActivity extends AppCompatActivity implements GE
         mPlaylistVideoListView.setHasFixedSize(true);
         mPlaylistVideoListView
                 .setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-        GEPlaylistVideolistAdapter lAdapter2 = new GEPlaylistVideolistAdapter(this, mPlaylistID, this);
+        GEPlaylistVideolistAdapter lAdapter2 = new GEPlaylistVideolistAdapter(this, mPlaylistID, this, this);
         mPlaylistVideoListView.setAdapter(lAdapter2); // set adapter on recyclerview
         lAdapter2.notifyDataSetChanged(); // Notify the adapter
 
