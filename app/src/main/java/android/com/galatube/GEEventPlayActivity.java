@@ -3,6 +3,7 @@ package android.com.galatube;
 import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.GEYoutubeEvents.*;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.v7.app.ActionBar;
@@ -11,8 +12,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.youtube.player.YouTubeBaseActivity;
@@ -21,20 +25,56 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 
 public class GEEventPlayActivity extends YouTubeBaseActivity implements
-        YouTubePlayer.OnInitializedListener {
+        YouTubePlayer.OnInitializedListener{
 
     private Toolbar mToolbar;
     private RecyclerView mAllevent;
     private LinearLayoutManager mLayoutManager;
+    private ImageView mDownIv;
+    private LinearLayout mDisplay;
+    private  int flag;
+    private ImageView mLikeIv;
+    private ImageView mDislike;
+    private ImageView mShare;
+    private ImageView mSave;
+    private LinearLayout mEventl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_geevent_play);
-        mToolbar=(Toolbar)findViewById(R.id.GEtoobar);
         mAllevent=(RecyclerView)findViewById(R.id.AllEvent);
+        mDisplay=(LinearLayout)findViewById(R.id.display);
+        mLikeIv=(ImageView)findViewById(R.id.like_iv);
+        mDislike=(ImageView)findViewById(R.id.dislike_iv);
+        mShare=(ImageView)findViewById(R.id.share);
+        mSave=(ImageView)findViewById(R.id.save);
+        mDownIv=(ImageView)findViewById(R.id.downitem);
+        mEventl=(LinearLayout)findViewById(R.id.Video_info);
+
+        mEventl.setOnClickListener(new View.OnClickListener() {
+                                       @Override
+                                       public void onClick(View v)
+                                       {
+                                           int lVisibility = mDisplay.getVisibility();
+                                           if(lVisibility == View.VISIBLE)
+                                           {
+                                               mDownIv.setImageResource(R.drawable.down);
+                                               mDisplay.setVisibility(View.GONE);
+                                           }
+                                           else
+                                           {
+                                               mDownIv.setImageResource(R.drawable.up);
+                                               mDisplay.setVisibility(View.VISIBLE);
+                                           }
+                                       }
+                                   });
+
         mLayoutManager = new LinearLayoutManager(this);
         mAllevent.setLayoutManager(mLayoutManager);
+        mLayoutManager.setAutoMeasureEnabled(true);
+        mAllevent.setNestedScrollingEnabled(false);
+        mAllevent.setHasFixedSize(true);
         GEPlayeventAdapter lAdapter = new GEPlayeventAdapter(this);
         mAllevent.setAdapter(lAdapter);
         applyTheme();
@@ -47,11 +87,15 @@ public class GEEventPlayActivity extends YouTubeBaseActivity implements
         SharedPreferences sharedPreferences=getSharedPreferences("myTheme",MODE_PRIVATE);
         GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
         int lColor = GEThemeManager.getInstance(this).getSelectedNavColor();
-        mToolbar.setBackgroundColor(lColor);
+        mLikeIv.setColorFilter(lColor);
+        mDislike.setColorFilter(lColor);
+        mShare.setColorFilter(lColor);
+        mSave.setColorFilter(lColor);
+        mDownIv.setColorFilter(lColor);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(GEThemeManager.getInstance(this).getSelectedNavColor());
+            window.setStatusBarColor(Color.BLACK);
         }
     }
 

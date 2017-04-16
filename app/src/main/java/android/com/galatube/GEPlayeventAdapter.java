@@ -1,6 +1,8 @@
 package android.com.galatube;
 
+import android.com.galatube.GETheme.GEThemeManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by admin on 15/04/17.
@@ -37,6 +41,10 @@ public class GEPlayeventAdapter extends RecyclerView.Adapter<GEPlayeventAdapter.
 
     @Override
     public void onBindViewHolder(final GEPlayeventAdapter.MyViewHolder holder, int position) {
+        SharedPreferences sharedPreferences=mContext.getSharedPreferences("myTheme",MODE_PRIVATE);
+        GEThemeManager.getInstance(mContext).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
+        int lColor = GEThemeManager.getInstance(mContext).getSelectedNavColor();
+        holder.mPlaylistmenu.setTextColor(lColor);
         holder.mPlaylistmenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
