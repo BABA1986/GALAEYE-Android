@@ -263,8 +263,22 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
     }
 
     @Override
-    public void onRecyclerItemClicked(View view, RecyclerView.ViewHolder viewHolder, int position)
+    public void onRecyclerItemClicked(View view, RecyclerView.ViewHolder viewHolder, int position) {
+
+    }
+
+    @Override
+    public void onRecyclerItemClicked(View view, RecyclerView.ViewHolder viewHolder, int position, GEEventTypes eventTypes)
     {
+        GEEventManager lMamager = GEEventManager.getInstance();
+        GEEventListObj listObj = lMamager.eventListObjForInfo(eventTypes, GEConstants.GECHANNELID);
+        ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
+        int lPageIndex = (position >= 50) ? position/50 : 0;
+        GEEventListPage lPage = listPages.get(lPageIndex);
+        List<SearchResult> lResults = lPage.getmEventList();
+        int lPosition = position - lPageIndex*50;
+        SearchResult lVideoItem = lResults.get(lPosition);
+
         startActivity(new Intent(getActivity(),GEEventPlayActivity.class));
     }
 }

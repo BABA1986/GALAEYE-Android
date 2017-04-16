@@ -11,6 +11,7 @@ import android.com.galatube.GEPlaylist.GEVideoListManager;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -38,11 +39,14 @@ public class GEServiceManager
     {
         this.mContext = context;
         this.mListner = listner;
+
         mYTService = new YouTube.Builder(new NetHttpTransport(),
                 new JacksonFactory(), new HttpRequestInitializer() {
             @Override
             public void initialize(HttpRequest hr) throws IOException {}
         }).setApplicationName(mContext.getString(R.string.app_name)).build();
+
+
     }
 
     private YouTube.Search.List eventQueryFor(GEEventTypes eventTypes, String channelID, String nextPageToken)

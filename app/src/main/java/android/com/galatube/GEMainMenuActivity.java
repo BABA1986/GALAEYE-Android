@@ -16,6 +16,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -45,7 +46,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -60,7 +63,7 @@ import java.util.ArrayList;
  * Created by deepak on 30/11/16.
  */
 
-public class GEMainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,View.OnClickListener,GoogleApiClient.OnConnectionFailedListener{
+public class GEMainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,View.OnClickListener,GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks{
 
     DrawerLayout            mDrawer;
     private LinearLayout mSettingLayout;
@@ -134,8 +137,33 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
 
         mDrawerSelectedMenuIndex = 0;
         initialisePagesForMenu(lMenuItems.get(mDrawerSelectedMenuIndex), "playlists");
-        GoogleSignInOptions signInOptions=new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
-        googleApiClient=new GoogleApiClient.Builder(this).enableAutoManage(this,this).addApi(Auth.GOOGLE_SIGN_IN_API,signInOptions).build();
+//        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().requestProfile()
+//                .requestServerAuthCode("820754345275-ata3ks9k1lj6e28k0oqju40a3cmoem4n.apps.googleusercontent.com")
+//                .requestScopes(
+//                new Scope("https://www.googleapis.com/auth/youtube"),
+//                new Scope("https://www.googleapis.com/auth/youtube.upload"))
+//                .build();
+//        googleApiClient = new GoogleApiClient.Builder(this)
+//                .enableAutoManage(this, this)
+//                .addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions)
+//                .build();
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestServerAuthCode("662481036351-ugbo6k3vu4evfb2runa0f8fav7nt66kk.apps.googleusercontent.com")
+                .requestScopes(
+                        new Scope("https://www.googleapis.com/auth/youtube"),
+                        new Scope("https://www.googleapis.com/auth/youtube.upload"))
+                .requestEmail()
+                .build();
+
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
+                // .addApi(Plus.API, null)
+                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
+                .addOnConnectionFailedListener(this)
+                // .addScope(Plus.SCOPE_PLUS_LOGIN)
+                .build();
 
     }
     private void applyTheme() {
@@ -281,7 +309,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
 
 
     public void signIn(){
-        Intent intent=Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+        Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
         startActivityForResult(intent,REQ_CODE);
     }
     @Override
@@ -293,25 +321,23 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         }
     }
 
-
     private void handleResult(GoogleSignInResult result) {
         if (result.isSuccess()){
-            GoogleSignInAccount account=result.getSignInAccount();
-            String name=account.getDisplayName();
-            String email=account.getEmail();
-            String image =account.getPhotoUrl().toString();
+            GoogleSignInAccount account = result.getSignInAccount();
+            String lAccessToken = (account != null) ? account.getServerAuthCode() : "";
+            String name = account.getDisplayName();
+            String email = account.getEmail();
+            String image = account.getPhotoUrl().toString();
             GEUserManager lGEUserManager = GEUserManager.getInstance(getApplicationContext());
             lGEUserManager.setUserName(name);
             lGEUserManager.setUserEmail(email);
             lGEUserManager.setUserImageUrl(image);
             updateUi(true);
         }
-        else
-        {
+        else {
             updateUi(false);
         }
     }
-
 
     private void updateUi(boolean IsLogin) {
         if (IsLogin){
@@ -352,4 +378,13 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     }
 
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
 }

@@ -10,4 +10,5 @@ import android.view.View;
 public interface GERecyclerItemClickListner
 {
     public void onRecyclerItemClicked(View view, RecyclerView.ViewHolder viewHolder, int position);
+    public void onRecyclerItemClicked(View view, RecyclerView.ViewHolder viewHolder, int position, GEEventTypes eventType);
 }

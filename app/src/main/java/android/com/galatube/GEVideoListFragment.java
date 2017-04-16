@@ -164,4 +164,9 @@ public class GEVideoListFragment extends Fragment implements GEEventListner, GEO
     public void onRecyclerItemClicked(View view, RecyclerView.ViewHolder viewHolder, int position) {
 
     }
+
+    @Override
+    public void onRecyclerItemClicked(View view, RecyclerView.ViewHolder viewHolder, int position, GEEventTypes eventType) {
+
+    }
 }

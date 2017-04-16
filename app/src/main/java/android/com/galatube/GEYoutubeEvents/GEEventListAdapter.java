@@ -100,7 +100,7 @@ public class GEEventListAdapter extends
         GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, android.com.galatube.GEConstants.GECHANNELID);
         ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
         lMainGroup = (ViewGroup) lInflater.inflate(R.layout.ge_listitem, viewGroup, false);
-        GEEventListItemView listHolder = new GEEventListItemView(lMainGroup, mClickListner);
+        GEEventListItemView listHolder = new GEEventListItemView(lMainGroup, mClickListner, mEventType);
         return listHolder;
     }
 }

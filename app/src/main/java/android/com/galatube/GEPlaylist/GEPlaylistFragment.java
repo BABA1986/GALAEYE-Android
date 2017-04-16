@@ -177,4 +177,9 @@ public class GEPlaylistFragment extends Fragment implements GEEventListner, GEOn
         lIntent.putExtra("PlaylistID", lResult.getId());
         startActivity(lIntent);
     }
+
+    @Override
+    public void onRecyclerItemClicked(View view, RecyclerView.ViewHolder viewHolder, int position, GEEventTypes eventType) {
+
+    }
 }

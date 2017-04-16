@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "386488481151",
-    "project_id": "gala-eye-160206"
+    "project_number": "662481036351",
+    "project_id": "default-demo-app-102e8"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:386488481151:android:b898368f5aba22a8",
+        "mobilesdk_app_id": "1:662481036351:android:b898368f5aba22a8",
         "android_client_info": {
           "package_name": "android.com.galatube"
         }
       },
       "oauth_client": [
         {
-          "client_id": "386488481151-np5gqqlmn3jkdr7s275p1tptvlhgdnmr.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "386488481151-cu9k86dcgrb7tm7d9k046uounleu5f2r.apps.googleusercontent.com",
+          "client_id": "662481036351-d7uc4o252af4qhk70vb1t9o2oa1khn0e.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "android.com.galatube",
-            "certificate_hash": "3503a4c6c80958c20412e4858643a2dcb5086604"
+            "certificate_hash": "d8974d2bf174c4464a96a9eb5a2087ad1315bf98"
           }
+        },
+        {
+          "client_id": "662481036351-ugbo6k3vu4evfb2runa0f8fav7nt66kk.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAzCxGV0ZMXp-TxIdCG8ASL0bf0rpbGGn4"
+          "current_key": "AIzaSyAJB-O2RcnsjpdrIyzldTWXwWfxdMu1zE8"
         }
       ],
       "services": {

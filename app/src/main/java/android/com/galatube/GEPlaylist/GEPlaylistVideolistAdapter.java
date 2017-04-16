@@ -109,7 +109,7 @@ public class GEPlaylistVideolistAdapter extends
 
         lMainGroup = (ViewGroup) lInflater.inflate(
                 R.layout.gevideoitem, viewGroup, false);
-        GEEventListItemView listHolder = new GEEventListItemView(lMainGroup, mClickListner);
+        GEEventListItemView listHolder = new GEEventListItemView(lMainGroup, mClickListner, GEEventTypes.EFetchEventsPlaylistItem);
         return listHolder;
     }
 }

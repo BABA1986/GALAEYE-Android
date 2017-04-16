@@ -103,7 +103,7 @@ public class GEVideoListAdapter extends RecyclerView.Adapter<GEEventListItemView
 
         lMainGroup = (ViewGroup) lInflater.inflate(
                 R.layout.gevideoitem, viewGroup, false);
-        GEEventListItemView listHolder = new GEEventListItemView(lMainGroup,mItemClickListner);
+        GEEventListItemView listHolder = new GEEventListItemView(lMainGroup,mItemClickListner, mEventType);
         return listHolder;
     }
 }

@@ -26,6 +26,7 @@ public class GEUserManager
             ourInstance = new GEUserManager(context);
         return ourInstance;
     }
+
     public void resetData(){
         SharedPreferences sharedPreferences=mContext.getSharedPreferences("MyPreference",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor=sharedPreferences.edit();
