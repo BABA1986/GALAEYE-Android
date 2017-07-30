@@ -28,6 +28,8 @@ import android.widget.ProgressBar;
 
 import com.google.api.services.youtube.model.Playlist;
 
+import java.io.IOException;
+
 /**
  * Created by deepak on 23/02/17.
  */
@@ -58,7 +60,11 @@ public class GEPlaylistVideolistActivity extends AppCompatActivity implements GE
         mPlaylistVideoListView.setAdapter(lAdapter2); // set adapter on recyclerview
         lAdapter2.notifyDataSetChanged(); // Notify the adapter
 
-        mServiceManager = new GEServiceManager(this, this);
+        try {
+            mServiceManager = new GEServiceManager(this, this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         mServiceManager.loadPlaylistItemsAsync(mPlaylistID);
         startLodingIndicator();
         applyTheme();

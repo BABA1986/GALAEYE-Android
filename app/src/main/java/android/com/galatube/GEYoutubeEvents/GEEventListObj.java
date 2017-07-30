@@ -1,6 +1,7 @@
 package android.com.galatube.GEYoutubeEvents;
 
 import com.google.api.services.youtube.model.SearchListResponse;
+import com.google.api.services.youtube.model.VideoListResponse;
 
 import java.util.ArrayList;
 

@@ -10,4 +10,5 @@ public class GEConstants {
     public static final String ARG_PAGE = "ARG_PAGE";
     public static final String ARG_PAGE1 = "ARG_PAGE1";
     public static final String ARG_PAGE2 = "ARG_PAGE2";
+    public static final String ARG_PAGE3 = "ARG_PAGE3";
 }

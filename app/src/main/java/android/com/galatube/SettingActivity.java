@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -32,9 +33,10 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 
-public class SettingActivity extends AppCompatActivity implements View.OnClickListener,GoogleApiClient.OnConnectionFailedListener{
+public class SettingActivity extends AppCompatActivity implements View.OnClickListener,GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks{
     private TextView mClose_Setting;
     private LinearLayout mGoogleSignIn;
     private LinearLayout mGoogleSignOut;
@@ -110,8 +112,21 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
         }
             // GoogleApiClient
-        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
-        googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).build();
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestServerAuthCode("662481036351-ugbo6k3vu4evfb2runa0f8fav7nt66kk.apps.googleusercontent.com")
+                .requestScopes(
+                        new Scope("https://www.googleapis.com/auth/youtube"),
+                        new Scope("https://www.googleapis.com/auth/youtube.upload"))
+                .requestEmail()
+                .build();
+
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
+                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
+                .addOnConnectionFailedListener(this)
+                .build();
         Auth.GoogleSignInApi.silentSignIn(googleApiClient);
     }
 
@@ -242,9 +257,11 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     public void signOut(){
         GEUserManager lManager = GEUserManager.getInstance(getApplicationContext());
         lManager.resetData();
+        Auth.GoogleSignInApi.revokeAccess(googleApiClient);
       Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
           @Override
           public void onResult(@NonNull Status status) {
+//
               updateUi(false);
           }
       });
@@ -310,5 +327,15 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.hide();
         }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
     }
 }

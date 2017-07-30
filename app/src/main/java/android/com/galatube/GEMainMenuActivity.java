@@ -1,5 +1,6 @@
 package android.com.galatube;
 
+import android.accounts.Account;
 import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.GEUserModal.GEUserManager;
 import android.com.galatube.Connectivity.GENetworkState;
@@ -15,6 +16,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -27,6 +29,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -49,6 +52,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
+import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -57,6 +65,8 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 
 /**
@@ -136,36 +146,28 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         }
 
         mDrawerSelectedMenuIndex = 0;
+//
         initialisePagesForMenu(lMenuItems.get(mDrawerSelectedMenuIndex), "playlists");
-//        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().requestProfile()
-//                .requestServerAuthCode("820754345275-ata3ks9k1lj6e28k0oqju40a3cmoem4n.apps.googleusercontent.com")
-//                .requestScopes(
-//                new Scope("https://www.googleapis.com/auth/youtube"),
-//                new Scope("https://www.googleapis.com/auth/youtube.upload"))
-//                .build();
-//        googleApiClient = new GoogleApiClient.Builder(this)
-//                .enableAutoManage(this, this)
-//                .addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions)
-//                .build();
-
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestServerAuthCode("662481036351-ugbo6k3vu4evfb2runa0f8fav7nt66kk.apps.googleusercontent.com")
+                .requestServerAuthCode("662481036351-sncgirak2vmnnjagoum9bsesfk755h79.apps.googleusercontent.com")
                 .requestScopes(
                         new Scope("https://www.googleapis.com/auth/youtube"),
                         new Scope("https://www.googleapis.com/auth/youtube.upload"))
                 .requestEmail()
+                .requestIdToken("662481036351-sncgirak2vmnnjagoum9bsesfk755h79.apps.googleusercontent.com")
+                .requestId()
                 .build();
 
         googleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
-                // .addApi(Plus.API, null)
                 .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
                 .addOnConnectionFailedListener(this)
-                // .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
 
+        Auth.GoogleSignInApi.silentSignIn(googleApiClient);
     }
+
     private void applyTheme() {
         SharedPreferences sharedPreferences = getSharedPreferences("myTheme",MODE_PRIVATE);
         GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
@@ -317,14 +319,22 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==REQ_CODE){
             GoogleSignInResult result=Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleResult(result);
+            try {
+                handleResult(result);
+            }
+            catch(IOException e){
+                Log.d("YC", "Could not initialize: "+e);
+            }
         }
     }
 
-    private void handleResult(GoogleSignInResult result) {
+    private void handleResult(GoogleSignInResult result) throws IOException {
         if (result.isSuccess()){
             GoogleSignInAccount account = result.getSignInAccount();
             String lAccessToken = (account != null) ? account.getServerAuthCode() : "";
+            String lIDToken = (account != null) ? account.getIdToken() : "";
+            String lID = (account != null) ? account.getId() : "";
+
             String name = account.getDisplayName();
             String email = account.getEmail();
             String image = account.getPhotoUrl().toString();
@@ -332,6 +342,11 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
             lGEUserManager.setUserName(name);
             lGEUserManager.setUserEmail(email);
             lGEUserManager.setUserImageUrl(image);
+            lGEUserManager.setAuthToken(lAccessToken);
+            lGEUserManager.setIdToken(lIDToken);
+            lGEUserManager.setUserId(lID);
+            googleApiClient.connect();
+
             updateUi(true);
         }
         else {

@@ -1,7 +1,8 @@
 package android.com.galatube.GEPlaylist;
 
+import android.com.galatube.GEYoutubeEvents.GEVideoListObj;
+
 import com.google.api.services.youtube.model.PlaylistItemListResponse;
-import com.google.api.services.youtube.model.PlaylistListResponse;
 
 import java.util.ArrayList;
 
@@ -9,21 +10,21 @@ import java.util.ArrayList;
  * Created by deepak on 01/03/17.
  */
 
-public class GEVideolistObj {
-    private ArrayList<GEVideoListPage>          mVideoListPages;
+public class GEPlaylistVideolistObj{
+    private ArrayList<GEPlaylistVideoListPage>          mVideoListPages;
     private String                              mPlaylistID;
     private int                                 mTotalResults;
 
-    public GEVideolistObj(PlaylistItemListResponse response, String playlistID)
+    public GEPlaylistVideolistObj(PlaylistItemListResponse response, String playlistID)
     {
         this.mPlaylistID = playlistID;
         this.mTotalResults = response.getItems().size();
 
-        mVideoListPages = new ArrayList<GEVideoListPage>();
+        mVideoListPages = new ArrayList<GEPlaylistVideoListPage>();
         if (response.getItems().size() == 0)
             return;
 
-        GEVideoListPage lPage = new GEVideoListPage(response.getItems(), response.getNextPageToken(), response.getPrevPageToken());
+        GEPlaylistVideoListPage lPage = new GEPlaylistVideoListPage(response.getItems(), response.getNextPageToken(), response.getPrevPageToken());
         mVideoListPages.add(lPage);
     }
 
@@ -32,13 +33,13 @@ public class GEVideolistObj {
         return this.mPlaylistID;
     }
 
-    public ArrayList<GEVideoListPage> getmVideoListPages() {
+    public ArrayList<GEPlaylistVideoListPage> getmVideoListPages() {
         return mVideoListPages;
     }
 
     public void addPlaylistVideoFromResponse(PlaylistItemListResponse response)
     {
-        GEVideoListPage lPage = new GEVideoListPage(response.getItems(), response.getNextPageToken(), response.getPrevPageToken());
+        GEPlaylistVideoListPage lPage = new GEPlaylistVideoListPage(response.getItems(), response.getNextPageToken(), response.getPrevPageToken());
         mVideoListPages.add(lPage);
     }
 }

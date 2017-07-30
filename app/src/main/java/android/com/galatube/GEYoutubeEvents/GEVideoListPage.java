@@ -1,17 +1,12 @@
 package android.com.galatube.GEYoutubeEvents;
 
-import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Video;
 
 import java.util.List;
 
-/**
- * Created by deepak on 04/01/17.
- */
-
-public class GEEventListPage
+public class GEVideoListPage
 {
-    private List<SearchResult>          mEventList;
+    private List<Video>                 mVideoList;
     private String                      mNextPageToken;
     private String                      mPreviousPageToken;
 
@@ -19,15 +14,14 @@ public class GEEventListPage
         return mNextPageToken;
     }
 
-    public GEEventListPage(List<SearchResult> list, String nextPageToken, String PrevPageToken)
+    public GEVideoListPage(List<Video> list, String nextPageToken, String PrevPageToken)
     {
-        this.mEventList = list;
+        this.mVideoList = list;
         this.mNextPageToken = nextPageToken;
         this.mPreviousPageToken = mPreviousPageToken;
     }
 
-    public List<SearchResult> getmEventList() {
-        return mEventList;
+    public List<Video> getmVideoList() {
+        return mVideoList;
     }
 }
-

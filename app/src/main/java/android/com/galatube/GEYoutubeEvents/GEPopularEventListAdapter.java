@@ -22,7 +22,7 @@ import java.util.List;
  * Created by deepak on 29/01/17.
  */
 
-public class GEVideoListAdapter extends RecyclerView.Adapter<GEEventListItemView> {
+public class GEPopularEventListAdapter extends RecyclerView.Adapter<GEEventListItemView> {
 
     private Context mContext;
     private GEOnLoadMore    mLoadMoreListner;
@@ -30,9 +30,9 @@ public class GEVideoListAdapter extends RecyclerView.Adapter<GEEventListItemView
     private String          mChannelId;
     private GERecyclerItemClickListner mItemClickListner;
 
-    public GEVideoListAdapter(Context context, GEEventTypes eventType, GEOnLoadMore loadmoreListner, String channelId,GERecyclerItemClickListner itemClickListner) {
+    public GEPopularEventListAdapter(Context context, GEEventTypes eventType, GEOnLoadMore loadmoreListner, String channelId, GERecyclerItemClickListner itemClickListner) {
         this.mContext = context;
-        this.mItemClickListner=itemClickListner;
+        this.mItemClickListner = itemClickListner;
         this.mLoadMoreListner = loadmoreListner;
         this.mEventType = eventType;
         this.mChannelId = channelId;

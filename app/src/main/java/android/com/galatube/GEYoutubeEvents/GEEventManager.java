@@ -1,9 +1,11 @@
 package android.com.galatube.GEYoutubeEvents;
 
+import android.com.galatube.GEPlaylist.GEPlaylistVideolistObj;
+
 import com.google.api.services.youtube.model.SearchListResponse;
+import com.google.api.services.youtube.model.VideoListResponse;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /*****
  * Created by deepak on 04/01/17.
@@ -17,16 +19,21 @@ public class GEEventManager {
     }
 
     private ArrayList<GEEventListObj> mEventListObjs;
+    private ArrayList<GEVideoListObj> mVideoListObjs;
 
     private GEEventManager() {
         mEventListObjs = new ArrayList<GEEventListObj>() {
         };
+
+        mVideoListObjs = new ArrayList<GEVideoListObj>();
     }
 
     public ArrayList<GEEventListObj> getmEventListObjs() {
-
         return mEventListObjs;
+    }
 
+    public ArrayList<GEVideoListObj> getmVideoListObjs() {
+        return mVideoListObjs;
     }
 
     public String pageTokenForInfo(GEEventTypes eventType, String channelID)
@@ -82,6 +89,26 @@ public class GEEventManager {
         }
     }
 
+    public void addMyLikedSearchResponse(VideoListResponse response, GEEventTypes eventType, String channelID)
+    {
+        GEVideoListObj lGEVideoListObj = null;
+        if (response.getItems().size() == 0) {
+            return;
+        }
+
+        lGEVideoListObj = videoListObjForInfo(eventType, channelID);
+
+        if(lGEVideoListObj == null)
+        {
+            lGEVideoListObj = new GEVideoListObj(response, eventType, channelID);
+            mVideoListObjs.add(lGEVideoListObj);
+        }
+        else
+        {
+            lGEVideoListObj.addVideosFromResponse(response);
+        }
+    }
+
     public GEEventListObj eventListObjForInfo(GEEventTypes eventType, String channelID)
     {
         GEEventListObj lListObj = null;
@@ -89,6 +116,23 @@ public class GEEventManager {
         for (int index = 0; index < mEventListObjs.size(); ++index)
         {
             lListObj = mEventListObjs.get(index);
+            if ((eventType == lListObj.getmEventType()) && (lListObj.getmChannelSource().equalsIgnoreCase(channelID)))
+            {
+                lRetListObj = lListObj;
+                break;
+            }
+        }
+
+        return lRetListObj;
+    }
+
+    public GEVideoListObj videoListObjForInfo(GEEventTypes eventType, String channelID)
+    {
+        GEVideoListObj lListObj = null;
+        GEVideoListObj lRetListObj = null;
+        for (int index = 0; index < mVideoListObjs.size(); ++index)
+        {
+            lListObj = mVideoListObjs.get(index);
             if ((eventType == lListObj.getmEventType()) && (lListObj.getmChannelSource().equalsIgnoreCase(channelID)))
             {
                 lRetListObj = lListObj;

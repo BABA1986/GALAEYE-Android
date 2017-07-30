@@ -2,12 +2,11 @@ package android.com.galatube;
 
 import android.com.galatube.GEPlaylist.GEPlaylistFragment;
 import android.com.galatube.GEYoutubeEvents.GEEventTypes;
-import android.com.galatube.model.GEMenu.GEMenu;
+import android.com.galatube.GEYoutubeEvents.GELikedListFragment;
 import android.com.galatube.model.GEMenu.GESubMenu;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
@@ -59,7 +58,11 @@ public class GEPageAdapter extends FragmentStatePagerAdapter {
         GESubMenu lSubMenu = mSubMenus.get(position);
         if (lSubMenu.getmSubMenuName().equals("Popular") == true)
         {
-            return GEVideoListFragment.newInstance(position + 1, GEEventTypes.EFetchEventsPopularCompleted, GEConstants.GECHANNELID);
+            return GEPopularEventListFragment.newInstance(position + 1, GEEventTypes.EFetchEventsPopularCompleted, GEConstants.GECHANNELID);
+        }
+        if (lSubMenu.getmSubMenuName().equals("My Liked") == true)
+        {
+            return GELikedListFragment.newInstance(position + 1, GEConstants.GECHANNELID);
         }
         if (lSubMenu.getmSubMenuType().equals("playlist") == true)
         {
@@ -71,7 +74,7 @@ public class GEPageAdapter extends FragmentStatePagerAdapter {
                 return lGEPlaylistFragment;
             }
             else{
-                return GEVideoListFragment.newInstance(position + 1, GEEventTypes.EFetchEventsArchivedVideos, lSubMenu.getmSubMenuSrc());
+                return GEPopularEventListFragment.newInstance(position + 1, GEEventTypes.EFetchEventsArchivedVideos, lSubMenu.getmSubMenuSrc());
             }
         }
         else if (position > 0) {

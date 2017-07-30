@@ -9,7 +9,7 @@ import java.util.List;
  * Created by deepak on 01/03/17.
  */
 
-public class GEVideoListPage {
+public class GEPlaylistVideoListPage {
     private List<PlaylistItem>          mPlayListItems;
     private String                      mNextPageToken;
     private String                      mPreviousPageToken;
@@ -18,7 +18,7 @@ public class GEVideoListPage {
         return mNextPageToken;
     }
 
-    public GEVideoListPage(List<PlaylistItem> list, String nextPageToken, String PrevPageToken)
+    public GEPlaylistVideoListPage(List<PlaylistItem> list, String nextPageToken, String PrevPageToken)
     {
         this.mPlayListItems = list;
         this.mNextPageToken = nextPageToken;

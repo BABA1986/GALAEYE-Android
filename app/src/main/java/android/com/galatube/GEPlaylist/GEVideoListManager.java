@@ -1,7 +1,6 @@
 package android.com.galatube.GEPlaylist;
 
 import com.google.api.services.youtube.model.PlaylistItemListResponse;
-import com.google.api.services.youtube.model.PlaylistListResponse;
 
 import java.util.ArrayList;
 
@@ -11,39 +10,39 @@ import java.util.ArrayList;
 
 public class GEVideoListManager {
     private static GEVideoListManager ourInstance = new GEVideoListManager();
-    private ArrayList<GEVideolistObj> mVideoListObjs;
+    private ArrayList<GEPlaylistVideolistObj> mVideoListObjs;
 
     public static GEVideoListManager getInstance() {
         return ourInstance;
     }
 
     private GEVideoListManager() {
-        mVideoListObjs = new ArrayList<GEVideolistObj>();
+        mVideoListObjs = new ArrayList<GEPlaylistVideolistObj>();
     }
 
-    public ArrayList<GEVideolistObj> getmPlayListVideoObjs() {
+    public ArrayList<GEPlaylistVideolistObj> getmPlayListVideoObjs() {
         return mVideoListObjs;
     }
 
     public String pageTokenForInfo(String sourceID) {
-        GEVideolistObj lGEVideolistObj = playlistVideoObjForInfo(sourceID);
-        if (lGEVideolistObj == null)
+        GEPlaylistVideolistObj lGEPlaylistVideolistObj = playlistVideoObjForInfo(sourceID);
+        if (lGEPlaylistVideolistObj == null)
         {
             return null;
         }
 
-        GEVideoListPage lLastPage = lGEVideolistObj.getmVideoListPages().get(lGEVideolistObj.getmVideoListPages().size()-1) ;
+        GEPlaylistVideoListPage lLastPage = lGEPlaylistVideolistObj.getmVideoListPages().get(lGEPlaylistVideolistObj.getmVideoListPages().size()-1) ;
         return lLastPage.getmNextPageToken();
     }
 
     public boolean canFetchMore(String playlistID) {
-        GEVideolistObj lGEVideolistObj= playlistVideoObjForInfo(playlistID);
-        if (lGEVideolistObj == null)
+        GEPlaylistVideolistObj lGEPlaylistVideolistObj = playlistVideoObjForInfo(playlistID);
+        if (lGEPlaylistVideolistObj == null)
         {
             return true;
         }
 
-        GEVideoListPage lLastPage = lGEVideolistObj.getmVideoListPages().get(lGEVideolistObj.getmVideoListPages().size()-1) ;
+        GEPlaylistVideoListPage lLastPage = lGEPlaylistVideolistObj.getmVideoListPages().get(lGEPlaylistVideolistObj.getmVideoListPages().size()-1) ;
         if (lLastPage.getmNextPageToken() == null) {
             return false;
         }
@@ -56,28 +55,28 @@ public class GEVideoListManager {
     }
 
     public void addPlaylistItemSearchResponse(PlaylistItemListResponse response, String playlistID) {
-        GEVideolistObj lGEVideolistObj = null;
+        GEPlaylistVideolistObj lGEPlaylistVideolistObj = null;
         if (response.getItems().size() == 0) {
             return;
         }
 
-        lGEVideolistObj = playlistVideoObjForInfo(playlistID);
+        lGEPlaylistVideolistObj = playlistVideoObjForInfo(playlistID);
 
-        if(lGEVideolistObj == null)
+        if(lGEPlaylistVideolistObj == null)
         {
-            lGEVideolistObj = new GEVideolistObj(response, playlistID);
-            mVideoListObjs.add(lGEVideolistObj);
+            lGEPlaylistVideolistObj = new GEPlaylistVideolistObj(response, playlistID);
+            mVideoListObjs.add(lGEPlaylistVideolistObj);
         }
         else
         {
-            lGEVideolistObj.addPlaylistVideoFromResponse(response);
+            lGEPlaylistVideolistObj.addPlaylistVideoFromResponse(response);
         }
     }
 
-    public GEVideolistObj playlistVideoObjForInfo(String playlistID)
+    public GEPlaylistVideolistObj playlistVideoObjForInfo(String playlistID)
     {
-        GEVideolistObj lListObj = null;
-        GEVideolistObj lRetListObj = null;
+        GEPlaylistVideolistObj lListObj = null;
+        GEPlaylistVideolistObj lRetListObj = null;
         for (int index = 0; index < mVideoListObjs.size(); ++index)
         {
             lListObj = mVideoListObjs.get(index);

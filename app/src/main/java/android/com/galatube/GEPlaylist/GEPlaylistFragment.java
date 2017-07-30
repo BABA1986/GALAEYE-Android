@@ -26,6 +26,7 @@ import android.widget.RelativeLayout;
 
 import com.google.api.services.youtube.model.Playlist;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +60,11 @@ public class GEPlaylistFragment extends Fragment implements GEEventListner, GEOn
         mPage = getArguments().getInt(GEConstants.ARG_PAGE2);
         Bundle lArguments = getArguments();
         mChannelName = lArguments.getString("channelName");
-        mServiceManger = new GEServiceManager(this, getContext());
+        try {
+            mServiceManger = new GEServiceManager(this, getContext());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

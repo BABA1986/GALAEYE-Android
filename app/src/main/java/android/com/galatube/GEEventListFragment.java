@@ -41,6 +41,7 @@ import android.widget.Toast;
 import com.google.api.services.youtube.model.Playlist;
 import com.google.api.services.youtube.model.SearchResult;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
     ProgressBar                     mProgressBar;
     private View view;
     private ImageButton mReloadPage;
-    private RelativeLayout lLayout;
+    private LinearLayout lLayout;
     private View lNoInternetView;
 
     // Your developer key goes here
@@ -74,7 +75,11 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPage = getArguments().getInt(GEConstants.ARG_PAGE);
-        mEvtServiceManger = new GEServiceManager(this, getContext());
+        try {
+            mEvtServiceManger = new GEServiceManager(this, getContext());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsCompleted);
         mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsLive);
         mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsUpcomming);
@@ -88,7 +93,7 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
 
         if(!GENetworkState.isNetworkStatusAvialable(getContext()))
         {
-             lLayout = (RelativeLayout)view.findViewById(R.id.alleventlist);
+             lLayout = (LinearLayout)view.findViewById(R.id.alleventlist);
              lNoInternetView = inflater.inflate(R.layout.no_internet_event_fragment, container, false);
              lLayout.addView(lNoInternetView);
              mReloadPage=(ImageButton)lNoInternetView.findViewById(R.id.reload_page);
@@ -164,6 +169,9 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
 
     private void refreshLayout(View fragmentView)
     {
+        if(fragmentView == null)
+            return;
+
         GEEventManager lMamager = GEEventManager.getInstance();
         LinearLayout lAllListLayout = (LinearLayout)fragmentView.findViewById(R.id.alllists);
         LinearLayout lLiveLayout = (LinearLayout)lAllListLayout.findViewById(R.id.livelistbase);
@@ -228,7 +236,6 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
 
     public void eventsLoadedFromChannel(String channelID, GEEventTypes eventType, boolean success)
     {
-        refreshLayout(getView());
         if (eventType == GEEventTypes.EFetchEventsCompleted) {
             mCompletedEventListView.getAdapter().notifyDataSetChanged();
         }
@@ -239,6 +246,7 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
             mUpcommingEventListView.getAdapter().notifyDataSetChanged();
         }
         stopLodingIndicator();
+        refreshLayout(getView());
     }
 
     @Override

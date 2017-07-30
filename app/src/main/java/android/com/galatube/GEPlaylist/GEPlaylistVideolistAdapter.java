@@ -1,9 +1,6 @@
 package android.com.galatube.GEPlaylist;
 
 import android.com.galatube.GEYoutubeEvents.GEEventListItemView;
-import android.com.galatube.GEYoutubeEvents.GEEventListObj;
-import android.com.galatube.GEYoutubeEvents.GEEventListPage;
-import android.com.galatube.GEYoutubeEvents.GEEventManager;
 import android.com.galatube.GEYoutubeEvents.GEEventTypes;
 import android.com.galatube.GEYoutubeEvents.GEOnLoadMore;
 import android.com.galatube.GEYoutubeEvents.GERecyclerItemClickListner;
@@ -16,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.google.api.services.youtube.model.PlaylistItem;
-import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Thumbnail;
 import com.google.api.services.youtube.model.ThumbnailDetails;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -52,10 +48,10 @@ public class GEPlaylistVideolistAdapter extends
     @Override
     public int getItemCount() {
         GEVideoListManager lMamager = GEVideoListManager.getInstance();
-        GEVideolistObj listObj = lMamager.playlistVideoObjForInfo(mPlaylistID);
+        GEPlaylistVideolistObj listObj = lMamager.playlistVideoObjForInfo(mPlaylistID);
         if (listObj == null) return 0;
-        ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
-        GEVideoListPage lPage = listPages.get(listPages.size() - 1);
+        ArrayList<GEPlaylistVideoListPage> listPages = listObj.getmVideoListPages();
+        GEPlaylistVideoListPage lPage = listPages.get(listPages.size() - 1);
         List<PlaylistItem> lResults = lPage.getmPlayListItems();
         if (lResults.size() < 50 && listPages.size() == 1)
             return lResults.size();
@@ -70,10 +66,10 @@ public class GEPlaylistVideolistAdapter extends
         GEEventListItemView lListItem = (GEEventListItemView) holder;// holder
 
         GEVideoListManager lMamager = GEVideoListManager.getInstance();
-        GEVideolistObj listObj = lMamager.playlistVideoObjForInfo(mPlaylistID);
-        ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
+        GEPlaylistVideolistObj listObj = lMamager.playlistVideoObjForInfo(mPlaylistID);
+        ArrayList<GEPlaylistVideoListPage> listPages = listObj.getmVideoListPages();
         int lPageIndex = (position >= 50) ? position / 50 : 0;
-        GEVideoListPage lPage = listPages.get(listPages.size() - 1);
+        GEPlaylistVideoListPage lPage = listPages.get(listPages.size() - 1);
         List<PlaylistItem> lResults = lPage.getmPlayListItems();
         int lPosition = position - lPageIndex * 50;
         PlaylistItem lResult = lResults.get(lPosition);
@@ -104,8 +100,8 @@ public class GEPlaylistVideolistAdapter extends
         LayoutInflater lInflater = LayoutInflater.from(viewGroup.getContext());
         ViewGroup lMainGroup = null;
         GEVideoListManager lMamager = GEVideoListManager.getInstance();
-        GEVideolistObj listObj = lMamager.playlistVideoObjForInfo(mPlaylistID);
-        ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
+        GEPlaylistVideolistObj listObj = lMamager.playlistVideoObjForInfo(mPlaylistID);
+        ArrayList<GEPlaylistVideoListPage> listPages = listObj.getmVideoListPages();
 
         lMainGroup = (ViewGroup) lInflater.inflate(
                 R.layout.gevideoitem, viewGroup, false);

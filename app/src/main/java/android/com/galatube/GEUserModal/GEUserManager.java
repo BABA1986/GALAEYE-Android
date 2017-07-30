@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+
 import java.util.ArrayList;
 
 /**
@@ -38,6 +40,10 @@ public class GEUserManager
         mUserInfo.setmUserId("");
         mUserInfo.setUserEmail("");
         mUserInfo.setmUserImageUrl("");
+        mUserInfo.setmAuthToken("");
+        mUserInfo.setmIdTokeen("");
+        mUserInfo.setmRefreshToken("");
+        mUserInfo.setmAccessToken("");
     }
 
     private GEUserManager(Context context) {
@@ -63,16 +69,31 @@ public class GEUserManager
 
         String lImageUrl = sharedPreferences.getString("UserImageUrl","");
         mUserInfo.setmUserImageUrl(lImageUrl);
+
+        String lAuthToken = sharedPreferences.getString("UserAuthToken","");
+        mUserInfo.setmAuthToken(lAuthToken);
+
+        String lIdToken = sharedPreferences.getString("UserIdToken","");
+        mUserInfo.setmIdTokeen(lIdToken);
+
+        String lRefreshToken = sharedPreferences.getString("RefreshToken","");
+        mUserInfo.setmRefreshToken(lRefreshToken);
+
+        String lAccessToken = sharedPreferences.getString("AccessToken","");
+        mUserInfo.setmAccessToken(lAccessToken);
     }
 
-    void saveState()
-    {
-        SharedPreferences lPreferences = mContext.getSharedPreferences("MyPreference",Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor=lPreferences.edit();
-        editor.putString("UserName",mUserInfo.getUserName());
-        editor.putString("UserId",mUserInfo.getmUserId());
-        editor.putString("UserEmail",mUserInfo.getUserEmail());
-        editor.putString("UserImageUrl",mUserInfo.getmUserImageUrl());
+    void saveState() {
+        SharedPreferences lPreferences = mContext.getSharedPreferences("MyPreference", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = lPreferences.edit();
+        editor.putString("UserName", mUserInfo.getUserName());
+        editor.putString("UserId", mUserInfo.getmUserId());
+        editor.putString("UserEmail", mUserInfo.getUserEmail());
+        editor.putString("UserImageUrl", mUserInfo.getmUserImageUrl());
+        editor.putString("UserAuthToken", mUserInfo.getmAuthToken());
+        editor.putString("UserIdToken", mUserInfo.getmIdTokeen());
+        editor.putString("RefreshToken", mUserInfo.getmRefreshToken());
+        editor.putString("AccessToken", mUserInfo.getmAccessToken());
         editor.apply();
         editor.commit();
     }
@@ -98,6 +119,30 @@ public class GEUserManager
     public void setUserImageUrl(String Url)
     {
         mUserInfo.setmUserImageUrl(Url);
+        saveState();
+    }
+
+    public void setAuthToken(String authToken)
+    {
+        mUserInfo.setmAuthToken(authToken);
+        saveState();
+    }
+
+    public void setIdToken(String idToken)
+    {
+        mUserInfo.setmIdTokeen(idToken);
+        saveState();
+    }
+
+    public void setRefreshToken(String refreshToken)
+    {
+        mUserInfo.setmRefreshToken(refreshToken);
+        saveState();
+    }
+
+    public void setAccessToken(String accessToken)
+    {
+        mUserInfo.setmAccessToken(accessToken);
         saveState();
     }
 }
