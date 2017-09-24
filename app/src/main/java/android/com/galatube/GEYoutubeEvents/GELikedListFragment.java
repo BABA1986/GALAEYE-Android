@@ -74,7 +74,8 @@ public class GELikedListFragment extends Fragment implements GEEventListner, GEO
                     if(GENetworkState.isNetworkStatusAvialable(getContext())) {
 
                         lLayout.removeView(lNoInternetView);
-                        mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsLiked);
+                        if (mEvtServiceManger != null)
+                            mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsLiked);
                     }
                 }
             });
@@ -109,7 +110,8 @@ public class GELikedListFragment extends Fragment implements GEEventListner, GEO
         {
             startLodingIndicator(getView());
             mLikedVideoList.getAdapter().notifyDataSetChanged();
-            mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsLiked);
+            if (mEvtServiceManger != null)
+                mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsLiked);
             //Only manually call onResume if fragment is already visible
             //Otherwise allow natural fragment lifecycle to call onResume
             onResume();
@@ -134,7 +136,13 @@ public class GELikedListFragment extends Fragment implements GEEventListner, GEO
 
     private void stopLodingIndicator()
     {
-        mListProgressBar.setVisibility(View.INVISIBLE);
+        if (mListProgressBar != null)
+            mListProgressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onYoutubeServicesAuhtenticated() {
+        mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsLiked);
     }
 
     @Override
@@ -155,7 +163,8 @@ public class GELikedListFragment extends Fragment implements GEEventListner, GEO
 
     @Override
     public void loadMoreItems(RecyclerView.Adapter adapter) {
-        mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsLiked);
+        if (mEvtServiceManger != null)
+            mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsLiked);
     }
 
     @Override

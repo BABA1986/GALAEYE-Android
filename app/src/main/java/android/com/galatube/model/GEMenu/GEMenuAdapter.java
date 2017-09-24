@@ -1,7 +1,9 @@
 package android.com.galatube.model.GEMenu;
 
+import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.R;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -9,6 +11,9 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.PorterDuffXfermode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,10 +83,14 @@ public class GEMenuAdapter extends BaseAdapter {
         lHolder.mTitleView.setText(lMenuInfo.getmMenuName());
 
         try {
-            InputStream lInputStream = mContext.getAssets().open("images/gala_icon_hdpi.png");
+            InputStream lInputStream = mContext.getAssets().open("images/gala_icon_xxhdpi.png");
             Bitmap lBitmap = BitmapFactory.decodeStream(lInputStream);
             lHolder.mImageView.setImageBitmap(lBitmap);
-            changeBitmapColor(lBitmap, lHolder.mImageView, Color.GREEN);
+
+            SharedPreferences sharedPreferences = mContext.getSharedPreferences("myTheme", Context.MODE_PRIVATE);
+            GEThemeManager.getInstance(mContext).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
+            int lColor = GEThemeManager.getInstance(mContext).getSelectedNavColor();
+            changeBitmapColor(lBitmap, lHolder.mImageView, lColor);
         } catch (IOException e) {
 //            handle exception
         }
@@ -93,10 +102,9 @@ public class GEMenuAdapter extends BaseAdapter {
         Bitmap resultBitmap = Bitmap.createBitmap(sourceBitmap, 0, 0,
                 sourceBitmap.getWidth() - 1, sourceBitmap.getHeight() - 1);
         Paint p = new Paint();
-        ColorFilter filter = new LightingColorFilter(color, 1);
+        ColorFilter filter = new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN);
         p.setColorFilter(filter);
         image.setImageBitmap(resultBitmap);
-
         Canvas canvas = new Canvas(resultBitmap);
         canvas.drawBitmap(resultBitmap, 0, 0, p);
     }

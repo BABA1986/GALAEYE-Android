@@ -144,6 +144,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         int lColor = GEThemeManager.getInstance(this).getSelectedNavColor();
         ColorDrawable lColorDrawable = new ColorDrawable(lColor);
         lActionBar.setBackgroundDrawable(lColorDrawable);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);

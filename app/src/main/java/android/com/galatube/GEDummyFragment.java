@@ -1,14 +1,8 @@
 package android.com.galatube;
 
-import android.com.galatube.GEYoutubeEvents.GEEventListAdapter;
-import android.com.galatube.GEYoutubeEvents.GEEventTypes;
-import android.com.galatube.GEYoutubeEvents.GEServiceManager;
+
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

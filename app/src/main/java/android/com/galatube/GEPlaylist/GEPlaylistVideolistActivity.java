@@ -65,7 +65,6 @@ public class GEPlaylistVideolistActivity extends AppCompatActivity implements GE
         } catch (IOException e) {
             e.printStackTrace();
         }
-        mServiceManager.loadPlaylistItemsAsync(mPlaylistID);
         startLodingIndicator();
         applyTheme();
     }
@@ -102,7 +101,13 @@ public class GEPlaylistVideolistActivity extends AppCompatActivity implements GE
     }
 
     private void stopLodingIndicator() {
-        mListProgressBar.setVisibility(View.INVISIBLE);
+        if (mListProgressBar != null)
+            mListProgressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onYoutubeServicesAuhtenticated() {
+        mServiceManager.loadPlaylistItemsAsync(mPlaylistID);
     }
 
     @Override

@@ -1,22 +1,36 @@
 package android.com.galatube;
 
 import android.accounts.Account;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.GEUserModal.GEUserManager;
 import android.com.galatube.Connectivity.GENetworkState;
+import android.com.galatube.GEYoutubeEvents.NotificationPublisher;
 import android.com.galatube.model.GEMenu.GEMenu;
 import android.com.galatube.model.GEMenu.GEMenuAdapter;
 import android.com.galatube.model.GEMenu.GESharedMenu;
 import android.com.galatube.model.GEMenu.GESubMenu;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -68,39 +82,40 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by deepak on 30/11/16.
  */
 
-public class GEMainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,View.OnClickListener,GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks{
+public class GEMainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
-    DrawerLayout            mDrawer;
+    DrawerLayout mDrawer;
     private LinearLayout mSettingLayout;
     private LinearLayout mGoogleNavigationSignIn;
     private TextView mWelcom_SignIn;
     private TextView mSignIn_Navigation;
     private ImageView mUserIv;
     private GoogleApiClient googleApiClient;
-    private static final int REQ_CODE=9001;
+    private static final int REQ_CODE = 9001;
     private LinearLayout mGooGleHeader;
     private Toolbar mtoolbar;
     private LinearLayout mTabToolbar;
-    private Menu         mActionBarMenu;
-    private int          mDrawerSelectedMenuIndex;
+    private Menu mActionBarMenu;
+    private int mDrawerSelectedMenuIndex;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-         mtoolbar = (Toolbar) findViewById(R.id.toolbar);
+        mtoolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mtoolbar);
-        mGoogleNavigationSignIn=(LinearLayout)findViewById(R.id.Google_Navigation_Header);
-        mTabToolbar=(LinearLayout)findViewById(R.id.tab_toolbar);
-        mWelcom_SignIn=(TextView)findViewById(R.id.welcome_tv);
-        mSignIn_Navigation=(TextView)findViewById(R.id.signIn_tv);
-        mUserIv=(ImageView)findViewById(R.id.imageView);
+        mGoogleNavigationSignIn = (LinearLayout) findViewById(R.id.Google_Navigation_Header);
+        mTabToolbar = (LinearLayout) findViewById(R.id.tab_toolbar);
+        mWelcom_SignIn = (TextView) findViewById(R.id.welcome_tv);
+        mSignIn_Navigation = (TextView) findViewById(R.id.signIn_tv);
+        mUserIv = (ImageView) findViewById(R.id.imageView);
         mUserIv.setOnClickListener(this);
-        mSettingLayout=(LinearLayout)findViewById(R.id.setting_base_adapter);
+        mSettingLayout = (LinearLayout) findViewById(R.id.setting_base_adapter);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mSettingLayout.setOnClickListener(this);
         mGoogleNavigationSignIn.setOnClickListener(this);
@@ -128,20 +143,17 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         ArrayList<GEMenu> lMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
         ListView lListView = (ListView) findViewById(R.id.left_drawer_list);
         lListView.setAdapter(new GEMenuAdapter(this, lMenuItems));
-        lListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
+        lListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mDrawerSelectedMenuIndex = position;
                 mDrawer.closeDrawers();
                 ArrayList<GEMenu> lMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
                 initialisePagesForMenu(lMenuItems.get(position), "playlists");
             }
         });
-        GEUserManager lGEUsermanager=GEUserManager.getInstance(getApplicationContext());
-        if (lGEUsermanager.getmUserInfo().getUserEmail().length() != 0)
-        {
+        GEUserManager lGEUsermanager = GEUserManager.getInstance(getApplicationContext());
+        if (lGEUsermanager.getmUserInfo().getUserEmail().length() != 0) {
             updateUi(true);
         }
 
@@ -160,17 +172,21 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
 
         googleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
                 .addOnConnectionFailedListener(this)
                 .build();
 
         Auth.GoogleSignInApi.silentSignIn(googleApiClient);
+
+        String lContent = "This is the notification scheduled.";
+        Notification lNotification = getNotification(lContent);
+        scheduleNotification(lNotification, 5000);
     }
 
     private void applyTheme() {
-        SharedPreferences sharedPreferences = getSharedPreferences("myTheme",MODE_PRIVATE);
-        GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
+        SharedPreferences sharedPreferences = getSharedPreferences("myTheme", MODE_PRIVATE);
+        GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition", 0));
         ActionBar lActionBar = getSupportActionBar();
         int lColor = GEThemeManager.getInstance(this).getSelectedNavColor();
         mGoogleNavigationSignIn.setBackgroundColor(lColor);
@@ -186,8 +202,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.playlistvideofilter, menu);//Menu Resource, Menu
         mActionBarMenu = menu;
@@ -211,13 +226,11 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         ArrayList<GEMenu> lMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
         GEMenu lMenu = lMenuItems.get(mDrawerSelectedMenuIndex);
 
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             // action with ID action_refresh was selected
             case R.id.playlistsfilter:
                 initialisePagesForMenu(lMenu, "playlists");
@@ -234,8 +247,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     }
 
     //In Case of playlist tipe menu only
-    private void showOptionMenuIfRequired()
-    {
+    private void showOptionMenuIfRequired() {
         if (mActionBarMenu == null)
             return;
 
@@ -252,13 +264,11 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
             mActionBarMenu.getItem(i).setVisible(lShouldShow);
     }
 
-    public void initialisePagesForMenu(GEMenu menuInfo, String filter)
-    {
+    public void initialisePagesForMenu(GEMenu menuInfo, String filter) {
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        GEPageAdapter lAdapter = (GEPageAdapter)viewPager.getAdapter();
+        GEPageAdapter lAdapter = (GEPageAdapter) viewPager.getAdapter();
         showOptionMenuIfRequired();
-        if (lAdapter != null)
-        {
+        if (lAdapter != null) {
             lAdapter.reloadWithSubMenu(menuInfo.getmSubMenus(), filter);
             return;
         }
@@ -268,8 +278,8 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         SharedPreferences sharedPreferences = getSharedPreferences("myTheme", MODE_PRIVATE);
-        GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
-        int lTextColor=GEThemeManager.getInstance(this).getSelectedNavTextColor();
+        GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition", 0));
+        int lTextColor = GEThemeManager.getInstance(this).getSelectedNavTextColor();
         tabLayout.setSelectedTabIndicatorColor(lTextColor);
         tabLayout.setupWithViewPager(viewPager);
     }
@@ -310,26 +320,26 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     }
 
 
-    public void signIn(){
+    public void signIn() {
         Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-        startActivityForResult(intent,REQ_CODE);
+        startActivityForResult(intent, REQ_CODE);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==REQ_CODE){
-            GoogleSignInResult result=Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+        if (requestCode == REQ_CODE) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             try {
                 handleResult(result);
-            }
-            catch(IOException e){
-                Log.d("YC", "Could not initialize: "+e);
+            } catch (IOException e) {
+                Log.d("YC", "Could not initialize: " + e);
             }
         }
     }
 
     private void handleResult(GoogleSignInResult result) throws IOException {
-        if (result.isSuccess()){
+        if (result.isSuccess()) {
             GoogleSignInAccount account = result.getSignInAccount();
             String lAccessToken = (account != null) ? account.getServerAuthCode() : "";
             String lIDToken = (account != null) ? account.getIdToken() : "";
@@ -348,31 +358,44 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
             googleApiClient.connect();
 
             updateUi(true);
-        }
-        else {
+        } else {
             updateUi(false);
         }
     }
 
     private void updateUi(boolean IsLogin) {
-        if (IsLogin){
+        if (IsLogin) {
             GEUserManager lGEUserManager = GEUserManager.getInstance(getApplicationContext());
             mSignIn_Navigation.setText(lGEUserManager.getmUserInfo().getUserEmail());
             mWelcom_SignIn.setText(lGEUserManager.getmUserInfo().getUserName());
             Glide.with(this).load(lGEUserManager.getmUserInfo().getmUserImageUrl()).into(mUserIv);
-        }else{
+        } else {
             mWelcom_SignIn.setText("Welcome");
             mSignIn_Navigation.setText("SignIn");
             try {
                 InputStream lInputStream = getAssets().open("images/userprofile.png");
                 Bitmap lBitmap = BitmapFactory.decodeStream(lInputStream);
-                mUserIv.setImageBitmap(lBitmap);
-            }
-            catch (IOException e) {
+                SharedPreferences sharedPreferences = getSharedPreferences("myTheme", MODE_PRIVATE);
+                GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition", 0));
+                int lColor = GEThemeManager.getInstance(this).getSelectedNavTextColor();
+                changeBitmapColor(lBitmap, mUserIv, lColor);
+            } catch (IOException e) {
 //            handle exception
             }
         }
     }
+
+    private void changeBitmapColor(Bitmap sourceBitmap, ImageView image, int color) {
+        Bitmap resultBitmap = Bitmap.createBitmap(sourceBitmap, 0, 0,
+                sourceBitmap.getWidth() - 1, sourceBitmap.getHeight() - 1);
+        Paint p = new Paint();
+        ColorFilter filter = new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN);
+        p.setColorFilter(filter);
+        image.setImageBitmap(resultBitmap);
+        Canvas canvas = new Canvas(resultBitmap);
+        canvas.drawBitmap(resultBitmap, 0, 0, p);
+    }
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
@@ -383,11 +406,10 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     protected void onStart() {
         super.onStart();
         applyTheme();
-        GEUserManager lGEUsermanager=GEUserManager.getInstance(getApplicationContext());
-        if (lGEUsermanager.getmUserInfo().getUserEmail().length() != 0)
-        {
+        GEUserManager lGEUsermanager = GEUserManager.getInstance(getApplicationContext());
+        if (lGEUsermanager.getmUserInfo().getUserEmail().length() != 0) {
             updateUi(true);
-        }else {
+        } else {
             updateUi(false);
         }
     }
@@ -401,5 +423,33 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     @Override
     public void onConnectionSuspended(int i) {
 
+    }
+
+    private void scheduleNotification(Notification notification, int delay) {
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        notification.defaults |= Notification.DEFAULT_SOUND;
+        notification.defaults |= Notification.DEFAULT_VIBRATE;
+
+        NotificationManager notificationManager=(NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Random random = new Random();
+        int notificationId = random.nextInt(9999 - 1000) + 1000;
+        notificationManager.notify(notificationId, notification);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
+
+    private Notification getNotification(String content) {
+        Notification.Builder builder = new Notification.Builder(this);
+        builder.setContentTitle(content);
+        builder.setContentText(content);
+        builder.setSmallIcon(R.drawable.ic_menu_gallery);
+        return builder.build();
     }
 }

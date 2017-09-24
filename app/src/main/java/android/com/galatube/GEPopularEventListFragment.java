@@ -82,7 +82,8 @@ public class GEPopularEventListFragment extends Fragment implements GEEventListn
                     if(GENetworkState.isNetworkStatusAvialable(getContext())) {
 
                         lLayout.removeView(lNoInternetView);
-                        mEvtServiceManger.loadEventsAsync(mChannelId, mEventTypes);
+                        if (mEvtServiceManger != null)
+                            mEvtServiceManger.loadEventsAsync(mChannelId, mEventTypes);
                     }
                 }
             });
@@ -117,7 +118,8 @@ public class GEPopularEventListFragment extends Fragment implements GEEventListn
         {
             startLodingIndicator(getView());
             mSearchVideoListView.getAdapter().notifyDataSetChanged();
-            mEvtServiceManger.loadEventsAsync(mChannelId, mEventTypes);
+            if (mEvtServiceManger != null)
+               mEvtServiceManger.loadEventsAsync(mChannelId, mEventTypes);
             //Only manually call onResume if fragment is already visible
             //Otherwise allow natural fragment lifecycle to call onResume
             onResume();
@@ -142,7 +144,13 @@ public class GEPopularEventListFragment extends Fragment implements GEEventListn
 
     private void stopLodingIndicator()
     {
-        mListProgressBar.setVisibility(View.INVISIBLE);
+        if (mListProgressBar != null)
+            mListProgressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onYoutubeServicesAuhtenticated() {
+        mEvtServiceManger.loadEventsAsync(mChannelId, mEventTypes);
     }
 
     @Override
@@ -163,7 +171,8 @@ public class GEPopularEventListFragment extends Fragment implements GEEventListn
 
     @Override
     public void loadMoreItems(RecyclerView.Adapter adapter) {
-        mEvtServiceManger.loadEventsAsync(mChannelId, mEventTypes);
+        if (mEvtServiceManger != null)
+            mEvtServiceManger.loadEventsAsync(mChannelId, mEventTypes);
     }
 
     @Override

@@ -80,9 +80,6 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
         } catch (IOException e) {
             e.printStackTrace();
         }
-        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsCompleted);
-        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsLive);
-        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsUpcomming);
     }
 
     @Override
@@ -103,9 +100,11 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
                     if(GENetworkState.isNetworkStatusAvialable(getContext())) {
 
                         lLayout.removeView(lNoInternetView);
-                        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsCompleted);
-                        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsLive);
-                        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsUpcomming);
+                        if (mEvtServiceManger != null) {
+                            mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsCompleted);
+                            mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsLive);
+                            mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsUpcomming);
+                        }
                     }
 
                 }
@@ -234,6 +233,13 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
         }
     }
 
+    @Override
+    public void onYoutubeServicesAuhtenticated() {
+        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsCompleted);
+        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsLive);
+        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsUpcomming);
+    }
+
     public void eventsLoadedFromChannel(String channelID, GEEventTypes eventType, boolean success)
     {
         if (eventType == GEEventTypes.EFetchEventsCompleted) {
@@ -262,6 +268,9 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
     @Override
     public void loadMoreItems(RecyclerView.Adapter adapter) {
         GEEventListAdapter lAdapter = (GEEventListAdapter)adapter;
+        if (mEvtServiceManger == null)
+            return;
+
         if (lAdapter.getmEventType() == GEEventTypes.EFetchEventsCompleted)
             mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsCompleted);
         else if (lAdapter.getmEventType() == GEEventTypes.EFetchEventsUpcomming)

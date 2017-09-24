@@ -16,56 +16,21 @@ import android.nfc.Tag;
 import android.os.StrictMode;
 import android.util.Log;
 
-import com.google.android.gms.auth.GoogleAuthException;
-import com.google.android.gms.auth.GoogleAuthUtil;
-import com.google.android.gms.auth.UserRecoverableAuthException;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.credentials.Credential;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
-import com.google.api.client.auth.oauth2.BearerToken;
-import com.google.api.client.auth.oauth2.StoredCredential;
-import com.google.api.client.auth.oauth2.TokenRequest;
-import com.google.api.client.auth.oauth2.TokenResponse;
-import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
-import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.auth.oauth2.GoogleOAuthConstants;
-import com.google.api.client.googleapis.auth.oauth2.GoogleRefreshTokenRequest;
-import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
-import com.google.api.client.googleapis.json.GoogleJsonResponseException;
-import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.Lists;
-import com.google.api.client.util.store.MemoryDataStoreFactory;
 import com.google.api.services.youtube.YouTube;
-import com.google.api.services.youtube.YouTubeScopes;
 import com.google.api.services.youtube.model.Channel;
 import com.google.api.services.youtube.model.ChannelListResponse;
 import com.google.api.services.youtube.model.PlaylistItemListResponse;
 import com.google.api.services.youtube.model.PlaylistListResponse;
 import com.google.api.services.youtube.model.SearchListResponse;
-import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.VideoListResponse;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
-import java.util.logging.Logger;
-
-import static com.google.api.services.youtube.YouTubeScopes.*;
 
 public class GEServiceManager
 {
@@ -78,90 +43,82 @@ public class GEServiceManager
         this.mContext = context;
         this.mListner = listner;
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
-        Reader clientSecretReader = new InputStreamReader(Auth.class.getResourceAsStream("/client_secrets.json"));
-        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(new JacksonFactory(), clientSecretReader);
-
-        String lAuthToken = GEUserManager.getInstance(mContext).getmUserInfo().getmAuthToken();
-        String lClientID = clientSecrets.getDetails().getClientId();
-        String lClientSecret = clientSecrets.getDetails().getClientSecret();
-        String lAccessToken = GEUserManager.getInstance(mContext).getmUserInfo().getmAccessToken();
-        String lRefreshToken = GEUserManager.getInstance(mContext).getmUserInfo().getmRefreshToken();
-
-        if (lAuthToken.length() > 0) {
-            {
-                try {
-                    GoogleTokenResponse tokenResponse =
-                            new GoogleAuthorizationCodeTokenRequest(
-                                    new NetHttpTransport(),
-                                    JacksonFactory.getDefaultInstance(),
-                                    "https://www.googleapis.com/oauth2/v4/token",
-                                    lClientID,
-                                    lClientSecret,
-                                    lAuthToken, "")  // Specify the same redirect URI that you use with your web
-                                    // app. If you don't have a web version of your app, you can
-                                    // specify an empty string.
-                                //.setGrantType("refresh_token")
-
-
-                                    .execute();
-                    lAccessToken = tokenResponse.getAccessToken();
-                    lRefreshToken = tokenResponse.getRefreshToken();
-
-                    GEUserManager.getInstance(mContext).setAccessToken(lAccessToken);
-                    GEUserManager.getInstance(mContext).setRefreshToken(lRefreshToken);
-                } catch (IOException e) {
-                    GoogleTokenResponse response = null;
-                    if (lRefreshToken != null && lRefreshToken.length() > 0) {
-                        GoogleRefreshTokenRequest req = new GoogleRefreshTokenRequest(new NetHttpTransport(),
-                                JacksonFactory.getDefaultInstance(), lRefreshToken, lClientID, lClientSecret);
-                        req.setGrantType("refresh_token");
-                        try {
-                            response = req.execute();
-                            System.out.println("RF token = " + response.getAccessToken());
-                            lAccessToken = response.getAccessToken();
-                            GEUserManager.getInstance(mContext).setAccessToken(lAccessToken);
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                    e.printStackTrace();
+        GETokenRefreshTask lRefreshTask = new GETokenRefreshTask(new GETokenRefreshListner() {
+            @Override
+            public Void onCompleteRefreshToken(String newToken) {
+                if (newToken.equals("error"))
+                {
+                    mYTService = new YouTube.Builder(new NetHttpTransport(), new GsonFactory(), null).setApplicationName(
+                            mContext.getString(R.string.app_name)).build();
+                    mListner.onYoutubeServicesAuhtenticated();
+                    return null;
                 }
+                GoogleCredential lCredential = new GoogleCredential().setAccessToken(newToken);
+                ArrayList scopes = Lists.newArrayList();
+                scopes.add("https://www.googleapis.com/auth/youtube");
+                lCredential .createScoped(scopes);
+                mYTService = new YouTube.Builder(new NetHttpTransport(), new GsonFactory(), lCredential ).setApplicationName(
+                        mContext.getString(R.string.app_name)).build();
+                mListner.onYoutubeServicesAuhtenticated();
+                return null;
             }
+        }, mContext);
 
-            GoogleCredential lCredential = new GoogleCredential().setAccessToken(lAccessToken);
-            if (lRefreshToken != null && lRefreshToken.length() > 0) {
-//            lCredential.setRefreshToken(lRefreshToken);
-            }
+        lRefreshTask.execute();
 
-            ArrayList scopes = Lists.newArrayList();
-            scopes.add("https://www.googleapis.com/auth/youtube");
-            lCredential .createScoped(scopes);
-            try {
-                boolean lRefreshed = lCredential.refreshToken();
-                if (lRefreshed == true)
-                    Log.d("YC", "refreshed ");
-                else
-                    Log.d("YC", "Not refreshed ");
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-            mYTService = new YouTube.Builder(new NetHttpTransport(), new GsonFactory(), lCredential ).setApplicationName(
-                    mContext.getString(R.string.app_name)).build();
-        }
-        else
-        {
-            mYTService = new YouTube.Builder(new NetHttpTransport(),
-                    new JacksonFactory(), new HttpRequestInitializer() {
-                @Override
-                public void initialize(HttpRequest hr) throws IOException {
-
-                }
-            }).setApplicationName(mContext.getString(R.string.app_name)).build();
-        }
+//
+//        String lClientID = clientSecrets.getDetails().getClientId();
+//        String lClientSecret = clientSecrets.getDetails().getClientSecret();
+//        String lAccessToken = GEUserManager.getInstance(mContext).getmUserInfo().getmAccessToken();
+//        String lRefreshToken = GEUserManager.getInstance(mContext).getmUserInfo().getmRefreshToken();
+//
+//        if (lAuthToken.length() > 0) {
+//            {
+//                try {
+//                    GoogleTokenResponse tokenResponse =
+//                            new GoogleAuthorizationCodeTokenRequest(
+//                                    new NetHttpTransport(),
+//                                    JacksonFactory.getDefaultInstance(),
+//                                    "https://www.googleapis.com/oauth2/v4/token",
+//                                    lClientID,
+//                                    lClientSecret,
+//                                    lAuthToken, "")
+//                                    .execute();
+//                    lAccessToken = tokenResponse.getAccessToken();
+//                    lRefreshToken = tokenResponse.getRefreshToken();
+//
+//                    GEUserManager.getInstance(mContext).setAccessToken(lAccessToken);
+//                    GEUserManager.getInstance(mContext).setRefreshToken(lRefreshToken);
+//                } catch (IOException e) {
+//                    GoogleTokenResponse response = null;
+//                    if (lRefreshToken != null && lRefreshToken.length() > 0) {
+//                        GoogleRefreshTokenRequest req = new GoogleRefreshTokenRequest(new NetHttpTransport(),
+//                                JacksonFactory.getDefaultInstance(), lRefreshToken, lClientID, lClientSecret);
+//                        req.setGrantType("refresh_token");
+//                        try {
+//                            response = req.execute();
+//                            System.out.println("RF token = " + response.getAccessToken());
+//                            lAccessToken = response.getAccessToken();
+//                            GEUserManager.getInstance(mContext).setAccessToken(lAccessToken);
+//                        } catch (IOException ex) {
+//                            ex.printStackTrace();
+//                        }
+//                    }
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            GoogleCredential lCredential = new GoogleCredential().setAccessToken(lAccessToken);
+//            ArrayList scopes = Lists.newArrayList();
+//            scopes.add("https://www.googleapis.com/auth/youtube");
+//            lCredential .createScoped(scopes);
+//            mYTService = new YouTube.Builder(new NetHttpTransport(), new GsonFactory(), lCredential ).setApplicationName(
+//                    mContext.getString(R.string.app_name)).build();
+//        }
+//        else
+//        {
+//
+//        }
     }
 
     private YouTube.Search.List eventQueryFor(GEEventTypes eventTypes, String channelID, String nextPageToken)
@@ -204,6 +161,9 @@ public class GEServiceManager
 
     private YouTube.Videos.List myLikeQueryFor(String nextPageToken)
     {
+        if (mYTService == null)
+            return null;
+
         YouTube.Videos.List query = null;
         try{
             query = mYTService.videos().list("id,snippet");
@@ -224,6 +184,11 @@ public class GEServiceManager
     private YouTube.Channels.List channelListQueryFor(String channelName, String nextPageToken)
     {
         YouTube.Channels.List query = null;
+        if (channelName == null)
+            return query;
+        if (mYTService == null)
+            return null;
+
         try{
             query = mYTService.channels().list("id");
             query.setKey(GEConstants.GEAPIKEY);
@@ -274,6 +239,11 @@ public class GEServiceManager
     private String getChannelIdFromName(String channelName)
     {
         YouTube.Channels.List query = channelListQueryFor(channelName, null);
+        if (query == null)
+            return null;
+        if (mYTService == null)
+            return null;
+
         try{
             ChannelListResponse response = query.execute();
             List<Channel> lChannels = response.getItems();
@@ -306,6 +276,9 @@ public class GEServiceManager
 
     public void loadPlaylists(String channelID, String ChannelName)
     {
+        if (channelID == null)
+            return;
+
         GEPlaylistManager lManager = GEPlaylistManager.getInstance();
         String lNextPageToken = lManager.pageTokenForInfo(ChannelName);
         if (!lManager.canFetchMore(ChannelName) && lNextPageToken == null) {
@@ -375,6 +348,9 @@ public class GEServiceManager
 
     public void loadEvents(String channelID, GEEventTypes eventType, String channelName)
     {
+        if (channelID == null)
+            return;
+
         GEEventManager lManager = GEEventManager.getInstance();
         String lNextPageToken = lManager.pageTokenForInfo(eventType, channelID);
         if (!lManager.canFetchMore(eventType, channelID) && lNextPageToken == null)

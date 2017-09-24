@@ -5,7 +5,7 @@ package android.com.galatube;
  */
 
 public class GEConstants {
-    public static final String GECHANNELID = "UCKwucPzHZ7zCUIf7If-Wo1g";
+    public static final String GECHANNELID = "TheSanskarGroup";
     public static final String GEAPIKEY = "AIzaSyAJB-O2RcnsjpdrIyzldTWXwWfxdMu1zE8";
     public static final String ARG_PAGE = "ARG_PAGE";
     public static final String ARG_PAGE1 = "ARG_PAGE1";

@@ -101,7 +101,6 @@ public class GEPlaylistFragment extends Fragment implements GEEventListner, GEOn
         GEPlaylistListAdapter lAdapter2 = new GEPlaylistListAdapter(getContext(), this, this, mChannelName);
         mPlayListListView.setAdapter(lAdapter2);// set adapter on recyclerview
         lAdapter2.notifyDataSetChanged();// Notify the adapter
-        mServiceManger.loadPlaylistAsync(mChannelName);
     }
 
     @Override
@@ -114,7 +113,8 @@ public class GEPlaylistFragment extends Fragment implements GEEventListner, GEOn
         super.setUserVisibleHint(visible);
         if (visible && isResumed()) {
             startLodingIndicator(getView());
-            mServiceManger.loadPlaylistAsync(mChannelName);
+            if (mServiceManger != null)
+                mServiceManger.loadPlaylistAsync(mChannelName);
 //            mPlayListListView.getAdapter().notifyDataSetChanged();
             //Only manually call onResume if fragment is already visible
             //Otherwise allow natural fragment lifecycle to call onResume
@@ -141,6 +141,11 @@ public class GEPlaylistFragment extends Fragment implements GEEventListner, GEOn
 
         if(mListProgressBar != null)
             mListProgressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onYoutubeServicesAuhtenticated() {
+        mServiceManger.loadPlaylistAsync(mChannelName);
     }
 
     @Override

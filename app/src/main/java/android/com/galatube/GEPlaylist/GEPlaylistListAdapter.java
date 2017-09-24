@@ -8,10 +8,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.google.api.services.youtube.model.Playlist;
@@ -87,7 +93,12 @@ public class GEPlaylistListAdapter extends  RecyclerView.Adapter<GEPlaylistListI
         try {
             InputStream lInputStream = mContext.getAssets().open("images/loadingthumbnailurl.png");
             Bitmap lBitmap = BitmapFactory.decodeStream(lInputStream);
-            lListItem.mImageView.setImageBitmap(lBitmap);
+//            lListItem.mImageView.setImageBitmap(lBitmap);
+            SharedPreferences sharedPreferences = mContext.getSharedPreferences("myTheme", Context.MODE_PRIVATE);
+            GEThemeManager.getInstance(mContext).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
+            int lColor = GEThemeManager.getInstance(mContext).getSelectedNavColor();
+            changeBitmapColor(lBitmap, lListItem.mImageView, lColor);
+
             imageLoader.displayImage(lUrl, lListItem.mImageView);
         } catch (IOException e) {
 //            handle exception
@@ -113,10 +124,26 @@ public class GEPlaylistListAdapter extends  RecyclerView.Adapter<GEPlaylistListI
         try {
             InputStream lInputStream = mContext.getAssets().open("images/playlistIcon.png");
             Bitmap lBitmap = BitmapFactory.decodeStream(lInputStream);
-            listHolder.mPlaylistIndicatorImgView.setImageBitmap(lBitmap);
+//            listHolder.mPlaylistIndicatorImgView.setImageBitmap(lBitmap);
+            SharedPreferences sharedPreferences = mContext.getSharedPreferences("myTheme", Context.MODE_PRIVATE);
+            GEThemeManager.getInstance(mContext).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
+            int lColor = GEThemeManager.getInstance(mContext).getSelectedNavTextColor();
+            changeBitmapColor(lBitmap, listHolder.mPlaylistIndicatorImgView, lColor);
+
         } catch (IOException e) {
 //            handle exception
         }
          return listHolder;
+    }
+
+    private void changeBitmapColor(Bitmap sourceBitmap, ImageView image, int color) {
+        Bitmap resultBitmap = Bitmap.createBitmap(sourceBitmap, 0, 0,
+                sourceBitmap.getWidth() - 1, sourceBitmap.getHeight() - 1);
+        Paint p = new Paint();
+        ColorFilter filter = new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN);
+        p.setColorFilter(filter);
+        image.setImageBitmap(resultBitmap);
+        Canvas canvas = new Canvas(resultBitmap);
+        canvas.drawBitmap(resultBitmap, 0, 0, p);
     }
 }
