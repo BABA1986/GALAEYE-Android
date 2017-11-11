@@ -258,7 +258,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     public void signOut(){
         GEUserManager lManager = GEUserManager.getInstance(getApplicationContext());
         lManager.resetData();
-        Auth.GoogleSignInApi.revokeAccess(googleApiClient);
+//        Auth.GoogleSignInApi.revokeAccess(googleApiClient);
       Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
           @Override
           public void onResult(@NonNull Status status) {

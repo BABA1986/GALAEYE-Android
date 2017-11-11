@@ -47,4 +47,15 @@ public class GEVideoListObj {
         GEVideoListPage lPage = new GEVideoListPage(response.getItems(), response.getNextPageToken(), response.getPrevPageToken());
         mVideoListPages.add(lPage);
     }
+
+    public void removeVideoFrom(int pageIndex, int videoIndex)
+    {
+        if (pageIndex >= mVideoListPages.size())
+            return;
+
+        GEVideoListPage lPage = mVideoListPages.get(pageIndex);
+        lPage.removeVideoFrom(videoIndex);
+        if (lPage.getmVideoList().size() == 0)
+            mVideoListPages.remove(pageIndex);
+    }
 }

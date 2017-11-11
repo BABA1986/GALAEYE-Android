@@ -21,15 +21,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
-import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -55,22 +52,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -79,8 +70,6 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -164,7 +153,8 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
                 .requestServerAuthCode("662481036351-sncgirak2vmnnjagoum9bsesfk755h79.apps.googleusercontent.com")
                 .requestScopes(
                         new Scope("https://www.googleapis.com/auth/youtube"),
-                        new Scope("https://www.googleapis.com/auth/youtube.upload"))
+                        new Scope("https://www.googleapis.com/auth/youtube.upload"),
+                new Scope("https://www.googleapis.com/auth/youtube.force-ssl"))
                 .requestEmail()
                 .requestIdToken("662481036351-sncgirak2vmnnjagoum9bsesfk755h79.apps.googleusercontent.com")
                 .requestId()
@@ -177,11 +167,50 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
                 .addOnConnectionFailedListener(this)
                 .build();
 
-        Auth.GoogleSignInApi.silentSignIn(googleApiClient);
-
         String lContent = "This is the notification scheduled.";
-        Notification lNotification = getNotification(lContent);
-        scheduleNotification(lNotification, 5000);
+//        Notification lNotification = getNotification(lContent);
+//        scheduleNotification(lNotification, 5000);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        OptionalPendingResult<GoogleSignInResult> lOpt = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
+        if (lOpt.isDone())
+        {
+            GoogleSignInResult lResult = lOpt.get();
+            try {
+                handleResult(lResult);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+        {
+            // If the user has not previously signed in on this device or the sign-in has
+            // expired,
+            // this asynchronous branch will attempt to sign in the user silently.  Cross-device
+            // single sign-on will occur in this branch.
+            lOpt.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+                @Override
+                public void onResult(GoogleSignInResult googleSignInResult) {
+                    try {
+                        handleResult(googleSignInResult);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+
+        applyTheme();
+        GEUserManager lGEUsermanager = GEUserManager.getInstance(getApplicationContext());
+        if (lGEUsermanager.getmUserInfo().getUserEmail().length() != 0) {
+            updateUi(true);
+        } else {
+            updateUi(false);
+        }
     }
 
     private void applyTheme() {
@@ -341,6 +370,9 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     private void handleResult(GoogleSignInResult result) throws IOException {
         if (result.isSuccess()) {
             GoogleSignInAccount account = result.getSignInAccount();
+
+            Account lAccount = account.getAccount();
+
             String lAccessToken = (account != null) ? account.getServerAuthCode() : "";
             String lIDToken = (account != null) ? account.getIdToken() : "";
             String lID = (account != null) ? account.getId() : "";
@@ -349,6 +381,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
             String email = account.getEmail();
             String image = account.getPhotoUrl().toString();
             GEUserManager lGEUserManager = GEUserManager.getInstance(getApplicationContext());
+            lGEUserManager.setmGoogleAcct(lAccount);
             lGEUserManager.setUserName(name);
             lGEUserManager.setUserEmail(email);
             lGEUserManager.setUserImageUrl(image);
@@ -356,7 +389,6 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
             lGEUserManager.setIdToken(lIDToken);
             lGEUserManager.setUserId(lID);
             googleApiClient.connect();
-
             updateUi(true);
         } else {
             updateUi(false);
@@ -400,20 +432,6 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        applyTheme();
-        GEUserManager lGEUsermanager = GEUserManager.getInstance(getApplicationContext());
-        if (lGEUsermanager.getmUserInfo().getUserEmail().length() != 0) {
-            updateUi(true);
-        } else {
-            updateUi(false);
-        }
-    }
-
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {

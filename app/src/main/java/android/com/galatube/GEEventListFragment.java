@@ -1,31 +1,24 @@
 package android.com.galatube;
 
 import android.com.galatube.Connectivity.GENetworkState;
-import android.com.galatube.GEPlaylist.GEPlaylistManager;
-import android.com.galatube.GEPlaylist.GEPlaylistObj;
-import android.com.galatube.GEPlaylist.GEPlaylistPage;
-import android.com.galatube.GEPlaylist.GEPlaylistVideolistActivity;
 import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.GEYoutubeEvents.GEEventListAdapter;
-import android.com.galatube.GEYoutubeEvents.GEEventListObj;
-import android.com.galatube.GEYoutubeEvents.GEEventListPage;
 import android.com.galatube.GEYoutubeEvents.GEEventListner;
 import android.com.galatube.GEYoutubeEvents.GEEventManager;
 import android.com.galatube.GEYoutubeEvents.GEEventTypes;
 import android.com.galatube.GEYoutubeEvents.GELiveEventListAdapter;
 import android.com.galatube.GEYoutubeEvents.GEOnLoadMore;
 import android.com.galatube.GEYoutubeEvents.GERecyclerItemClickListner;
+import android.com.galatube.GEYoutubeEvents.GEReminderDataMgr;
 import android.com.galatube.GEYoutubeEvents.GEServiceManager;
-import android.content.Context;
+import android.com.galatube.GEYoutubeEvents.GEVideoListObj;
+import android.com.galatube.GEYoutubeEvents.GEVideoListPage;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,11 +28,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-import com.google.api.services.youtube.model.Playlist;
-import com.google.api.services.youtube.model.SearchResult;
+import com.google.api.services.youtube.model.Video;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -110,6 +100,14 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
                 }
             });
         }
+        else
+        {
+            if (mEvtServiceManger != null) {
+                mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsCompleted);
+                mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsLive);
+                mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsUpcomming);
+            }
+        }
 
         return view;
     }
@@ -174,12 +172,12 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
         GEEventManager lMamager = GEEventManager.getInstance();
         LinearLayout lAllListLayout = (LinearLayout)fragmentView.findViewById(R.id.alllists);
         LinearLayout lLiveLayout = (LinearLayout)lAllListLayout.findViewById(R.id.livelistbase);
-        GEEventListObj listObj = lMamager.eventListObjForInfo(GEEventTypes.EFetchEventsLive, GEConstants.GECHANNELID);
+        GEVideoListObj listObj = lMamager.videoListObjForInfo(GEEventTypes.EFetchEventsLive, GEConstants.GECHANNELID);
         if (listObj != null) {
-            ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
+            ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
             if (listPages != null && (listPages.size() > 0)) {
-                GEEventListPage lPage = listPages.get(0);
-                List<SearchResult> lResults = lPage.getmEventList();
+                GEVideoListPage lPage = listPages.get(0);
+                List<Video> lResults = lPage.getmVideoList();
                 Button lMoreLiveBtn = (Button) fragmentView.findViewById(R.id.live_more_button);
                 int lIsVisible = (lResults.size() < 10) ? fragmentView.GONE : fragmentView.VISIBLE;
                 lMoreLiveBtn.setVisibility(lIsVisible);
@@ -193,12 +191,12 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
         }
 
         lLiveLayout = (LinearLayout)lAllListLayout.findViewById(R.id.upcomminglistbase);
-        listObj = lMamager.eventListObjForInfo(GEEventTypes.EFetchEventsUpcomming, GEConstants.GECHANNELID);
+        listObj = lMamager.videoListObjForInfo(GEEventTypes.EFetchEventsUpcomming, GEConstants.GECHANNELID);
         if (listObj != null) {
-            ArrayList<GEEventListPage> lUpcomPage = listObj.getmEventListPages();
+            ArrayList<GEVideoListPage> lUpcomPage = listObj.getmVideoListPages();
             if (lUpcomPage.size() > 0) {
-                GEEventListPage lPage = lUpcomPage.get(0);
-                List<SearchResult> lResults = lPage.getmEventList();
+                GEVideoListPage lPage = lUpcomPage.get(0);
+                List<Video> lResults = lPage.getmVideoList();
                 Button lMoreUpcomBtn = (Button) fragmentView.findViewById(R.id.upcomming_more_button);
                 int lIsVisible = (lResults.size() < 10) ? fragmentView.GONE : fragmentView.VISIBLE;
                 lMoreUpcomBtn.setVisibility(lIsVisible);
@@ -213,12 +211,12 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
         }
 
         lLiveLayout = (LinearLayout)lAllListLayout.findViewById(R.id.completedlistbase);
-        listObj = lMamager.eventListObjForInfo(GEEventTypes.EFetchEventsCompleted, GEConstants.GECHANNELID);
+        listObj = lMamager.videoListObjForInfo(GEEventTypes.EFetchEventsCompleted, GEConstants.GECHANNELID);
         if (listObj != null) {
-            ArrayList<GEEventListPage> lCompPage = listObj.getmEventListPages();
+            ArrayList<GEVideoListPage> lCompPage = listObj.getmVideoListPages();
             if (lCompPage.size() > 0) {
-                GEEventListPage lPage = lCompPage.get(0);
-                List<SearchResult> lResults = lPage.getmEventList();
+                GEVideoListPage lPage = lCompPage.get(0);
+                List<Video> lResults = lPage.getmVideoList();
                 Button lMorecomBtn = (Button) fragmentView.findViewById(R.id.completed_more_button);
                 int lIsVisible = (lResults.size() < 10) ? fragmentView.GONE : fragmentView.VISIBLE;
                 lMorecomBtn.setVisibility(lIsVisible);
@@ -288,14 +286,32 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
     public void onRecyclerItemClicked(View view, RecyclerView.ViewHolder viewHolder, int position, GEEventTypes eventTypes)
     {
         GEEventManager lMamager = GEEventManager.getInstance();
-        GEEventListObj listObj = lMamager.eventListObjForInfo(eventTypes, GEConstants.GECHANNELID);
-        ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
+        GEVideoListObj listObj = lMamager.videoListObjForInfo(eventTypes, GEConstants.GECHANNELID);
+        ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
         int lPageIndex = (position >= 50) ? position/50 : 0;
-        GEEventListPage lPage = listPages.get(lPageIndex);
-        List<SearchResult> lResults = lPage.getmEventList();
+        GEVideoListPage lPage = listPages.get(lPageIndex);
+        List<Video> lResults = lPage.getmVideoList();
         int lPosition = position - lPageIndex*50;
-        SearchResult lVideoItem = lResults.get(lPosition);
+        Video lVideoItem = lResults.get(lPosition);
 
+        int lViewId = view.getId();
+        if (lViewId == R.id.notificationtouchbtn)
+        {
+            GEReminderDataMgr lReminderMgr = GEReminderDataMgr.getInstance(getContext());
+            View lCardView = (View)viewHolder.itemView;
+            ImageButton lBellBtn = (ImageButton)lCardView.findViewById(R.id.notificationbtn);
+            if(!lBellBtn.isSelected()) {
+                lReminderMgr.addReminderWinInfo(lVideoItem.getId(), lVideoItem.getLiveStreamingDetails().getScheduledStartTime().toString());
+                lBellBtn.setImageResource(R.drawable.notificationbellon);
+            }
+            else {
+                lReminderMgr.deleteReminderWinInfo(lVideoItem.getId());
+                lBellBtn.setImageResource(R.drawable.notificationbell);
+            }
+
+            lBellBtn.setSelected(!lBellBtn.isSelected());
+            return;
+        }
         startActivity(new Intent(getActivity(),GEEventPlayActivity.class));
     }
 }

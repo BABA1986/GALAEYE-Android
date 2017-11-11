@@ -18,19 +18,12 @@ public class GEEventManager {
         return ourInstance;
     }
 
-    private ArrayList<GEEventListObj> mEventListObjs;
     private ArrayList<GEVideoListObj> mVideoListObjs;
 
     private GEEventManager() {
-        mEventListObjs = new ArrayList<GEEventListObj>() {
-        };
-
         mVideoListObjs = new ArrayList<GEVideoListObj>();
     }
 
-    public ArrayList<GEEventListObj> getmEventListObjs() {
-        return mEventListObjs;
-    }
 
     public ArrayList<GEVideoListObj> getmVideoListObjs() {
         return mVideoListObjs;
@@ -38,25 +31,25 @@ public class GEEventManager {
 
     public String pageTokenForInfo(GEEventTypes eventType, String channelID)
     {
-        GEEventListObj lGEEventListObj = eventListObjForInfo(eventType, channelID);
-        if (lGEEventListObj == null)
+        GEVideoListObj lGEVideoListObj = videoListObjForInfo(eventType, channelID);
+        if (lGEVideoListObj == null)
         {
             return null;
         }
 
-        GEEventListPage lLastPage = lGEEventListObj.getmEventListPages().get(lGEEventListObj.getmEventListPages().size()-1) ;
+        GEVideoListPage lLastPage = lGEVideoListObj.getmVideoListPages().get(lGEVideoListObj.getmVideoListPages().size()-1) ;
         return lLastPage.getmNextPageToken();
     }
 
     public boolean canFetchMore(GEEventTypes eventType, String channelID)
     {
-        GEEventListObj lGEEventListObj = eventListObjForInfo(eventType, channelID);
-        if (lGEEventListObj == null)
+        GEVideoListObj lGEVideoListObj = videoListObjForInfo(eventType, channelID);
+        if (lGEVideoListObj == null)
         {
             return true;
         }
 
-        GEEventListPage lLastPage = lGEEventListObj.getmEventListPages().get(lGEEventListObj.getmEventListPages().size()-1) ;
+        GEVideoListPage lLastPage = lGEVideoListObj.getmVideoListPages().get(lGEVideoListObj.getmVideoListPages().size()-1) ;
 
         if (lLastPage.getmNextPageToken() == null){
             return false;
@@ -69,27 +62,21 @@ public class GEEventManager {
         return false;
     }
 
-    public void addEventSearchResponse(SearchListResponse response, GEEventTypes eventType, String channelID)
+    public void removeVideo(GEEventTypes eventType, String channelID, int pageIndex, int videoIndex)
     {
-        GEEventListObj lGEEventListObj = null;
-        if (response.getItems().size() == 0) {
-            return;
-        }
-
-        lGEEventListObj = eventListObjForInfo(eventType, channelID);
-
-        if(lGEEventListObj == null)
+        int index = 0;
+        for (; index < mVideoListObjs.size(); ++index)
         {
-            lGEEventListObj = new GEEventListObj(response, eventType, channelID);
-            mEventListObjs.add(lGEEventListObj);
-        }
-        else
-        {
-            lGEEventListObj.addEventFromResponse(response);
+            GEVideoListObj lListObj = mVideoListObjs.get(index);
+            if ((eventType == lListObj.getmEventType()) && (lListObj.getmChannelSource().equalsIgnoreCase(channelID)))
+            {
+                lListObj.removeVideoFrom(pageIndex, videoIndex);
+                break;
+            }
         }
     }
 
-    public void addMyLikedSearchResponse(VideoListResponse response, GEEventTypes eventType, String channelID)
+    public void addVideoSearchResponse(VideoListResponse response, GEEventTypes eventType, String channelID)
     {
         GEVideoListObj lGEVideoListObj = null;
         if (response.getItems().size() == 0) {
@@ -109,22 +96,6 @@ public class GEEventManager {
         }
     }
 
-    public GEEventListObj eventListObjForInfo(GEEventTypes eventType, String channelID)
-    {
-        GEEventListObj lListObj = null;
-        GEEventListObj lRetListObj = null;
-        for (int index = 0; index < mEventListObjs.size(); ++index)
-        {
-            lListObj = mEventListObjs.get(index);
-            if ((eventType == lListObj.getmEventType()) && (lListObj.getmChannelSource().equalsIgnoreCase(channelID)))
-            {
-                lRetListObj = lListObj;
-                break;
-            }
-        }
-
-        return lRetListObj;
-    }
 
     public GEVideoListObj videoListObjForInfo(GEEventTypes eventType, String channelID)
     {

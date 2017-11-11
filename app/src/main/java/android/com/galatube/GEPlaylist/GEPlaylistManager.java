@@ -1,10 +1,6 @@
 package android.com.galatube.GEPlaylist;
-import android.com.galatube.GEYoutubeEvents.GEEventListObj;
-import android.com.galatube.GEYoutubeEvents.GEEventListPage;
-import android.com.galatube.GEYoutubeEvents.GEEventTypes;
 
 import com.google.api.services.youtube.model.PlaylistListResponse;
-import com.google.api.services.youtube.model.SearchListResponse;
 
 import java.util.ArrayList;
 

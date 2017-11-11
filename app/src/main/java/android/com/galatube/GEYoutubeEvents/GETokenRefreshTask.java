@@ -5,7 +5,12 @@ import android.com.galatube.R;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.auth.api.Auth;
+import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl;
+import com.google.api.client.auth.oauth2.AuthorizationCodeTokenRequest;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.auth.oauth2.GoogleRefreshTokenRequest;
@@ -14,12 +19,16 @@ import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.StreamingContent;
 import com.google.api.services.youtube.YouTube;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.security.PrivateKey;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.StringTokenizer;
 
 /**
  * Created by deepak on 23/09/17.
@@ -56,6 +65,25 @@ public class GETokenRefreshTask extends AsyncTask<Void, Void, String>
             return "error";
         }
         try {
+//            requestUrl = new GoogleAuthorizationCodeRequestUrl(lClientID, "https://www.googleapis.com/oauth2/v4/token", scopes).setAccessType("offline").build();
+
+            ArrayList<String> lScopeList = new ArrayList<String>();
+            lScopeList.add("");
+            Collection<String> lScopes = new ArrayList<String>(lScopeList);
+
+            GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+                    new NetHttpTransport(),
+                    JacksonFactory.getDefaultInstance(), clientSecrets, lScopes)
+                    .build();
+
+            AuthorizationCodeRequestUrl authorizationUrl =
+                    flow.newAuthorizationUrl().setRedirectUri("https://www.googleapis.com/oauth2/v4/token")
+                            .setApprovalPrompt("force")
+                            .setAccessType("offline");
+            authorizationUrl.build();
+
+
+
             GoogleTokenResponse tokenResponse =
                     new GoogleAuthorizationCodeTokenRequest(
                             new NetHttpTransport(),
@@ -66,10 +94,12 @@ public class GETokenRefreshTask extends AsyncTask<Void, Void, String>
                             lAuthToken, "")
                             .execute();
             lAccessToken = tokenResponse.getAccessToken();
-            lRefreshToken = tokenResponse.getRefreshToken();
-
             GEUserManager.getInstance(mContext).setAccessToken(lAccessToken);
-            GEUserManager.getInstance(mContext).setRefreshToken(lRefreshToken);
+
+            if (lRefreshToken == null || lRefreshToken.length() == 0) {
+                lRefreshToken = tokenResponse.getRefreshToken();
+                GEUserManager.getInstance(mContext).setRefreshToken(lRefreshToken);
+            }
             return lAccessToken;
         } catch (IOException e) {
             GoogleTokenResponse response = null;

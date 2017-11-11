@@ -1,14 +1,10 @@
 package android.com.galatube.GEUserModal;
 
-import android.com.galatube.GEYoutubeEvents.GEEventListObj;
-import android.com.galatube.GEYoutubeEvents.GEEventManager;
+import android.accounts.Account;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-
-import java.util.ArrayList;
 
 /**
  * Created by RaviNITK on 02/03/17.
@@ -30,11 +26,8 @@ public class GEUserManager
     }
 
     public void resetData(){
-        SharedPreferences sharedPreferences=mContext.getSharedPreferences("MyPreference",Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor=sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
-        editor.commit();
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MyPreference",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
 
         mUserInfo.setUserName("");
         mUserInfo.setmUserId("");
@@ -42,8 +35,9 @@ public class GEUserManager
         mUserInfo.setmUserImageUrl("");
         mUserInfo.setmAuthToken("");
         mUserInfo.setmIdTokeen("");
-        mUserInfo.setmRefreshToken("");
+//        mUserInfo.setmRefreshToken("");
         mUserInfo.setmAccessToken("");
+        saveState();
     }
 
     private GEUserManager(Context context) {
@@ -57,7 +51,7 @@ public class GEUserManager
     void initUserInfo()
     {
         mUserInfo = new GEUserInfo();
-        SharedPreferences sharedPreferences=mContext.getSharedPreferences("MyPreference",Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MyPreference",Context.MODE_PRIVATE);
         String lUserName = sharedPreferences.getString("UserName","");
         mUserInfo.setUserName(lUserName);
 
@@ -96,6 +90,11 @@ public class GEUserManager
         editor.putString("AccessToken", mUserInfo.getmAccessToken());
         editor.apply();
         editor.commit();
+    }
+
+    public void setmGoogleAcct(Account googleAcct)
+    {
+        mUserInfo.setGoogleAcct(googleAcct);
     }
 
     public void setUserName(String name)

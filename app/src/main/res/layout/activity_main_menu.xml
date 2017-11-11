@@ -45,6 +45,8 @@
                     android:layout_width="60dp"
                     android:layout_marginTop="20dp"
                     android:layout_height="60dp"
+                    android:clickable="false"
+                    android:duplicateParentState="true"
                    />
 
                 <TextView
@@ -52,7 +54,9 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/welcome_tv"
                     android:text="Welcome"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:clickable="false"
+                    android:duplicateParentState="true"/>
 
                 <TextView
                     android:id="@+id/signIn_tv"
@@ -60,7 +64,9 @@
                     android:layout_marginTop="0dp"
                     android:textColor="#fff"
                     android:layout_height="match_parent"
-                    android:text="SignIn" />
+                    android:text="SignIn"
+                    android:clickable="false"
+                    android:duplicateParentState="true"/>
 
             </LinearLayout>
 

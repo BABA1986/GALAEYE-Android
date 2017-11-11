@@ -2,8 +2,8 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/card_view"
-    android:layout_width="192dp"
-    android:layout_height="158dp"
+    android:layout_width="250dp"
+    android:layout_height="170dp"
     card_view:cardUseCompatPadding="true"
     card_view:cardBackgroundColor="@color/cardview_light_background"
     >
@@ -16,24 +16,53 @@
 
         <ImageView
             android:id="@+id/image"
-            android:layout_width="192dp"
+            android:layout_width="match_parent"
             android:layout_height="108dp"
             android:scaleType="centerCrop" />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:gravity="center_vertical">
+            android:layout_height="60dp"
+            android:paddingLeft="5dp"
+            >
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textSize="16dp"
+            android:layout_height="32dp"
+            android:textSize="14dp"
             android:includeFontPadding="false"
             android:lines="2"
-            android:gravity="center_vertical"
             android:textColor="#474747"
             />
+            <TextView
+                android:id="@+id/datetime"
+                android:layout_width="wrap_content"
+                android:layout_height="22dp"
+                android:layout_below="@+id/title"
+                android:textSize="12dp"
+                android:includeFontPadding="false"
+                android:text="Live on 21/09/17 at 7:30 PM"
+                android:gravity="center_vertical"
+                android:lines="1"
+                android:textColor="#474747"
+                />
+
+            <ImageButton
+                android:id="@+id/notificationbtn"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_alignRight="@+id/title"
+                android:layout_alignTop="@+id/datetime"
+                android:background="@drawable/notificationbell"
+                android:scaleType="centerCrop" />
+
+            <ImageButton
+                android:id="@+id/notificationtouchbtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignRight="@+id/notificationbtn"
+                android:layout_alignBottom="@+id/notificationbtn"
+                android:background="@android:color/transparent" />
         </RelativeLayout>
 
     </LinearLayout>

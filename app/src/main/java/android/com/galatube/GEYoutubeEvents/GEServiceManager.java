@@ -9,14 +9,13 @@ import android.com.galatube.*;
 import android.com.galatube.GEConstants;
 import android.com.galatube.GEPlaylist.GEPlaylistManager;
 import android.com.galatube.GEPlaylist.GEVideoListManager;
-import android.com.galatube.GEUserModal.GEAuth;
 import android.com.galatube.GEUserModal.GEUserManager;
 import android.content.Context;
-import android.nfc.Tag;
-import android.os.StrictMode;
 import android.util.Log;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.Lists;
@@ -26,11 +25,15 @@ import com.google.api.services.youtube.model.ChannelListResponse;
 import com.google.api.services.youtube.model.PlaylistItemListResponse;
 import com.google.api.services.youtube.model.PlaylistListResponse;
 import com.google.api.services.youtube.model.SearchListResponse;
+import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.VideoListResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class GEServiceManager
 {
@@ -43,28 +46,53 @@ public class GEServiceManager
         this.mContext = context;
         this.mListner = listner;
 
-        GETokenRefreshTask lRefreshTask = new GETokenRefreshTask(new GETokenRefreshListner() {
-            @Override
-            public Void onCompleteRefreshToken(String newToken) {
-                if (newToken.equals("error"))
-                {
-                    mYTService = new YouTube.Builder(new NetHttpTransport(), new GsonFactory(), null).setApplicationName(
-                            mContext.getString(R.string.app_name)).build();
-                    mListner.onYoutubeServicesAuhtenticated();
-                    return null;
-                }
-                GoogleCredential lCredential = new GoogleCredential().setAccessToken(newToken);
-                ArrayList scopes = Lists.newArrayList();
-                scopes.add("https://www.googleapis.com/auth/youtube");
-                lCredential .createScoped(scopes);
-                mYTService = new YouTube.Builder(new NetHttpTransport(), new GsonFactory(), lCredential ).setApplicationName(
-                        mContext.getString(R.string.app_name)).build();
-                mListner.onYoutubeServicesAuhtenticated();
-                return null;
-            }
-        }, mContext);
+        Account lAccount = GEUserManager.getInstance(mContext).getmUserInfo().getGoogleAcct();
 
-        lRefreshTask.execute();
+        if (lAccount == null) {
+            mYTService = new YouTube.Builder(new NetHttpTransport(), new GsonFactory(), null).setApplicationName(
+                    mContext.getString(R.string.app_name)).build();
+//            mListner.onYoutubeServicesAuhtenticated();
+            return;
+        }
+
+            GoogleAccountCredential lCredential =
+                    GoogleAccountCredential.usingOAuth2(
+                            mContext,
+                            Collections.singleton(
+                                    "https://www.googleapis.com/auth/youtube")
+                    );
+
+            lCredential.setSelectedAccount(lAccount);
+            mYTService = new YouTube.Builder(new NetHttpTransport(), new GsonFactory(), lCredential ).setApplicationName(
+                    mContext.getString(R.string.app_name)).build();
+//            mListner.onYoutubeServicesAuhtenticated();
+
+
+
+
+//        GETokenRefreshTask lRefreshTask = new GETokenRefreshTask(new GETokenRefreshListner() {
+//            @Override
+//            public Void onCompleteRefreshToken(String newToken) {
+//                if (newToken.equals("error"))
+//                {
+//                    mYTService = new YouTube.Builder(new NetHttpTransport(), new GsonFactory(), null).setApplicationName(
+//                            mContext.getString(R.string.app_name)).build();
+//                    mListner.onYoutubeServicesAuhtenticated();
+//                    return null;
+//                }
+//
+//                GoogleCredential lCredential = new GoogleCredential().setAccessToken(newToken);
+//                ArrayList scopes = Lists.newArrayList();
+//                scopes.add("https://www.googleapis.com/auth/youtube");
+//                lCredential .createScoped(scopes);
+//                mYTService = new YouTube.Builder(new NetHttpTransport(), new GsonFactory(), lCredential ).setApplicationName(
+//                        mContext.getString(R.string.app_name)).build();
+//                mListner.onYoutubeServicesAuhtenticated();
+//                return null;
+//            }
+//        }, mContext);
+//
+//        lRefreshTask.execute();
 
 //
 //        String lClientID = clientSecrets.getDetails().getClientId();
@@ -179,6 +207,56 @@ public class GEServiceManager
         }
 
         return query;
+    }
+
+    private YouTube.Videos.List queryForVideos(String lVideoIds, String nextPageToken)
+    {
+        YouTube.Videos.List query = null;
+        try {
+            query = mYTService.videos().list("id,snippet,liveStreamingDetails,statistics");
+            query.setKey(GEConstants.GEAPIKEY);
+            query.setMaxResults(50L);
+            query.setPageToken(nextPageToken);
+            query.setId(lVideoIds);
+        }catch(IOException e){
+            Log.d("YC", "Could not initialize: "+e);
+        }
+        return query;
+    }
+
+    private String remindersVideoIds()
+    {
+        String lVideos = "";
+        GEReminderDataMgr lReminderMgr = GEReminderDataMgr.getInstance(mContext);
+        HashMap<String, HashMap<String, String>> lReminders = lReminderMgr.getmReminders();
+        Set<String> lVideoIds = lReminders.keySet();
+        for(String lVideoId: lVideoIds){
+            lVideos = lVideos + lVideoId + ",";
+        }
+
+        if (lVideos.length() > 0)
+            lVideos = lVideos.substring(0, lVideos.length() - 1);
+
+        return lVideos;
+    }
+
+    private String videoIdsFromResponse(SearchListResponse response)
+    {
+        String lVideos = "";
+        List<SearchResult> lResults = response.getItems();
+        int lTotalItem = lResults.size();
+        for (int index = 0; index < lTotalItem; ++index)
+        {
+            SearchResult lResult = lResults.get(index);
+
+            if (index < lTotalItem-1) {
+                lVideos = lVideos + lResult.getId().getVideoId() + ",";
+            continue;
+        }
+            lVideos = lVideos + lResult.getId().getVideoId();
+        }
+
+        return lVideos;
     }
 
     private YouTube.Channels.List channelListQueryFor(String channelName, String nextPageToken)
@@ -346,6 +424,15 @@ public class GEServiceManager
         }.start();
     }
 
+    public void loadReminders()
+    {
+        GEEventManager lManager = GEEventManager.getInstance();
+        String lNextPageToken = lManager.pageTokenForInfo(GEEventTypes.EFetchEventsReminders, GEConstants.GECHANNELID);
+        if (!lManager.canFetchMore(GEEventTypes.EFetchEventsReminders, GEConstants.GECHANNELID) && lNextPageToken == null) {
+            return;
+        }
+    }
+
     public void loadEvents(String channelID, GEEventTypes eventType, String channelName)
     {
         if (channelID == null)
@@ -353,8 +440,7 @@ public class GEServiceManager
 
         GEEventManager lManager = GEEventManager.getInstance();
         String lNextPageToken = lManager.pageTokenForInfo(eventType, channelID);
-        if (!lManager.canFetchMore(eventType, channelID) && lNextPageToken == null)
-        {
+        if (!lManager.canFetchMore(eventType, channelID) && lNextPageToken == null){
             return;
         }
         if (eventType == GEEventTypes.EFetchEventsLiked)
@@ -362,7 +448,21 @@ public class GEServiceManager
             YouTube.Videos.List query = myLikeQueryFor(lNextPageToken);
             try {
                 VideoListResponse response = query.execute();
-                lManager.addMyLikedSearchResponse(response, eventType, channelName);
+                lManager.addVideoSearchResponse(response, eventType, channelName);
+            }catch (UserRecoverableAuthIOException exception){
+                mContext.startActivity(exception.getIntent());
+            }
+            catch (IOException e) {
+//                mContext.startActivity(exception.getIntent());
+                Log.d("YC", "Could not search: " + e);
+            }
+        }
+        else if (eventType == GEEventTypes.EFetchEventsReminders){
+            try {
+                String lVideoIds = remindersVideoIds();
+                YouTube.Videos.List lVideoQuery = queryForVideos(lVideoIds, lNextPageToken);
+                VideoListResponse lVideoResponse = lVideoQuery.execute();
+                lManager.addVideoSearchResponse(lVideoResponse, eventType, channelName);
             } catch (IOException e) {
                 Log.d("YC", "Could not search: " + e);
             }
@@ -372,7 +472,10 @@ public class GEServiceManager
             YouTube.Search.List query = eventQueryFor(eventType, channelID, lNextPageToken);
             try {
                 SearchListResponse response = query.execute();
-                lManager.addEventSearchResponse(response, eventType, channelName);
+                String lVideoIds = videoIdsFromResponse(response);
+                YouTube.Videos.List lVideoQuery = queryForVideos(lVideoIds, lNextPageToken);
+                VideoListResponse lVideoResponse = lVideoQuery.execute();
+                lManager.addVideoSearchResponse(lVideoResponse, eventType, channelName);
             } catch (IOException e) {
                 Log.d("YC", "Could not search: " + e);
             }

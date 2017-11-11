@@ -3,6 +3,7 @@ package android.com.galatube;
 import android.com.galatube.GEPlaylist.GEPlaylistFragment;
 import android.com.galatube.GEYoutubeEvents.GEEventTypes;
 import android.com.galatube.GEYoutubeEvents.GELikedListFragment;
+import android.com.galatube.GEYoutubeEvents.GEReminderListFragment;
 import android.com.galatube.model.GEMenu.GESubMenu;
 import android.content.Context;
 import android.os.Bundle;
@@ -56,6 +57,11 @@ public class GEPageAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position)
     {
         GESubMenu lSubMenu = mSubMenus.get(position);
+
+        if (lSubMenu.getmSubMenuName().equals("Reminders") == true)
+        {
+            return GEReminderListFragment.newInstance(position + 1, GEConstants.GECHANNELID);
+        }
         if (lSubMenu.getmSubMenuName().equals("Popular") == true)
         {
             return GEPopularEventListFragment.newInstance(position + 1, GEEventTypes.EFetchEventsPopularCompleted, GEConstants.GECHANNELID);

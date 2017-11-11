@@ -5,18 +5,25 @@ import android.com.galatube.GEConstants;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.api.client.util.Data;
 import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Thumbnail;
 import com.google.api.services.youtube.model.ThumbnailDetails;
+import com.google.api.services.youtube.model.Video;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,11 +52,11 @@ public class GEEventListAdapter extends
     @Override
     public int getItemCount() {
         GEEventManager lMamager = GEEventManager.getInstance();
-        GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, GEConstants.GECHANNELID);
+        GEVideoListObj listObj = lMamager.videoListObjForInfo(mEventType, GEConstants.GECHANNELID);
         if (listObj == null) return 0;
-        ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
-        GEEventListPage lPage = listPages.get(listPages.size() - 1);
-        List<SearchResult> lResults = lPage.getmEventList();
+        ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
+        GEVideoListPage lPage = listPages.get(listPages.size() - 1);
+        List<Video> lResults = lPage.getmVideoList();
         if (lResults.size()>10){
             return 10;
         }else {
@@ -62,14 +69,36 @@ public class GEEventListAdapter extends
 
         GEEventListItemView lListItem = (GEEventListItemView) holder;// holder
         GEEventManager lMamager = GEEventManager.getInstance();
-        GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, GEConstants.GECHANNELID);
-        ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
+        GEVideoListObj listObj = lMamager.videoListObjForInfo(mEventType, GEConstants.GECHANNELID);
+        ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
         int lPageIndex = (position >= 50) ? position/50 : 0;
-        GEEventListPage lPage = listPages.get(lPageIndex);
-        List<SearchResult> lResults = lPage.getmEventList();
+        GEVideoListPage lPage = listPages.get(lPageIndex);
+        List<Video> lResults = lPage.getmVideoList();
         int lPosition = position - lPageIndex*50;
-        SearchResult lResult = lResults.get(lPosition);
+        Video lResult = lResults.get(lPosition);
         lListItem.mTitleView.setText(lResult.getSnippet().getTitle());
+        lListItem.mNotificationBtn.setVisibility(View.GONE);
+        String lDateTimeStr = lResult.getLiveStreamingDetails().getScheduledStartTime().toString();
+        lDateTimeStr = fomateDateStr(lDateTimeStr);
+
+        if (mEventType == GEEventTypes.EFetchEventsUpcomming
+                || mEventType == GEEventTypes.EFetchEventsReminders) {
+            lListItem.mNotificationBtn.setVisibility(View.VISIBLE);
+            lDateTimeStr = "Live on " + lDateTimeStr;
+            boolean lIsReminder = GEReminderDataMgr.getInstance(mContext).isVideoReminderWithId(lResult.getId());
+            lListItem.mNotificationBtn.setSelected(lIsReminder);
+            if(lIsReminder)
+                lListItem.mNotificationBtn.setImageResource(R.drawable.notificationbellon);
+            else
+                lListItem.mNotificationBtn.setImageResource(R.drawable.notificationbell);
+        }
+
+        if(mEventType == GEEventTypes.EFetchEventsLive){
+            lDateTimeStr = "LIVE NOW";
+            lListItem.mDateTimeView.setTextColor(Color.parseColor("#ff0021"));
+        }
+
+        lListItem.mDateTimeView.setText(lDateTimeStr);
 
         ThumbnailDetails lThumbUrls = lResult.getSnippet().getThumbnails();
         Thumbnail lThumbnail = lThumbUrls.getHigh();
@@ -97,10 +126,29 @@ public class GEEventListAdapter extends
         LayoutInflater lInflater = LayoutInflater.from(viewGroup.getContext());
         ViewGroup lMainGroup = null;
         GEEventManager lMamager = GEEventManager.getInstance();
-        GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, android.com.galatube.GEConstants.GECHANNELID);
-        ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
+        GEVideoListObj listObj = lMamager.videoListObjForInfo(mEventType, android.com.galatube.GEConstants.GECHANNELID);
+        ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
         lMainGroup = (ViewGroup) lInflater.inflate(R.layout.ge_listitem, viewGroup, false);
+        if (mEventType == GEEventTypes.EFetchEventsReminders) {
+            ViewGroup.LayoutParams lParams = lMainGroup.getLayoutParams();
+            lParams.width = RecyclerView.LayoutParams.MATCH_PARENT;
+        }
         GEEventListItemView listHolder = new GEEventListItemView(lMainGroup, mClickListner, mEventType);
         return listHolder;
+    }
+
+    private String fomateDateStr(String dateTimeStr)
+    {
+        SimpleDateFormat lSd1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        Date lDate = null;
+        try {
+            lDate = lSd1.parse(dateTimeStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+        SimpleDateFormat lSD2 = new SimpleDateFormat("EEE, dd MMM yyyy, hh:mm a");
+        String lNewDateTimeStr = lSD2.format(lDate);
+        return lNewDateTimeStr;
     }
 }

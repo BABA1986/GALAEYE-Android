@@ -11,11 +11,13 @@ import android.widget.TextView;
  */
 public class GELiveEventListItemView extends RecyclerView.ViewHolder{
     public TextView mTitleView;
+    public TextView mDateTime;
     public ImageView mImageView;
 
     public GELiveEventListItemView(View view) {
         super(view);
         this.mTitleView = (TextView) view.findViewById(R.id.title);
+        this.mDateTime = (TextView) view.findViewById(R.id.datetime);
         this.mImageView = (ImageView) view.findViewById(R.id.image);
     }
 }

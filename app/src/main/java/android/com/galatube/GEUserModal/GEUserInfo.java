@@ -1,5 +1,7 @@
 package android.com.galatube.GEUserModal;
 
+import android.accounts.Account;
+
 import static android.R.attr.id;
 import static android.R.attr.name;
 import static android.R.attr.thickness;
@@ -19,6 +21,13 @@ public class GEUserInfo
      private  String mRefreshToken;
      private  String mAccessToken;
      private  String mTokenExpireAt;
+     private Account mGoogleAcct;
+
+
+    public void setGoogleAcct(Account googleAcct)
+    {
+        this.mGoogleAcct = googleAcct;
+    }
 
     public void setUserName(String userName)
     {
@@ -92,4 +101,7 @@ public class GEUserInfo
     public String getmAccessToken(){
         return mAccessToken;
     }
+
+    public Account getGoogleAcct() { return mGoogleAcct; }
+
 }

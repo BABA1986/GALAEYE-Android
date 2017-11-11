@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Thumbnail;
 import com.google.api.services.youtube.model.ThumbnailDetails;
+import com.google.api.services.youtube.model.Video;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ import java.util.List;
 
 public class GEPopularEventListAdapter extends RecyclerView.Adapter<GEEventListItemView> {
 
-    private Context mContext;
+    private Context         mContext;
     private GEOnLoadMore    mLoadMoreListner;
     private GEEventTypes    mEventType;
     private String          mChannelId;
@@ -45,11 +46,11 @@ public class GEPopularEventListAdapter extends RecyclerView.Adapter<GEEventListI
     @Override
     public int getItemCount() {
         GEEventManager lMamager = GEEventManager.getInstance();
-        GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, mChannelId);
+        GEVideoListObj listObj = lMamager.videoListObjForInfo(mEventType, mChannelId);
         if (listObj == null) return 0;
-        ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
-        GEEventListPage lPage = listPages.get(listPages.size() - 1);
-        List<SearchResult> lResults = lPage.getmEventList();
+        ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
+        GEVideoListPage lPage = listPages.get(listPages.size() - 1);
+        List<Video> lResults = lPage.getmVideoList();
         if (lResults.size() < 50 && listPages.size() == 1)
             return lResults.size();
         else if (lResults.size() < 50 && listPages.size() > 1)
@@ -63,13 +64,13 @@ public class GEPopularEventListAdapter extends RecyclerView.Adapter<GEEventListI
         GEEventListItemView lListItem = (GEEventListItemView) holder;// holder
 
         GEEventManager lMamager = GEEventManager.getInstance();
-        GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, mChannelId);
-        ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
+        GEVideoListObj listObj = lMamager.videoListObjForInfo(mEventType, mChannelId);
+        ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
         int lPageIndex = (position >= 50) ? position/50 : 0;
-        GEEventListPage lPage = listPages.get(lPageIndex);
-        List<SearchResult> lResults = lPage.getmEventList();
+        GEVideoListPage lPage = listPages.get(lPageIndex);
+        List<Video> lResults = lPage.getmVideoList();
         int lPosition = position - lPageIndex*50;
-        SearchResult lResult = lResults.get(lPosition);
+        Video lResult = lResults.get(lPosition);
         lListItem.mTitleView.setText(lResult.getSnippet().getTitle());
 
         ThumbnailDetails lThumbUrls = lResult.getSnippet().getThumbnails();
@@ -98,8 +99,8 @@ public class GEPopularEventListAdapter extends RecyclerView.Adapter<GEEventListI
         LayoutInflater lInflater = LayoutInflater.from(viewGroup.getContext());
         ViewGroup lMainGroup = null;
         GEEventManager lMamager = GEEventManager.getInstance();
-        GEEventListObj listObj = lMamager.eventListObjForInfo(mEventType, mChannelId);
-        ArrayList<GEEventListPage> listPages = listObj.getmEventListPages();
+        GEVideoListObj listObj = lMamager.videoListObjForInfo(mEventType, mChannelId);
+        ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
 
         lMainGroup = (ViewGroup) lInflater.inflate(
                 R.layout.gevideoitem, viewGroup, false);

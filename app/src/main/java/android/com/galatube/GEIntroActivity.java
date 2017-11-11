@@ -5,39 +5,49 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.github.paolorotolo.appintro.AppIntro;
+import com.github.paolorotolo.appintro.AppIntro2;
+import com.github.paolorotolo.appintro.AppIntro2Fragment;
 import com.github.paolorotolo.appintro.AppIntroFragment;
 
 /**
  * Created by deepak on 28/11/16.
  */
 
-public class GEIntroActivity extends AppIntro
+public class GEIntroActivity extends AppIntro2
 {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SharedPreferences sharedPreferences=getSharedPreferences("myTheme",MODE_PRIVATE);
-        GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
-        int lColor = GEThemeManager.getInstance(this).getSelectedNavColor();
-        int lTextColor=GEThemeManager.getInstance(this).getSelectedNavTextColor();
-        addSlide(AppIntroFragment.newInstance("Welcome!", "This is a demo of the AppIntro library.", R.drawable.ic_menu_gallery, lColor));
-        addSlide(AppIntroFragment.newInstance("Clean App Intros", "This library offers developers the ability to add clean app intros at the start of their apps.", R.drawable.ic_menu_slideshow, lColor));
-        addSlide(AppIntroFragment.newInstance("Simple, yet Customizable", "The library offers a lot of customization, while keeping it simple for those that like simple.", R.drawable.ic_menu_share, lColor));
-        addSlide(AppIntroFragment.newInstance("Explore", "Feel free to explore the rest of the library demo!", R.drawable.ic_menu_slideshow, lColor));
+        int lColor = Color.TRANSPARENT;
+        int lTextColor = Color.DKGRAY;
+        addSlide(AppIntroFragment.newInstance("A place to \n" + "watch live events",  "Watch live top concert events streaming on your mobile phones.", R.drawable.iconintro1, lColor, lTextColor, lTextColor));
+        addSlide(AppIntroFragment.newInstance("All in One \n" + "your favorite commedians",  "More than 50 commedy channels on single place with more than 10000 videos. Provides all the updated video for you.", R.drawable.iconintro2, lColor, lTextColor, lTextColor));
+        addSlide(AppIntroFragment.newInstance("All in One \n" + "your favorite dramas",  "More than 50 drama short films channels from defferent plateforms with more than 50000 videos. It provides you the latest video as soon as they published by any of the channel.", R.drawable.iconintro3, lColor, lTextColor, lTextColor));
+        addSlide(AppIntroFragment.newInstance("Your favorite poets",  "Indias largest poet platform here you can find all of your favorite poet videos. It provides you the latest video as soon as they published by any of the channel.", R.drawable.iconintro4, lColor, lTextColor, lTextColor));
+        addSlide(AppIntroFragment.newInstance("What do you know about Epic?",  "Application provides airs action, drama, comedy and narrative non-fiction and fictional programming with a focus on Indian history, folklore and mythology genre.", R.drawable.iconintro5, lColor, lTextColor, lTextColor));
 //
 //        // OPTIONAL METHODS
 //        // Override bar/separator color.
-        setSeparatorColor(lTextColor);
-        setBarColor(lColor);
+        setImmersive(false);
+        setImmersiveMode(true, true);
+        setIndicatorColor(Color.parseColor("#FA0018"), lTextColor);
+        Drawable lDrawable = new ColorDrawable(Color.TRANSPARENT);
+        setImageSkipButton(lDrawable);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -47,15 +57,18 @@ public class GEIntroActivity extends AppIntro
 //        // Hide Skip/Done button.
         showSkipButton(true);
         setProgressButtonEnabled(true);
-//
-//        // Turn vibration on and set intensity.
-//        // NOTE: you will probably need to ask VIBRATE permission in Manifest.
+
         setVibrate(true);
         setVibrateIntensity(30);
+        ImageView imageView = new ImageView(this);
+        imageView.setImageResource(R.drawable.introbck3);
+        imageView.setBackgroundColor(Color.WHITE);
+        imageView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        setBackgroundView(imageView);
     }
     @Override
     public void onSkipPressed(Fragment currentFragment){
-        launchMainMenu();
+
     }
 
     @Override

@@ -24,4 +24,11 @@ public class GEVideoListPage
     public List<Video> getmVideoList() {
         return mVideoList;
     }
+
+    public void removeVideoFrom(int videoIndex){
+        if (videoIndex >= mVideoList.size())
+            return;
+
+        mVideoList.remove(videoIndex);
+    }
 }
