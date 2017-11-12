@@ -39,21 +39,23 @@ public class GEIntroActivity extends AppIntro2
         addSlide(AppIntroFragment.newInstance("All in One \n" + "your favorite dramas",  "More than 50 drama short films channels from defferent plateforms with more than 50000 videos. It provides you the latest video as soon as they published by any of the channel.", R.drawable.iconintro3, lColor, lTextColor, lTextColor));
         addSlide(AppIntroFragment.newInstance("Your favorite poets",  "Indias largest poet platform here you can find all of your favorite poet videos. It provides you the latest video as soon as they published by any of the channel.", R.drawable.iconintro4, lColor, lTextColor, lTextColor));
         addSlide(AppIntroFragment.newInstance("What do you know about Epic?",  "Application provides airs action, drama, comedy and narrative non-fiction and fictional programming with a focus on Indian history, folklore and mythology genre.", R.drawable.iconintro5, lColor, lTextColor, lTextColor));
+        addSlide(AppIntroFragment.newInstance("Motivational Speaker",  "To help you stay motivated, no matter what your job throws at you, we decided to compile 22 of the best motivational speeches from business, sports, entertainment, and more. If you want to get fired up for a project, watch these videos. Trust me, I was ready to write a 5,000 word blog post after I saw them.", R.drawable.iconintro6, lColor, lTextColor, lTextColor));
+
 //
 //        // OPTIONAL METHODS
 //        // Override bar/separator color.
-        setImmersive(false);
-        setImmersiveMode(true, true);
+//        setImmersive(true);
+//        setImmersiveMode(true, true);
         setIndicatorColor(Color.parseColor("#FA0018"), lTextColor);
         Drawable lDrawable = new ColorDrawable(Color.TRANSPARENT);
         setImageSkipButton(lDrawable);
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(GEThemeManager.getInstance(this).getSelectedNavColor());
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            Window window = getWindow();
+//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//            window.setStatusBarColor(Color.TRANSPARENT);
+//        }
 //        // Hide Skip/Done button.
         showSkipButton(true);
         setProgressButtonEnabled(true);
