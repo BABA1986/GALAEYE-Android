@@ -1,12 +1,75 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:dialogTheme">@style/DatePicker</item>
+        <item name="colorControlActivated">@android:color/white</item>
+        <item name="android:textColor">@android:color/white</item>
+
     </style>
+
+    <!--Ok Dialogue theme-->
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+    </style>
+
+    <style name="TextLabel" parent="TextAppearance.Design.Hint">
+    </style>
+
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@null</item>
+    </style>
+
+    <style name="DatePicker" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="whiteBackgroundTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    </style>
+
+    <style name="SocialProfileBackgroundTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    </style>
+
+
+
+    <style name="MyDialogTheme" parent="android:Theme.Holo.Dialog">
+        <item name="android:alertDialogStyle">@style/CustomAlertDialogStyle</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="CustomAlertDialogStyle">
+        <item name="android:bottomBright">@android:color/transparent</item>
+        <item name="android:bottomDark">@android:color/transparent</item>
+        <item name="android:bottomMedium">@android:color/transparent</item>
+        <item name="android:centerBright">@android:color/transparent</item>
+        <item name="android:centerDark">@android:color/transparent</item>
+        <item name="android:centerMedium">@android:color/transparent</item>
+        <item name="android:fullBright">@android:color/transparent</item>
+        <item name="android:fullDark">@android:color/transparent</item>
+        <item name="android:topBright">@android:color/transparent</item>
+        <item name="android:topDark">@android:color/transparent</item>
+    </style>
+
+    <!-- Base profile theme. -->
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
@@ -16,5 +79,7 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
 
 </resources>

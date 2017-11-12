@@ -14,10 +14,10 @@
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:supportsRtl="true">
         <activity
             android:name=".GELauncherActivity"
+            android:theme="@style/SplashTheme"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
