@@ -44,8 +44,8 @@ public class GEIntroActivity extends AppIntro2
 //
 //        // OPTIONAL METHODS
 //        // Override bar/separator color.
-//        setImmersive(true);
-//        setImmersiveMode(true, true);
+        setImmersive(true);
+        setImmersiveMode(true, true);
         setIndicatorColor(Color.parseColor("#FA0018"), lTextColor);
         Drawable lDrawable = new ColorDrawable(Color.TRANSPARENT);
         setImageSkipButton(lDrawable);
