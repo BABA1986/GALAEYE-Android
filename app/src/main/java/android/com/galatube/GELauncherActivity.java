@@ -25,6 +25,7 @@ import android.widget.ImageView;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Handler;
 
 /**
  * Created by deepak on 30/11/16.
@@ -63,7 +64,7 @@ public class GELauncherActivity extends Activity {
         ImageView lWhiteCircle = (ImageView) findViewById(R.id.icwhitecircle);
         ScaleAnimation lScaleAnimation = new ScaleAnimation((float) 0.0, (float) 1.0, (float) 0.0, (float) 1.0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         lScaleAnimation.setFillAfter(true);
-        lScaleAnimation.setDuration(1000);
+        lScaleAnimation.setDuration(500);
         lWhiteCircle.setAnimation(lScaleAnimation);
         lWhiteCircle.startAnimation(lScaleAnimation);
         lScaleAnimation.setAnimationListener(new Animation.AnimationListener() {
@@ -81,14 +82,7 @@ public class GELauncherActivity extends Activity {
                 lTranslateAnim.setDuration(500);
                 lIcTubeRed.setAnimation(lTranslateAnim);
                 lIcTubeRed.startAnimation(lTranslateAnim);
-
-                TranslateAnimation lUrTranslateAnim = new TranslateAnimation(TranslateAnimation.RELATIVE_TO_PARENT, 0.0f, TranslateAnimation.RELATIVE_TO_PARENT, 0.0f, TranslateAnimation.RELATIVE_TO_SELF, -1.0f, TranslateAnimation.RELATIVE_TO_SELF, 0.0f);
-                lUrTranslateAnim.setFillAfter(true);
-                lUrTranslateAnim.setDuration(1000);
-                ImageView lIcUrRed = (ImageView) findViewById(R.id.icured);
-                lIcUrRed.setAnimation(lUrTranslateAnim);
-                lIcUrRed.startAnimation(lUrTranslateAnim);
-                lUrTranslateAnim.setAnimationListener(new Animation.AnimationListener() {
+                lTranslateAnim.setAnimationListener(new Animation.AnimationListener() {
                     public void onAnimationStart(Animation anim) {
                     }
 
@@ -96,11 +90,32 @@ public class GELauncherActivity extends Activity {
                     }
 
                     public void onAnimationEnd(Animation anim) {
-                        Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(), android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
-                        Intent i = new Intent(GELauncherActivity.this, GEIntroActivity.class);
-                        startActivity(i, bundle);
-                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                        finish();
+                        TranslateAnimation lUrTranslateAnim = new TranslateAnimation(TranslateAnimation.RELATIVE_TO_PARENT, 0.0f, TranslateAnimation.RELATIVE_TO_PARENT, 0.0f, TranslateAnimation.RELATIVE_TO_SELF, -1.0f, TranslateAnimation.RELATIVE_TO_SELF, 0.0f);
+                        lUrTranslateAnim.setFillAfter(true);
+                        lUrTranslateAnim.setDuration(500);
+                        ImageView lIcUrRed = (ImageView) findViewById(R.id.icured);
+                        lIcUrRed.setAnimation(lUrTranslateAnim);
+                        lIcUrRed.startAnimation(lUrTranslateAnim);
+                        lUrTranslateAnim.setAnimationListener(new Animation.AnimationListener() {
+                            public void onAnimationStart(Animation anim) {
+                            }
+
+                            public void onAnimationRepeat(Animation anim) {
+                            }
+
+                            public void onAnimationEnd(Animation anim) {
+                                new Timer().schedule(new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(), android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                                        Intent i = new Intent(GELauncherActivity.this, GEIntroActivity.class);
+                                        startActivity(i, bundle);
+                                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                                        finish();
+                                    }
+                                }, 1000);
+                            }
+                        });
                     }
                 });
             }
