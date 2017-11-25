@@ -81,7 +81,7 @@ public class GEReminderListFragment extends Fragment implements GEEventListner, 
 
                         lLayout.removeView(lNoInternetView);
                         if (mEvtServiceManger != null)
-                            mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsReminders);
+                            mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsReminders, true);
                     }
                 }
             });
@@ -117,7 +117,7 @@ public class GEReminderListFragment extends Fragment implements GEEventListner, 
             startLodingIndicator(getView());
             mReminderVideoList.getAdapter().notifyDataSetChanged();
             if (mEvtServiceManger != null)
-                mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsReminders);
+                mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsReminders, true);
             //Only manually call onResume if fragment is already visible
             //Otherwise allow natural fragment lifecycle to call onResume
             onResume();
@@ -148,7 +148,7 @@ public class GEReminderListFragment extends Fragment implements GEEventListner, 
 
     @Override
     public void onYoutubeServicesAuhtenticated() {
-        mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsLiked);
+        mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsLiked, true);
     }
 
     @Override
@@ -170,7 +170,7 @@ public class GEReminderListFragment extends Fragment implements GEEventListner, 
     @Override
     public void loadMoreItems(RecyclerView.Adapter adapter) {
         if (mEvtServiceManger != null)
-            mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsReminders);
+            mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsReminders, true);
     }
 
     @Override

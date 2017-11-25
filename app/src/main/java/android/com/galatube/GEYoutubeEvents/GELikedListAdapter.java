@@ -4,6 +4,7 @@ import android.com.galatube.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.google.api.services.youtube.model.ThumbnailDetails;
 import com.google.api.services.youtube.model.Video;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -78,13 +80,22 @@ public class GELikedListAdapter extends RecyclerView.Adapter<GEEventListItemView
         String lUrl = lThumbnail .getUrl();
         ImageLoader imageLoader = ImageLoader.getInstance();
         // Load image, decode it to Bitmap and return Bitmap to callback
-        try {
-            InputStream lInputStream = mContext.getAssets().open("images/loadingthumbnailurl.png");
-            Bitmap lBitmap = BitmapFactory.decodeStream(lInputStream);
-            lListItem.mImageView.setImageBitmap(lBitmap);
-            imageLoader.displayImage(lUrl, lListItem.mImageView);
-        } catch (IOException e) {
+        File file = ImageLoader.getInstance().getDiskCache().get(lUrl);
+        if (file==null) {
+            //Load image from network
+            try {
+                InputStream lInputStream = mContext.getAssets().open("images/loadingthumbnailurl.png");
+                Bitmap lBitmap = BitmapFactory.decodeStream(lInputStream);
+                lListItem.mImageView.setImageBitmap(lBitmap);
+                imageLoader.displayImage(lUrl, lListItem.mImageView);
+            } catch (IOException e) {
 //            handle exception
+            }
+            imageLoader.displayImage(lUrl, lListItem.mImageView);
+        }
+        else {
+            //Load image from cache
+            lListItem.mImageView.setImageURI(Uri.parse(file.getAbsolutePath()));
         }
 
         if (position == listPages.size()*50-1)

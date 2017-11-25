@@ -39,6 +39,7 @@ public class GEPlaylistFragment extends Fragment implements GEEventListner, GEOn
     private RecyclerView        mPlayListListView;
     private int                 mPage;
     private String              mChannelName;
+    private boolean             mIsChannelId;
     ProgressBar                 mListProgressBar;
     private View view;
     private RelativeLayout lLayout;
@@ -60,6 +61,7 @@ public class GEPlaylistFragment extends Fragment implements GEEventListner, GEOn
         mPage = getArguments().getInt(GEConstants.ARG_PAGE2);
         Bundle lArguments = getArguments();
         mChannelName = lArguments.getString("channelName");
+        mIsChannelId = lArguments.getBoolean("ischannelId");
         try {
             mServiceManger = new GEServiceManager(this, getContext());
         } catch (IOException e) {
@@ -82,7 +84,7 @@ public class GEPlaylistFragment extends Fragment implements GEEventListner, GEOn
                     if(GENetworkState.isNetworkStatusAvialable(getContext())) {
 
                         lLayout.removeView(lNoInternetView);
-                        mServiceManger.loadPlaylistAsync(mChannelName);
+                        mServiceManger.loadPlaylistAsync(mChannelName, mIsChannelId);
                     }
                 }
             });
@@ -114,7 +116,7 @@ public class GEPlaylistFragment extends Fragment implements GEEventListner, GEOn
         if (visible && isResumed()) {
             startLodingIndicator(getView());
             if (mServiceManger != null)
-                mServiceManger.loadPlaylistAsync(mChannelName);
+                mServiceManger.loadPlaylistAsync(mChannelName, mIsChannelId);
 //            mPlayListListView.getAdapter().notifyDataSetChanged();
             //Only manually call onResume if fragment is already visible
             //Otherwise allow natural fragment lifecycle to call onResume
@@ -145,7 +147,7 @@ public class GEPlaylistFragment extends Fragment implements GEEventListner, GEOn
 
     @Override
     public void onYoutubeServicesAuhtenticated() {
-        mServiceManger.loadPlaylistAsync(mChannelName);
+        mServiceManger.loadPlaylistAsync(mChannelName, mIsChannelId);
     }
 
     @Override

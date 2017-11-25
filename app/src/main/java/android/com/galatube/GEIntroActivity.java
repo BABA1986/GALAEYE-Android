@@ -34,7 +34,6 @@ public class GEIntroActivity extends AppIntro2
         SharedPreferences sharedPreferences=getSharedPreferences("myTheme",MODE_PRIVATE);
         int lColor = Color.TRANSPARENT;
         int lTextColor = Color.DKGRAY;
-        addSlide(AppIntroFragment.newInstance("A place to \n" + "watch live events",  "Watch live top concert events streaming on your mobile phones.", R.drawable.iconintro1, lColor, lTextColor, lTextColor));
         addSlide(AppIntroFragment.newInstance("All in One \n" + "your favorite commedians",  "More than 50 commedy channels on single place with more than 10000 videos. Provides all the updated video for you.", R.drawable.iconintro2, lColor, lTextColor, lTextColor));
         addSlide(AppIntroFragment.newInstance("All in One \n" + "your favorite dramas",  "More than 50 drama short films channels from defferent plateforms with more than 50000 videos. It provides you the latest video as soon as they published by any of the channel.", R.drawable.iconintro3, lColor, lTextColor, lTextColor));
         addSlide(AppIntroFragment.newInstance("Your favorite poets",  "Indias largest poet platform here you can find all of your favorite poet videos. It provides you the latest video as soon as they published by any of the channel.", R.drawable.iconintro4, lColor, lTextColor, lTextColor));

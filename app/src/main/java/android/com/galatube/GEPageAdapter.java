@@ -17,7 +17,8 @@ import java.util.ArrayList;
  * Created by deepak on 10/12/16.
  */
 
-public class GEPageAdapter extends FragmentStatePagerAdapter {
+public class GEPageAdapter extends FragmentStatePagerAdapter
+{
     private ArrayList<GESubMenu>           mSubMenus;
     private Context                        mContext;
     private String                         mContentFilterType;
@@ -64,23 +65,24 @@ public class GEPageAdapter extends FragmentStatePagerAdapter {
         }
         if (lSubMenu.getmSubMenuName().equals("Popular") == true)
         {
-            return GEPopularEventListFragment.newInstance(position + 1, GEEventTypes.EFetchEventsPopularCompleted, GEConstants.GECHANNELID);
+            return GEPopularEventListFragment.newInstance(position + 1, GEEventTypes.EFetchEventsPopularCompleted, GEConstants.GECHANNELID, true);
         }
         if (lSubMenu.getmSubMenuName().equals("My Liked") == true)
         {
             return GELikedListFragment.newInstance(position + 1, GEConstants.GECHANNELID);
         }
-        if (lSubMenu.getmSubMenuType().equals("playlist") == true)
+        if (lSubMenu.getmSubMenuType().equals("video") == true)
         {
             if (mContentFilterType.equals("playlists") == true) {
                 Bundle lArguments = new Bundle();
                 lArguments.putString("channelName", lSubMenu.getmSubMenuSrc());
+                lArguments.putBoolean("ischannelId", lSubMenu.ismIsChannelId());
                 GEPlaylistFragment lGEPlaylistFragment = GEPlaylistFragment.newInstance(position + 1);
                 lGEPlaylistFragment.setArguments(lArguments);
                 return lGEPlaylistFragment;
             }
             else{
-                return GEPopularEventListFragment.newInstance(position + 1, GEEventTypes.EFetchEventsArchivedVideos, lSubMenu.getmSubMenuSrc());
+                return GEPopularEventListFragment.newInstance(position + 1, GEEventTypes.EFetchEventsArchivedVideos, lSubMenu.getmSubMenuSrc(), lSubMenu.ismIsChannelId());
             }
         }
         else if (position > 0) {

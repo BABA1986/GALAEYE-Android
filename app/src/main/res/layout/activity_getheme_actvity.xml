@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
+        android:textColor="#4e4d4d"
         android:text="@string/text"
         android:id="@+id/theme_tv"/>
 

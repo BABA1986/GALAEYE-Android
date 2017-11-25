@@ -75,7 +75,7 @@ public class GELikedListFragment extends Fragment implements GEEventListner, GEO
 
                         lLayout.removeView(lNoInternetView);
                         if (mEvtServiceManger != null)
-                            mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsLiked);
+                            mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsLiked, true);
                     }
                 }
             });
@@ -111,7 +111,7 @@ public class GELikedListFragment extends Fragment implements GEEventListner, GEO
             startLodingIndicator(getView());
             mLikedVideoList.getAdapter().notifyDataSetChanged();
             if (mEvtServiceManger != null)
-                mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsLiked);
+                mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsLiked, true);
             //Only manually call onResume if fragment is already visible
             //Otherwise allow natural fragment lifecycle to call onResume
             onResume();
@@ -142,7 +142,7 @@ public class GELikedListFragment extends Fragment implements GEEventListner, GEO
 
     @Override
     public void onYoutubeServicesAuhtenticated() {
-        mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsLiked);
+        mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsLiked, true);
     }
 
     @Override
@@ -164,7 +164,7 @@ public class GELikedListFragment extends Fragment implements GEEventListner, GEO
     @Override
     public void loadMoreItems(RecyclerView.Adapter adapter) {
         if (mEvtServiceManger != null)
-            mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsLiked);
+            mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsLiked, true);
     }
 
     @Override

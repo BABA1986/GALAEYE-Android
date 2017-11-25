@@ -17,6 +17,7 @@ public class GESubMenu
     private String                      mSubMenuSrc;
     private String                      mSubMenuName;
     private String                      mSubMenuType;
+    private boolean                     mIsChannelId;
 
     GESubMenu(JSONObject subMenuInfo)
     {
@@ -25,6 +26,7 @@ public class GESubMenu
             mSubMenuSrc = subMenuInfo.getString("src");
             mSubMenuName = subMenuInfo.getString("name");
             mSubMenuType = subMenuInfo.getString("type");
+            mIsChannelId = subMenuInfo.getBoolean("issourceid");
         } catch (final JSONException e) {
             e.printStackTrace();
         }
@@ -43,5 +45,9 @@ public class GESubMenu
     public String getmSubMenuType() {
 
         return mSubMenuType;
+    }
+
+    public boolean ismIsChannelId() {
+        return mIsChannelId;
     }
 }

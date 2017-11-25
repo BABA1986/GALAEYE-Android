@@ -2,6 +2,8 @@ package android.com.galatube;
 
 import android.com.galatube.Connectivity.GENetworkState;
 import android.com.galatube.GETheme.GEThemeManager;
+import android.com.galatube.GEYoutubeEvents.GEChannelInfoHeader;
+import android.com.galatube.GEYoutubeEvents.GEChannelManager;
 import android.com.galatube.GEYoutubeEvents.GEEventListAdapter;
 import android.com.galatube.GEYoutubeEvents.GEEventListner;
 import android.com.galatube.GEYoutubeEvents.GEEventManager;
@@ -14,6 +16,9 @@ import android.com.galatube.GEYoutubeEvents.GEServiceManager;
 import android.com.galatube.GEYoutubeEvents.GEVideoListObj;
 import android.com.galatube.GEYoutubeEvents.GEVideoListPage;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -26,14 +31,23 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.google.api.services.youtube.model.Channel;
 import com.google.api.services.youtube.model.Video;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by deepak on 10/12/16.
@@ -75,7 +89,6 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         view = inflater.inflate(R.layout.event_list_fragment, container, false);
 
         if(!GENetworkState.isNetworkStatusAvialable(getContext()))
@@ -91,9 +104,9 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
 
                         lLayout.removeView(lNoInternetView);
                         if (mEvtServiceManger != null) {
-                            mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsCompleted);
-                            mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsLive);
-                            mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsUpcomming);
+                            mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsCompleted, true);
+                            mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsLive, true);
+                            mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsUpcomming, true);
                         }
                     }
 
@@ -103,11 +116,13 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
         else
         {
             if (mEvtServiceManger != null) {
-                mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsCompleted);
-                mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsLive);
-                mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsUpcomming);
+                mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsCompleted, true);
+                mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsLive, true);
+                mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsUpcomming, true);
             }
         }
+
+        refreshAndLoadBanner(view);
 
         return view;
     }
@@ -120,19 +135,19 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
         mLiveEventListView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
         GELiveEventListAdapter lAdapter = new GELiveEventListAdapter(getContext(), GEEventTypes.EFetchEventsLive,  this);
         mLiveEventListView.setAdapter(lAdapter);// set adapter on recyclerview
-        lAdapter.notifyDataSetChanged();// Notify the adapter
+
         mUpcommingEventListView = (RecyclerView)view.findViewById(R.id.recycler_view_upcomming);
         mUpcommingEventListView.setHasFixedSize(true);
         mUpcommingEventListView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
         GEEventListAdapter lAdapter1 = new GEEventListAdapter(getContext(), GEEventTypes.EFetchEventsUpcomming,  this, this);
         mUpcommingEventListView.setAdapter(lAdapter1);// set adapter on recyclerview
-        lAdapter1.notifyDataSetChanged();// Notify the adapter
+
         mCompletedEventListView = (RecyclerView)view.findViewById(R.id.recycler_view_completed);
         mCompletedEventListView.setHasFixedSize(true);
         mCompletedEventListView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL));
         GEEventListAdapter lAdapter2 = new GEEventListAdapter(getContext(), GEEventTypes.EFetchEventsCompleted,  this, this);
         mCompletedEventListView.setAdapter(lAdapter2);// set adapter on recyclerview
-        lAdapter2.notifyDataSetChanged();// Notify the adapter
+
         startLodingIndicator(view);
         refreshLayout(view);
     }
@@ -156,7 +171,6 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
     @Override
     public void onStart() {
         super.onStart();
-        refreshLayout(this.view);
     }
 
     private void stopLodingIndicator()
@@ -171,6 +185,7 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
 
         GEEventManager lMamager = GEEventManager.getInstance();
         LinearLayout lAllListLayout = (LinearLayout)fragmentView.findViewById(R.id.alllists);
+        RelativeLayout lParallaxLayout = (RelativeLayout)fragmentView.findViewById(R.id.paralaxbaseview);
         LinearLayout lLiveLayout = (LinearLayout)lAllListLayout.findViewById(R.id.livelistbase);
         GEVideoListObj listObj = lMamager.videoListObjForInfo(GEEventTypes.EFetchEventsLive, GEConstants.GECHANNELID);
         if (listObj != null) {
@@ -185,9 +200,11 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
                 lMoreLiveBtn.setBackgroundColor(GEThemeManager.getInstance(getContext()).getSelectedNavColor());
             }
             lLiveLayout.setVisibility(View.VISIBLE);
+            lParallaxLayout.setVisibility(View.VISIBLE);
         }
         else {
             lLiveLayout.setVisibility(View.GONE);
+            lParallaxLayout.setVisibility(View.GONE);
         }
 
         lLiveLayout = (LinearLayout)lAllListLayout.findViewById(R.id.upcomminglistbase);
@@ -204,10 +221,12 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
                 lMoreUpcomBtn.setBackgroundColor(GEThemeManager.getInstance(getContext()).getSelectedNavColor());
             }
             lLiveLayout.setVisibility(View.VISIBLE);
+            lParallaxLayout.setVisibility(View.VISIBLE);
         }
         else
         {
             lLiveLayout.setVisibility(View.GONE);
+            lParallaxLayout.setVisibility(View.GONE);
         }
 
         lLiveLayout = (LinearLayout)lAllListLayout.findViewById(R.id.completedlistbase);
@@ -225,23 +244,44 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
             }
 
             lLiveLayout.setVisibility(View.VISIBLE);
+            lParallaxLayout.setVisibility(View.VISIBLE);
         }
         else {
             lLiveLayout.setVisibility(View.GONE);
+            lParallaxLayout.setVisibility(View.GONE);
         }
+    }
+
+    public void refreshAndLoadBanner(View view)
+    {
+        GEChannelManager lChannelMgr = GEChannelManager.getInstance();
+        Channel lChannel = lChannelMgr.channelWithName(GEConstants.GECHANNELID);
+        if (lChannel == null)
+            return;
+
+        BigInteger lSubscriptions = lChannel.getStatistics().getSubscriberCount();
+        NumberFormat nf = NumberFormat.getInstance(new Locale("en", "in"));
+        String lSubscriptionsStr = nf.format(lSubscriptions);
+        String lTitle = lChannel.getSnippet().getTitle();
+        String lBannerUrl = lChannel.getBrandingSettings().getImage().getBannerMobileImageUrl();
+        String lThumbUrl = lChannel.getSnippet().getThumbnails().getHigh().getUrl();
+
+        GEChannelInfoHeader lHeader = (GEChannelInfoHeader)view.findViewById(R.id.paralaxbaseview);
+        lHeader.refreshWithInfo(lBannerUrl, lThumbUrl, lTitle, lSubscriptionsStr);
     }
 
     @Override
     public void onYoutubeServicesAuhtenticated() {
-        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsCompleted);
-        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsLive);
-        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsUpcomming);
+        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsCompleted,true);
+        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsLive, true);
+        mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsUpcomming, true);
     }
 
     public void eventsLoadedFromChannel(String channelID, GEEventTypes eventType, boolean success)
     {
         if (eventType == GEEventTypes.EFetchEventsCompleted) {
             mCompletedEventListView.getAdapter().notifyDataSetChanged();
+            refreshAndLoadBanner(view);
         }
         else if (eventType == GEEventTypes.EFetchEventsLive) {
             mLiveEventListView.getAdapter().notifyDataSetChanged();
@@ -270,11 +310,11 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
             return;
 
         if (lAdapter.getmEventType() == GEEventTypes.EFetchEventsCompleted)
-            mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsCompleted);
+            mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsCompleted, true);
         else if (lAdapter.getmEventType() == GEEventTypes.EFetchEventsUpcomming)
-            mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsUpcomming);
+            mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsUpcomming, true);
         else if (lAdapter.getmEventType() == GEEventTypes.EFetchEventsLive)
-            mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsLive);
+            mEvtServiceManger.loadEventsAsync(GEConstants.GECHANNELID, GEEventTypes.EFetchEventsLive, true);
     }
 
     @Override

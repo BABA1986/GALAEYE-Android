@@ -259,7 +259,7 @@ public class GEServiceManager
         return lVideos;
     }
 
-    private YouTube.Channels.List channelListQueryFor(String channelName, String nextPageToken)
+    private YouTube.Channels.List channelListQueryFor(String channelName, String nextPageToken, boolean lIsId)
     {
         YouTube.Channels.List query = null;
         if (channelName == null)
@@ -268,9 +268,13 @@ public class GEServiceManager
             return null;
 
         try{
-            query = mYTService.channels().list("id");
+            query = mYTService.channels().list("id, snippet, contentDetails, brandingSettings, statistics");
             query.setKey(GEConstants.GEAPIKEY);
-            query.setForUsername(channelName);
+            if (lIsId == false)
+                query.setForUsername(channelName);
+            else
+                query.setId(channelName);
+
             query.setMaxResults(1L);
             query.setPageToken(nextPageToken);
         }catch(IOException e){
@@ -314,9 +318,14 @@ public class GEServiceManager
         return query;
     }
 
-    private String getChannelIdFromName(String channelName)
+    private String getChannelIdFromName(String channelName, Boolean lIsId)
     {
-        YouTube.Channels.List query = channelListQueryFor(channelName, null);
+        GEChannelManager lManager = GEChannelManager.getInstance();
+        Channel lChannel = lManager.channelWithName(channelName);
+        if (lChannel != null)
+            return lChannel.getId();
+
+        YouTube.Channels.List query = channelListQueryFor(channelName, null, lIsId);
         if (query == null)
             return null;
         if (mYTService == null)
@@ -327,7 +336,8 @@ public class GEServiceManager
             List<Channel> lChannels = response.getItems();
             if (lChannels.size() == 0)
                 return channelName;
-            Channel lChannel = lChannels.get(0);
+            lChannel = lChannels.get(0);
+            lManager.addChnnelWithName(channelName, lChannel);
             return lChannel.getId();
         }catch(IOException e){
             Log.d("YC", "Could not search: "+e);
@@ -335,13 +345,15 @@ public class GEServiceManager
         }
     }
 
-    public void loadPlaylistAsync(final String channelName)
+    public void loadPlaylistAsync(final String channelName, Boolean lIsId)
     {
         final String fChannelName = channelName;
+        final Boolean lISId = lIsId;
         mHandler = new android.os.Handler();
         new Thread(){
             public void run(){
-                final String lChannelId = getChannelIdFromName(channelName);
+                final String lChannelId = getChannelIdFromName(channelName, lISId);
+
                 loadPlaylists(lChannelId, channelName);
                 mHandler.post(new Runnable(){
                     public void run(){
@@ -405,14 +417,16 @@ public class GEServiceManager
         }
     }
 
-    public void loadEventsAsync(final String channelName, GEEventTypes eventType)
+    public void loadEventsAsync(final String channelName, GEEventTypes eventType, boolean isId)
     {
         final  String fChannelId = channelName;
+        final  boolean lISId = isId;
         final  GEEventTypes fEventType = eventType;
         mHandler = new android.os.Handler();
         new Thread(){
             public void run(){
-                final String lChannelId = getChannelIdFromName(channelName);
+                final String lChannelId = getChannelIdFromName(channelName, lISId);
+
                 loadEvents(lChannelId, fEventType, channelName);
                 mHandler.post(new Runnable(){
                     public void run(){

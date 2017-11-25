@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
+    android:id="@+id/activity_setting"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:scrollbars="none"
@@ -19,6 +19,7 @@
             android:layout_height="42dp"
             android:id="@+id/google_signinId"
             android:visibility="gone"
+            android:background="@android:color/white"
             android:orientation="vertical">
             <TextView
                 android:layout_width="wrap_content"
@@ -33,6 +34,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="42dp"
+            android:background="@android:color/white"
             android:id="@+id/google_signin"
             android:orientation="vertical">
             <TextView
@@ -54,6 +56,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="42dp"
+            android:background="@android:color/white"
             android:id="@+id/google_signout"
             android:orientation="vertical">
             <TextView
@@ -84,6 +87,7 @@
             android:layout_height="42dp"
             android:id="@+id/videoEvent"
             android:weightSum="1"
+            android:background="@android:color/white"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
@@ -118,6 +122,7 @@
             android:layout_height="42dp"
             android:id="@+id/themeEvent"
             android:weightSum="1"
+            android:background="@android:color/white"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
@@ -145,6 +150,7 @@
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:weightSum="1"
+            android:background="@android:color/white"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
@@ -174,6 +180,7 @@
             android:layout_height="42dp"
             android:id="@+id/disclaimerEvent"
             android:weightSum="1"
+            android:background="@android:color/white"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
@@ -200,6 +207,7 @@
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:weightSum="1"
+            android:background="@android:color/white"
             android:id="@+id/aboutEvent"
             android:orientation="horizontal">
             <TextView
@@ -236,6 +244,7 @@
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:id="@+id/shareEvent"
+            android:background="@android:color/white"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
@@ -255,6 +264,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="42dp"
+            android:background="@android:color/white"
             android:id="@+id/supportEvent"
             android:orientation="horizontal">
             <TextView
@@ -276,6 +286,7 @@
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:id="@+id/rateEvent"
+            android:background="@android:color/white"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
@@ -304,6 +315,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="42dp"
+            android:background="@android:color/white"
             android:id="@+id/facebookEvent"
             android:orientation="horizontal">
             <TextView
@@ -325,6 +337,7 @@
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:id="@+id/twitterEvent"
+            android:background="@android:color/white"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
@@ -344,6 +357,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="42dp"
+            android:background="@android:color/white"
             android:id="@+id/instagramEvent"
             android:orientation="horizontal">
             <TextView
@@ -365,6 +379,7 @@
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:id="@+id/googleEvent"
+            android:background="@android:color/white"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
