@@ -18,12 +18,15 @@ public class GESharedMenu
 {
     private ArrayList<GEMenu>              mMenus;
     private Context                        mContext;
-    private static GESharedMenu ourInstance = new GESharedMenu();
+    private static GESharedMenu            ourInstance;
 
     public static GESharedMenu getInstance(Context context)
     {
-        ourInstance.mContext = context;
-        ourInstance.initialiseMenuItems();
+        if (ourInstance == null) {
+            ourInstance = new GESharedMenu();
+            ourInstance.mContext = context;
+            ourInstance.initialiseMenuItems();
+        }
         return ourInstance;
     }
 

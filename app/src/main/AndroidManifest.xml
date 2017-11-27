@@ -15,10 +15,12 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/GalaTheme"
+        android:screenOrientation="portrait"
         android:supportsRtl="true">
         <activity
             android:name=".GELauncherActivity"
             android:theme="@style/SplashTheme"
+            android:screenOrientation="portrait"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,18 +30,25 @@
         <activity
             android:name=".GEIntroActivity"
             android:noHistory="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name=".GEMainMenuActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity android:name=".GEPlaylist.GEPlaylistVideolistActivity" />
+        <activity android:name=".GEPlaylist.GEPlaylistVideolistActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".SettingActivity"
+            android:screenOrientation="portrait"
             />
         <activity android:name=".GEThemeActvity"
+            android:screenOrientation="portrait"
             />
         <activity android:name=".GEWebView.WebViewActivity"
+            android:screenOrientation="portrait"
             />
         <activity android:name=".GEEventPlayActivity"
+            android:screenOrientation="portrait"
             ></activity>/>
     </application>
 

@@ -4,6 +4,7 @@ import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.R;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -14,11 +15,17 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -46,6 +53,7 @@ public class GEMenuAdapter extends BaseAdapter {
     class ViewHolder {
         public TextView mTitleView;
         public ImageView mImageView;
+        public RelativeLayout mImageBaseView;
     }
 
     @Override
@@ -74,27 +82,46 @@ public class GEMenuAdapter extends BaseAdapter {
             lHolder = new ViewHolder();
             lHolder.mTitleView = (TextView) convertView.findViewById(R.id.adapter_title_view);
             lHolder.mImageView = (ImageView) convertView.findViewById(R.id.adapter_icon_view);
+            lHolder.mImageBaseView = (RelativeLayout) convertView.findViewById(R.id.imagebaseview);
             convertView.setTag(lHolder);
         } else {
             lHolder = (ViewHolder) convertView.getTag();
         }
 
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("myTheme", Context.MODE_PRIVATE);
+        GEThemeManager.getInstance(mContext).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
+        int lColor = GEThemeManager.getInstance(mContext).getSelectedNavColor();
+
         GEMenu lMenuInfo = mMenuIems.get(position);
+
+        StateListDrawable bgShape = (StateListDrawable)lHolder.mImageBaseView.getBackground();
+        bgShape.setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.SRC_IN);
+
         lHolder.mTitleView.setText(lMenuInfo.getmMenuName());
+        lHolder.mTitleView.setTextColor(lColor);
 
-        try {
-            InputStream lInputStream = mContext.getAssets().open("images/gala_icon_xxhdpi.png");
-            Bitmap lBitmap = BitmapFactory.decodeStream(lInputStream);
-            lHolder.mImageView.setImageBitmap(lBitmap);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)lHolder.mTitleView.getLayoutParams();
+        params.setMargins(15, 0, 0, 0);
+        lHolder.mTitleView.setLayoutParams(params);
 
-            SharedPreferences sharedPreferences = mContext.getSharedPreferences("myTheme", Context.MODE_PRIVATE);
-            GEThemeManager.getInstance(mContext).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
-            int lColor = GEThemeManager.getInstance(mContext).getSelectedNavColor();
-            changeBitmapColor(lBitmap, lHolder.mImageView, lColor);
-        } catch (IOException e) {
-//            handle exception
+        if (lMenuInfo.isSelected())
+        {
+            bgShape.setColorFilter(lColor, PorterDuff.Mode.SRC_IN);
+            lColor = GEThemeManager.getInstance(mContext).getSelectedNavTextColor();
+            params.setMargins(35, 0, 0, 0);
+            lHolder.mTitleView.setLayoutParams(params);
         }
 
+        Resources resources = mContext.getResources();
+        String lIconName = lMenuInfo.getmMenuImageIcon();
+        final int resourceId = resources.getIdentifier(lIconName, "drawable",
+                mContext.getPackageName());
+        Drawable lDrawable = resources.getDrawable(resourceId);
+
+        Bitmap lBitmap = BitmapFactory.decodeResource(mContext.getResources(),
+                resourceId);
+        lHolder.mImageView.setImageBitmap(lBitmap);
+        changeBitmapColor(lBitmap, lHolder.mImageView, lColor);
         return convertView;
     }
 

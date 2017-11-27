@@ -17,6 +17,7 @@ public class GEMenu
     private String                      mMenuCountry;
     private String                      mMenuCountryCode;
     private String                      mMenuImageIcon;
+    private Boolean                     mIsSelected;
     private ArrayList<GESubMenu>        mSubMenus;
 
     GEMenu(JSONObject menuInfo)
@@ -33,6 +34,7 @@ public class GEMenu
             mMenuImageIcon = menuInfo.getString("image");
             mMenuCountry = countryInfo.getString("name");
             mMenuCountryCode = countryInfo.getString("code");
+            mIsSelected = false;
 
             JSONArray lSubMenus = menuInfo.getJSONArray("submenus");
             for (int index = 0; index < lSubMenus.length(); ++index)
@@ -63,6 +65,16 @@ public class GEMenu
             return "No Name Available";
 
         return mMenuImageIcon;
+    }
+
+    public void setSelected(Boolean selected)
+    {
+        mIsSelected = selected;
+    }
+
+    public boolean isSelected()
+    {
+        return mIsSelected;
     }
 
     public ArrayList<GESubMenu> getmSubMenus() {

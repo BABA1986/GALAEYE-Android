@@ -18,6 +18,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -74,6 +75,8 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -112,6 +115,26 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         mUserIv.setOnClickListener(this);
         mSettingLayout = (LinearLayout) findViewById(R.id.setting_base_adapter);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawer.setDrawerListener(new DrawerLayout.DrawerListener() {
+                                     @Override
+                                     public void onDrawerSlide(View drawerView, float slideOffset) {
+                                     }
+
+                                     @Override
+                                     public void onDrawerOpened(View drawerView) {
+                                     }
+
+                                     @Override
+                                     public void onDrawerClosed(View drawerView) {
+                                         ArrayList<GEMenu> lMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
+                                         initialisePagesForMenu(lMenuItems.get(mDrawerSelectedMenuIndex), "video");
+                                     }
+
+                                     @Override
+                                     public void onDrawerStateChanged(int newState) {
+                                     }
+                                 });
+
         mSettingLayout.setOnClickListener(this);
         mGoogleNavigationSignIn.setOnClickListener(this);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -136,17 +159,23 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         imageLoader.init(config);
 
         ArrayList<GEMenu> lMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
-        ListView lListView = (ListView) findViewById(R.id.left_drawer_list);
+        GEMenu lMenuInfo = lMenuItems.get(0);
+        lMenuInfo.setSelected(true);
+        final ListView lListView = (ListView) findViewById(R.id.left_drawer_list);
         lListView.setAdapter(new GEMenuAdapter(this, lMenuItems));
         lListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                resetSelection();
+                ArrayList<GEMenu> lMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
+                GEMenu lMenuInfo = lMenuItems.get(position);
+                lMenuInfo.setSelected(true);
                 mDrawerSelectedMenuIndex = position;
                 mDrawer.closeDrawers();
-                ArrayList<GEMenu> lMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
-                initialisePagesForMenu(lMenuItems.get(position), "video");
+                lListView.invalidateViews();
             }
         });
+
         GEUserManager lGEUsermanager = GEUserManager.getInstance(getApplicationContext());
         if (lGEUsermanager.getmUserInfo().getUserEmail().length() != 0) {
             updateUi(true);
@@ -251,6 +280,33 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(GEThemeManager.getInstance(this).getSelectedNavColor());
+        }
+
+        TextView lSettingTextView = (TextView) mSettingLayout.findViewById(R.id.setting_text);
+        lSettingTextView.setTextColor(lColor);
+        ImageView lSettingIconView = (ImageView) mSettingLayout.findViewById(R.id.setting_icon);
+        Bitmap lBitmap = BitmapFactory.decodeResource(this.getResources(),
+                R.drawable.settingicon);
+
+        GEThemeManager.getInstance(this).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
+        Bitmap resultBitmap = Bitmap.createBitmap(lBitmap, 0, 0,
+                lBitmap.getWidth() - 1, lBitmap.getHeight() - 1);
+        Paint p = new Paint();
+        ColorFilter filter = new PorterDuffColorFilter(lColor, PorterDuff.Mode.SRC_IN);
+        p.setColorFilter(filter);
+        lSettingIconView.setImageBitmap(resultBitmap);
+        Canvas canvas = new Canvas(resultBitmap);
+        canvas.drawBitmap(resultBitmap, 0, 0, p);
+        ListView lListView = (ListView) findViewById(R.id.left_drawer_list);
+        lListView.invalidateViews();
+    }
+
+    public void resetSelection()
+    {
+        ArrayList<GEMenu> lMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
+        for (int i = 0; i < lMenuItems.size(); ++i){
+            GEMenu lMenuInfo = lMenuItems.get(i);
+            lMenuInfo.setSelected(false);
         }
     }
 
