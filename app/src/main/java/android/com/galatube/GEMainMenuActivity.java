@@ -379,6 +379,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         showOptionMenuIfRequired();
         if (lAdapter != null) {
             lAdapter.reloadWithSubMenu(menuInfo.getmSubMenus(), filter);
+            viewPager.setCurrentItem(0);
             return;
         }
 
@@ -391,6 +392,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         int lTextColor = GEThemeManager.getInstance(this).getSelectedNavTextColor();
         tabLayout.setSelectedTabIndicatorColor(lTextColor);
         tabLayout.setupWithViewPager(viewPager);
+        viewPager.setCurrentItem(0);
     }
 
     @Override
