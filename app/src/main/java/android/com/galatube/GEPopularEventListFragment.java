@@ -42,7 +42,7 @@ import java.util.Locale;
 public class GEPopularEventListFragment extends Fragment implements GEEventListner, GEOnLoadMore,GERecyclerItemClickListner
 {
     private GEServiceManager        mEvtServiceManger;
-    private static RecyclerView     mSearchVideoListView;
+    private RecyclerView            mSearchVideoListView;
     private int                     mPage;
     GEEventTypes                    mEventTypes;
     String                          mChannelId;
@@ -121,10 +121,10 @@ public class GEPopularEventListFragment extends Fragment implements GEEventListn
             GEPopularEventListAdapter lAdapter2 = new GEPopularEventListAdapter(getContext(), mEventTypes, this, mChannelId, this);
             mSearchVideoListView.setAdapter(lAdapter2);// set adapter on recyclerview
             lAdapter2.setParallaxHeader(mParallaxHeader, mSearchVideoListView);
-            lAdapter2.notifyDataSetChanged();// Notify the adapter
-            refreshAndLoadBanner(view);
         }
 
+        mSearchVideoListView.getAdapter().notifyDataSetChanged();// Notify the adapter
+        refreshAndLoadBanner(view);
         GEEventManager lMamager = GEEventManager.getInstance();
         GEVideoListObj listObj = lMamager.videoListObjForInfo(mEventTypes, mChannelId);
         if (listObj != null) {
