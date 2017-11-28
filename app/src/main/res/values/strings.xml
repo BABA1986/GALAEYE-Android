@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">GalaTube</string>
+    <string name="app_name">UrTube</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="your_string_here">Please check your <u>Internet</u> and try again.</string>
     <string name="action_settings">Settings</string>
     <string name="next">NEXT</string>
-    <string name="text">You can choose What theme color You want to use in your Gala Eye application.</string>
+    <string name="text">You can choose What theme color You want to use in your UrTube application.</string>
 
 </resources>

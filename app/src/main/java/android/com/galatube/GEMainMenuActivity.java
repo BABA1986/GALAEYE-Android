@@ -82,6 +82,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Random;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+
 /**
  * Created by deepak on 30/11/16.
  */
@@ -374,6 +376,8 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     }
 
     public void initialisePagesForMenu(GEMenu menuInfo, String filter) {
+        String lMenuName=menuInfo.getmMenuName();
+        mtoolbar.setTitle(lMenuName);
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         GEPageAdapter lAdapter = (GEPageAdapter) viewPager.getAdapter();
         showOptionMenuIfRequired();
