@@ -113,19 +113,20 @@ public class GEPopularEventListFragment extends Fragment implements GEEventListn
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mSearchVideoListView = (RecyclerView)view.findViewById(R.id.recycler_view_videolist);
-        mSearchVideoListView.setHasFixedSize(true);
-        mSearchVideoListView
-                .setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-        GEPopularEventListAdapter lAdapter2 = new GEPopularEventListAdapter(getContext(), mEventTypes,  this, mChannelId,this);
-        lAdapter2.setParallaxHeader(mParallaxHeader, mSearchVideoListView);
-        mSearchVideoListView.setAdapter(lAdapter2);// set adapter on recyclerview
-        lAdapter2.notifyDataSetChanged();// Notify the adapter
-        refreshAndLoadBanner(view);
+        if (mSearchVideoListView == null) {
+            mSearchVideoListView = (RecyclerView) view.findViewById(R.id.recycler_view_videolist);
+            mSearchVideoListView.setHasFixedSize(true);
+            mSearchVideoListView
+                    .setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
+            GEPopularEventListAdapter lAdapter2 = new GEPopularEventListAdapter(getContext(), mEventTypes, this, mChannelId, this);
+            mSearchVideoListView.setAdapter(lAdapter2);// set adapter on recyclerview
+            lAdapter2.setParallaxHeader(mParallaxHeader, mSearchVideoListView);
+            lAdapter2.notifyDataSetChanged();// Notify the adapter
+            refreshAndLoadBanner(view);
+        }
 
         GEEventManager lMamager = GEEventManager.getInstance();
         GEVideoListObj listObj = lMamager.videoListObjForInfo(mEventTypes, mChannelId);
-
         if (listObj != null) {
             ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
             if (listPages != null)
@@ -199,7 +200,9 @@ public class GEPopularEventListFragment extends Fragment implements GEEventListn
     @Override
     public void eventsLoadedFromChannel(String channelID, GEEventTypes eventType, boolean success) {
         refreshAndLoadBanner(view);
-        mSearchVideoListView.getAdapter().notifyDataSetChanged();
+         GEPopularEventListAdapter lAdapter = (GEPopularEventListAdapter)mSearchVideoListView.getAdapter();
+        lAdapter.notifyDataSetChanged();
+
         stopLodingIndicator();
     }
 

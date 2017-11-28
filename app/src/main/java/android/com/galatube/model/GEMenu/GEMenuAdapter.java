@@ -108,7 +108,7 @@ public class GEMenuAdapter extends BaseAdapter {
         {
             bgShape.setColorFilter(lColor, PorterDuff.Mode.SRC_IN);
             lColor = GEThemeManager.getInstance(mContext).getSelectedNavTextColor();
-            params.setMargins(35, 0, 0, 0);
+            params.setMargins(45, 0, 0, 0);
             lHolder.mTitleView.setLayoutParams(params);
         }
 

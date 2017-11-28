@@ -487,8 +487,10 @@ public class GEServiceManager
             try {
                 SearchListResponse response = query.execute();
                 String lVideoIds = videoIdsFromResponse(response);
-                YouTube.Videos.List lVideoQuery = queryForVideos(lVideoIds, lNextPageToken);
+                YouTube.Videos.List lVideoQuery = queryForVideos(lVideoIds, null);
                 VideoListResponse lVideoResponse = lVideoQuery.execute();
+                lVideoResponse.setNextPageToken(response.getNextPageToken());
+                lVideoResponse.setPrevPageToken(response.getPrevPageToken());
                 lManager.addVideoSearchResponse(lVideoResponse, eventType, channelName);
             } catch (IOException e) {
                 Log.d("YC", "Could not search: " + e);

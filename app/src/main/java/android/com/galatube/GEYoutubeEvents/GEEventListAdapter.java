@@ -97,10 +97,10 @@ public class GEEventListAdapter extends
 
         if(mEventType == GEEventTypes.EFetchEventsLive){
             lDateTimeStr = "LIVE NOW";
-            lListItem.mDateTimeView.setTextColor(Color.parseColor("#ff0021"));
+            lListItem.mDetailView.setTextColor(Color.parseColor("#ff0021"));
         }
 
-        lListItem.mDateTimeView.setText(lDateTimeStr);
+        lListItem.mDetailView.setText(lDateTimeStr);
 
         ThumbnailDetails lThumbUrls = lResult.getSnippet().getThumbnails();
         Thumbnail lThumbnail = lThumbUrls.getHigh();

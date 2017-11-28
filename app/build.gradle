@@ -33,10 +33,12 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('libs/YouTubeAndroidPlayerApi.jar')
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
     compile 'com.github.nirhart:parallaxscroll:1.0'
+
     //    compile ('com.google.api-client:google-api-client:1.22.0'){
     //        exclude module: 'httpclient'
     //    }
