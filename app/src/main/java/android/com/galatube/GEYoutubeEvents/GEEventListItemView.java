@@ -29,6 +29,7 @@ public class GEEventListItemView extends RecyclerView.ViewHolder implements View
     // View holder for gridview recycler view as we used in listview
     public TextView                     mTitleView;
     public TextView                     mDetailView;
+    public TextView                     mDurationView;
     public ImageView                    mImageView;
     public ImageView                    mPlaceholderImageView;
     public ImageButton                  mNotificationBtnForTouch;
@@ -42,6 +43,7 @@ public class GEEventListItemView extends RecyclerView.ViewHolder implements View
 
         this.mTitleView = (TextView) view.findViewById(R.id.title);
         this.mDetailView = (TextView) view.findViewById(R.id.detail);
+        this.mDurationView = (TextView) view.findViewById(R.id.durationtextview);
         this.mImageView = (ImageView) view.findViewById(R.id.image);
         this.mPlaceholderImageView = (ImageView)view.findViewById(R.id.placeholderimage);
         this.mNotificationBtnForTouch = (ImageButton) view.findViewById(R.id.notificationtouchbtn);

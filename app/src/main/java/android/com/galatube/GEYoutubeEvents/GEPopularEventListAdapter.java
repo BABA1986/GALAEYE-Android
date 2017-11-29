@@ -14,6 +14,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
@@ -118,6 +119,20 @@ public class GEPopularEventListAdapter extends ParallaxRecyclerAdapter<GEEventLi
         lDetail = lDetail + " • " + lViewCountStr + " Views " + "•" + lAgoString;
         lListItem.mDetailView.setText(lDetail);
 
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("myTheme", Context.MODE_PRIVATE);
+        GEThemeManager.getInstance(mContext).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
+        int lColor = GEThemeManager.getInstance(mContext).getSelectedNavColor();
+        int lTextColor = GEThemeManager.getInstance(mContext).getSelectedNavTextColor();
+
+        String lDuration = lResult.getContentDetails().getDuration();
+        lDuration = lDuration.split("S")[0];
+        lDuration = lDuration.replace("PT", "").replace("M", ":");
+        lDuration = " " + lDuration + " ";
+        lListItem.mDurationView.setText(lDuration);
+        StateListDrawable bgShape = (StateListDrawable)lListItem.mDurationView.getBackground();
+        bgShape.setColorFilter(lColor, PorterDuff.Mode.SRC_IN);
+        lListItem.mDurationView.setTextColor(lTextColor);
+
         ThumbnailDetails lThumbUrls = lResult.getSnippet().getThumbnails();
         Thumbnail lThumbnail = lThumbUrls.getHigh();
         String lUrl = lThumbnail.getUrl();
@@ -126,9 +141,6 @@ public class GEPopularEventListAdapter extends ParallaxRecyclerAdapter<GEEventLi
         File file = ImageLoader.getInstance().getDiskCache().get(lUrl);
         if (file==null) {
             //Load image from network
-            SharedPreferences sharedPreferences = mContext.getSharedPreferences("myTheme", Context.MODE_PRIVATE);
-            GEThemeManager.getInstance(mContext).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
-            int lColor = GEThemeManager.getInstance(mContext).getSelectedNavColor();
             Resources resources = mContext.getResources();
             final int resourceId = resources.getIdentifier("urtubeplaceholder", "drawable",
                     mContext.getPackageName());
