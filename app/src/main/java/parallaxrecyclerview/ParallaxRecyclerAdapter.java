@@ -26,7 +26,7 @@ public abstract class ParallaxRecyclerAdapter<T> extends RecyclerView.Adapter<Re
     public abstract RecyclerView.ViewHolder onCreateViewHolderImpl(ViewGroup viewGroup, ParallaxRecyclerAdapter<T> adapter, int i);
 
     public abstract int getItemCountImpl(ParallaxRecyclerAdapter<T> adapter);
-
+    
     public interface OnClickEvent {
         /**
          * Event triggered when you click on a item of the adapter

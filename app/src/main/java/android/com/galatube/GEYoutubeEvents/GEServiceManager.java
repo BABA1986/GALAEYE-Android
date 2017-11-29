@@ -213,7 +213,7 @@ public class GEServiceManager
     {
         YouTube.Videos.List query = null;
         try {
-            query = mYTService.videos().list("id,snippet,liveStreamingDetails,statistics");
+            query = mYTService.videos().list("id,snippet,contentDetails,statistics");
             query.setKey(GEConstants.GEAPIKEY);
             query.setMaxResults(50L);
             query.setPageToken(nextPageToken);
@@ -489,8 +489,10 @@ public class GEServiceManager
                 String lVideoIds = videoIdsFromResponse(response);
                 YouTube.Videos.List lVideoQuery = queryForVideos(lVideoIds, null);
                 VideoListResponse lVideoResponse = lVideoQuery.execute();
-                lVideoResponse.setNextPageToken(response.getNextPageToken());
-                lVideoResponse.setPrevPageToken(response.getPrevPageToken());
+                if (response.getItems().size() >= 50) {//Sometimes results are less than page size and next page token exist in response
+                    lVideoResponse.setNextPageToken(response.getNextPageToken());
+                    lVideoResponse.setPrevPageToken(response.getPrevPageToken());
+                }
                 lManager.addVideoSearchResponse(lVideoResponse, eventType, channelName);
             } catch (IOException e) {
                 Log.d("YC", "Could not search: " + e);

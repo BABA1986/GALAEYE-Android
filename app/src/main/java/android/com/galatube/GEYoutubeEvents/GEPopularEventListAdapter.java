@@ -14,6 +14,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
@@ -49,7 +50,7 @@ public class GEPopularEventListAdapter extends ParallaxRecyclerAdapter<GEEventLi
     private String          mChannelId;
     private GERecyclerItemClickListner mItemClickListner;
 
-
+    public static final int LOADING_VIEW = 4;
 
     public GEPopularEventListAdapter(Context context, GEEventTypes eventType, GEOnLoadMore loadmoreListner, String channelId, GERecyclerItemClickListner itemClickListner) {
         super(null);
@@ -69,25 +70,37 @@ public class GEPopularEventListAdapter extends ParallaxRecyclerAdapter<GEEventLi
         GEEventManager lMamager = GEEventManager.getInstance();
         GEVideoListObj listObj = lMamager.videoListObjForInfo(mEventType, mChannelId);
         if (listObj == null) return 0;
+
         ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
         GEVideoListPage lPage = listPages.get(listPages.size() - 1);
         List<Video> lResults = lPage.getmVideoList();
-        if (lResults.size() < 50 && listPages.size() == 1)
+
+        if (lResults.size() < 50 && listPages.size() == 1) {
+            if (lPage.getmNextPageToken() != null)
+                return lResults.size() + 1;
             return lResults.size();
+        }
         else if (lResults.size() < 50 && listPages.size() > 1)
             return (listPages.size()-1)*50 + lResults.size();
+
+        if (lPage.getmNextPageToken() != null)
+            return listPages.size()*50 + 1;
 
         return listPages.size()*50;
     }
 
     @Override
     public void onBindViewHolderImpl(RecyclerView.ViewHolder viewHolder, ParallaxRecyclerAdapter<GEEventListItemView> adapter, int position) {
+        if (viewHolder instanceof LoadingViewHolder)
+            return;
+
         GEEventListItemView lListItem = (GEEventListItemView) viewHolder;// holder
 
         GEEventManager lMamager = GEEventManager.getInstance();
         GEVideoListObj listObj = lMamager.videoListObjForInfo(mEventType, mChannelId);
         ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
         int lPageIndex = (position >= 50) ? position/50 : 0;
+        if (lPageIndex >= listPages.size()) return;
         GEVideoListPage lPage = listPages.get(lPageIndex);
         List<Video> lResults = lPage.getmVideoList();
         int lPosition = position - lPageIndex*50;
@@ -106,6 +119,20 @@ public class GEPopularEventListAdapter extends ParallaxRecyclerAdapter<GEEventLi
         lDetail = lDetail + " • " + lViewCountStr + " Views " + "•" + lAgoString;
         lListItem.mDetailView.setText(lDetail);
 
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("myTheme", Context.MODE_PRIVATE);
+        GEThemeManager.getInstance(mContext).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
+        int lColor = GEThemeManager.getInstance(mContext).getSelectedNavColor();
+        int lTextColor = GEThemeManager.getInstance(mContext).getSelectedNavTextColor();
+
+        String lDuration = lResult.getContentDetails().getDuration();
+        lDuration = lDuration.split("S")[0];
+        lDuration = lDuration.replace("PT", "").replace("M", ":");
+        lDuration = " " + lDuration + " ";
+        lListItem.mDurationView.setText(lDuration);
+        StateListDrawable bgShape = (StateListDrawable)lListItem.mDurationView.getBackground();
+        bgShape.setColorFilter(lColor, PorterDuff.Mode.SRC_IN);
+        lListItem.mDurationView.setTextColor(lTextColor);
+
         ThumbnailDetails lThumbUrls = lResult.getSnippet().getThumbnails();
         Thumbnail lThumbnail = lThumbUrls.getHigh();
         String lUrl = lThumbnail.getUrl();
@@ -114,9 +141,6 @@ public class GEPopularEventListAdapter extends ParallaxRecyclerAdapter<GEEventLi
         File file = ImageLoader.getInstance().getDiskCache().get(lUrl);
         if (file==null) {
             //Load image from network
-            SharedPreferences sharedPreferences = mContext.getSharedPreferences("myTheme", Context.MODE_PRIVATE);
-            GEThemeManager.getInstance(mContext).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
-            int lColor = GEThemeManager.getInstance(mContext).getSelectedNavColor();
             Resources resources = mContext.getResources();
             final int resourceId = resources.getIdentifier("urtubeplaceholder", "drawable",
                     mContext.getPackageName());
@@ -147,14 +171,41 @@ public class GEPopularEventListAdapter extends ParallaxRecyclerAdapter<GEEventLi
         // This method will inflate the custom layout and return as viewholder
         LayoutInflater lInflater = LayoutInflater.from(viewGroup.getContext());
         ViewGroup lMainGroup = null;
-        GEEventManager lMamager = GEEventManager.getInstance();
-        GEVideoListObj listObj = lMamager.videoListObjForInfo(mEventType, mChannelId);
-        ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
+
+        if (i == LOADING_VIEW)
+        {
+            lMainGroup = (ViewGroup) lInflater.inflate(
+                    R.layout.itemloading, viewGroup, false);
+            LoadingViewHolder listHolder = new LoadingViewHolder(lMainGroup);
+            return listHolder;
+        }
 
         lMainGroup = (ViewGroup) lInflater.inflate(
                 R.layout.gevideoitem, viewGroup, false);
         GEEventListItemView listHolder = new GEEventListItemView(lMainGroup,mItemClickListner, mEventType);
         return listHolder;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 1)
+            return VIEW_TYPES.FIRST_VIEW;
+
+        if(position == 0 && hasHeader())
+            return  VIEW_TYPES.HEADER;
+
+        GEEventManager lMamager = GEEventManager.getInstance();
+        GEVideoListObj listObj = lMamager.videoListObjForInfo(mEventType, mChannelId);
+        if (listObj == null) return VIEW_TYPES.NORMAL;
+
+        ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
+        GEVideoListPage lPage = listPages.get(listPages.size() - 1);
+        List<Video> lResults = lPage.getmVideoList();
+
+        if (position == listPages.size()*50 + 1 && lPage.getmNextPageToken() != null)
+            return LOADING_VIEW;
+
+        return VIEW_TYPES.NORMAL;
     }
 
     private void changeBitmapColor(Bitmap sourceBitmap, ImageView image, int color) {
