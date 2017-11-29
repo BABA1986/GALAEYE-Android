@@ -8,12 +8,21 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
  * Created by deepak on 16/01/17.
  */
+class LoadingViewHolder extends RecyclerView.ViewHolder {
+    public ProgressBar progressBar;
+
+    public LoadingViewHolder(View view) {
+        super(view);
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar1);
+    }
+}
 
 public class GEEventListItemView extends RecyclerView.ViewHolder implements View.OnClickListener
 {
