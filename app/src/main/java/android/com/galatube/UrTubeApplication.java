@@ -13,7 +13,7 @@ public class UrTubeApplication extends Application {
         super.onCreate();
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                .setDefaultFontPath("fonts/Muli-Italic.ttf")
+                .setDefaultFontPath("fonts/Muli-Regular.ttf")
                 .setFontAttrId(R.attr.fontPath)
                 .build()
         );

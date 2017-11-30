@@ -2,6 +2,7 @@ package android.com.galatube;
 
 import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.GEYoutubeEvents.*;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -23,6 +24,8 @@ import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class GEEventPlayActivity extends YouTubeBaseActivity implements
         YouTubePlayer.OnInitializedListener{
@@ -176,5 +179,8 @@ public class GEEventPlayActivity extends YouTubeBaseActivity implements
         Toast.makeText(this, "Failured to Initialize", Toast.LENGTH_SHORT).show();
     }
 
-
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 }

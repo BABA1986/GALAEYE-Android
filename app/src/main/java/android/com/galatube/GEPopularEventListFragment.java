@@ -1,5 +1,6 @@
 package android.com.galatube;
 
+import android.app.Activity;
 import android.com.galatube.Connectivity.GENetworkState;
 import android.com.galatube.GEYoutubeEvents.GEChannelInfoHeader;
 import android.com.galatube.GEYoutubeEvents.GEChannelManager;
@@ -8,6 +9,7 @@ import android.com.galatube.GEYoutubeEvents.GERecyclerItemClickListner;
 import android.com.galatube.GEYoutubeEvents.GEPopularEventListAdapter;
 import android.com.galatube.GEYoutubeEvents.GEVideoListObj;
 import android.com.galatube.GEYoutubeEvents.GEVideoListPage;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.com.galatube.GEYoutubeEvents.GEEventListner;
@@ -35,6 +37,8 @@ import java.math.BigInteger;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
  * Created by deepak on 29/01/17.
@@ -230,5 +234,10 @@ public class GEPopularEventListFragment extends Fragment implements GEEventListn
     @Override
     public void onRecyclerItemClicked(View view, RecyclerView.ViewHolder viewHolder, int position, GEEventTypes eventType) {
         startActivity(new Intent(getActivity(),GEEventPlayActivity.class));
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
     }
 }

@@ -1,6 +1,7 @@
 package android.com.galatube;
 
 import android.com.galatube.GETheme.GEThemeManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -21,6 +22,8 @@ import com.github.paolorotolo.appintro.AppIntro;
 import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntro2Fragment;
 import com.github.paolorotolo.appintro.AppIntroFragment;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
  * Created by deepak on 28/11/16.
@@ -87,6 +90,11 @@ public class GEIntroActivity extends AppIntro2
     {
         Intent i = new Intent(GEIntroActivity.this, GEMainMenuActivity.class);
         startActivity(i);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 }
 

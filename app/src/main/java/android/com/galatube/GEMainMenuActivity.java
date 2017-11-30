@@ -83,6 +83,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
  * Created by deepak on 30/11/16.
@@ -163,6 +164,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         ArrayList<GEMenu> lMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
         GEMenu lMenuInfo = lMenuItems.get(0);
         lMenuInfo.setSelected(true);
+        mtoolbar.setTitle(lMenuInfo.getmMenuName());
         final ListView lListView = (ListView) findViewById(R.id.left_drawer_list);
         lListView.setAdapter(new GEMenuAdapter(this, lMenuItems));
         lListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -555,5 +557,10 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         builder.setContentText(content);
         builder.setSmallIcon(R.drawable.ic_menu_gallery);
         return builder.build();
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 }

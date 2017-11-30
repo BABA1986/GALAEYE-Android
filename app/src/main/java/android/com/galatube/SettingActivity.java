@@ -6,6 +6,7 @@ import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.GEUserModal.GEUserManager;
 import android.com.galatube.Connectivity.GENetworkState;
 import android.com.galatube.GEWebView.WebViewActivity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,6 +36,8 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener,GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks{
     private TextView mClose_Setting;
@@ -339,5 +342,10 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onConnectionSuspended(int i) {
 
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 }

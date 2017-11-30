@@ -28,6 +28,8 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 public class WebViewActivity extends AppCompatActivity {
 
     private WebView mWebView;
@@ -122,5 +124,10 @@ public class WebViewActivity extends AppCompatActivity {
             super.onPageFinished(view, url);
             mProgressBar.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 }

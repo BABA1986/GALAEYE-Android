@@ -28,7 +28,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="25dp"
-        fontPath="fonts/Muli-Light.ttf"
         android:background="@android:color/transparent"
         android:gravity="center_vertical"
         android:layout_gravity="center_vertical"
