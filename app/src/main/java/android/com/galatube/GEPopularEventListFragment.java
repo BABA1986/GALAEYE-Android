@@ -2,6 +2,7 @@ package android.com.galatube;
 
 import android.app.Activity;
 import android.com.galatube.Connectivity.GENetworkState;
+import android.com.galatube.GEPlayer.GEPlayerActivity;
 import android.com.galatube.GEYoutubeEvents.GEChannelInfoHeader;
 import android.com.galatube.GEYoutubeEvents.GEChannelManager;
 import android.com.galatube.GEYoutubeEvents.GEEventManager;
@@ -157,7 +158,6 @@ public class GEPopularEventListFragment extends Fragment implements GEEventListn
         if (lChannel == null)
             return;
 
-
         BigInteger lSubscriptions = lChannel.getStatistics().getSubscriberCount();
         NumberFormat nf = NumberFormat.getInstance(new Locale("en", "in"));
         String lSubscriptionsStr = nf.format(lSubscriptions);
@@ -233,7 +233,12 @@ public class GEPopularEventListFragment extends Fragment implements GEEventListn
 
     @Override
     public void onRecyclerItemClicked(View view, RecyclerView.ViewHolder viewHolder, int position, GEEventTypes eventType) {
-        startActivity(new Intent(getActivity(),GEEventPlayActivity.class));
+        Intent lIntent = new Intent(getContext(), GEPlayerActivity.class);
+        lIntent.putExtra("channelid", mChannelId);
+        lIntent.putExtra("eventtype", eventType.ordinal());
+        lIntent.putExtra("ischannelId", mISChannelId);
+        lIntent.putExtra("selectedIndex", position);
+        startActivity(lIntent);
     }
 
     @Override

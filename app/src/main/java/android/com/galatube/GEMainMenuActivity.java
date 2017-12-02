@@ -379,7 +379,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
 
     public void initialisePagesForMenu(GEMenu menuInfo, String filter) {
         String lMenuName=menuInfo.getmMenuName();
-        mtoolbar.setTitle(lMenuName);
+        getSupportActionBar().setTitle(lMenuName);
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         GEPageAdapter lAdapter = (GEPageAdapter) viewPager.getAdapter();
         showOptionMenuIfRequired();

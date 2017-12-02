@@ -38,10 +38,6 @@ import java.util.List;
 
 import parallaxrecyclerview.ParallaxRecyclerAdapter;
 
-/**
- * Created by deepak on 29/01/17.
- */
-
 public class GEPopularEventListAdapter extends ParallaxRecyclerAdapter<GEEventListItemView> {
 
     private Context         mContext;
@@ -49,6 +45,7 @@ public class GEPopularEventListAdapter extends ParallaxRecyclerAdapter<GEEventLi
     private GEEventTypes    mEventType;
     private String          mChannelId;
     private GERecyclerItemClickListner mItemClickListner;
+    private GEItemType                 mGEItemType;
 
     public static final int LOADING_VIEW = 4;
 
@@ -59,6 +56,18 @@ public class GEPopularEventListAdapter extends ParallaxRecyclerAdapter<GEEventLi
         this.mLoadMoreListner = loadmoreListner;
         this.mEventType = eventType;
         this.mChannelId = channelId;
+        this.mGEItemType = GEItemType.EItemTypeDefault;
+    }
+
+    public GEPopularEventListAdapter(Context context, GEEventTypes eventType, GEOnLoadMore loadmoreListner, String channelId, GERecyclerItemClickListner itemClickListner, GEItemType itemType) {
+        super(null);
+        this.mContext = context;
+        this.mItemClickListner = itemClickListner;
+        this.mLoadMoreListner = loadmoreListner;
+        this.mEventType = eventType;
+        this.mChannelId = channelId;
+        this.mGEItemType = GEItemType.EItemTypeDefault;
+        this.mGEItemType = itemType;
     }
 
     public GEEventTypes getmEventType() {
@@ -116,7 +125,12 @@ public class GEPopularEventListAdapter extends ParallaxRecyclerAdapter<GEEventLi
 
         String lViewCountStr = GENumFormatter.format(lViewCount);
         String lDetail = lResult.getSnippet().getChannelTitle();
-        lDetail = lDetail + " • " + lViewCountStr + " Views " + "•" + lAgoString;
+        if (lDetail.length() > 14) {
+            lDetail = lDetail.substring(0, 14);
+            lDetail = lDetail + "....";
+        }
+
+        lDetail = lDetail  + " • " + lViewCountStr + " Views " + "• " + lAgoString;
         lListItem.mDetailView.setText(lDetail);
 
         SharedPreferences sharedPreferences = mContext.getSharedPreferences("myTheme", Context.MODE_PRIVATE);
@@ -180,8 +194,14 @@ public class GEPopularEventListAdapter extends ParallaxRecyclerAdapter<GEEventLi
             return listHolder;
         }
 
-        lMainGroup = (ViewGroup) lInflater.inflate(
-                R.layout.gevideoitem, viewGroup, false);
+        if (mGEItemType == GEItemType.EItemTypeList) {
+            lMainGroup = (ViewGroup) lInflater.inflate(
+                    R.layout.gevideolistitem, viewGroup, false);
+        }
+        else {
+            lMainGroup = (ViewGroup) lInflater.inflate(
+                    R.layout.gevideoitem, viewGroup, false);
+        }
         GEEventListItemView listHolder = new GEEventListItemView(lMainGroup,mItemClickListner, mEventType);
         return listHolder;
     }
