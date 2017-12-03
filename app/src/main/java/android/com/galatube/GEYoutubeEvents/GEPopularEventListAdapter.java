@@ -116,6 +116,11 @@ public class GEPopularEventListAdapter extends ParallaxRecyclerAdapter<GEEventLi
         Video lResult = lResults.get(lPosition);
         lListItem.mTitleView.setText(lResult.getSnippet().getTitle());
 
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("myTheme", Context.MODE_PRIVATE);
+        GEThemeManager.getInstance(mContext).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
+        int lColor = GEThemeManager.getInstance(mContext).getSelectedNavColor();
+        int lTextColor = GEThemeManager.getInstance(mContext).getSelectedNavTextColor();
+
         int lViewCount = lResult.getStatistics().getViewCount().intValue();
         DateTime lPublishedOn = lResult.getSnippet().getPublishedAt();
         long lTimeStamp = lPublishedOn.getValue();
@@ -132,11 +137,6 @@ public class GEPopularEventListAdapter extends ParallaxRecyclerAdapter<GEEventLi
 
         lDetail = lDetail  + " • " + lViewCountStr + " Views " + "• " + lAgoString;
         lListItem.mDetailView.setText(lDetail);
-
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences("myTheme", Context.MODE_PRIVATE);
-        GEThemeManager.getInstance(mContext).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
-        int lColor = GEThemeManager.getInstance(mContext).getSelectedNavColor();
-        int lTextColor = GEThemeManager.getInstance(mContext).getSelectedNavTextColor();
 
         String lDuration = lResult.getContentDetails().getDuration();
         lDuration = lDuration.split("S")[0];

@@ -57,7 +57,7 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements
     private GEEventTypes            mEventTypes;
     private boolean                 mISChannelId;
     private int                     mSelectedVideoIndex;
-    private GEChannelInfoHeader     mParallaxHeader;
+    private GEVideoDetailView       mParallaxHeader;
     private RecyclerView            mSearchVideoListView;
     private GEServiceManager        mEvtServiceManger;
 
@@ -73,12 +73,14 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements
         mEventTypes = GEEventTypes.values()[getIntent().getIntExtra("eventtype", 0)];
         mChannelID = getIntent().getStringExtra("channelid");
 
-        mParallaxHeader = new GEChannelInfoHeader(this);
+        mParallaxHeader = new GEVideoDetailView(this);
         mSearchVideoListView = (RecyclerView) findViewById(R.id.videolist_onplayer);
         mSearchVideoListView.setHasFixedSize(true);
         mSearchVideoListView
                 .setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
         GEPopularEventListAdapter lAdapter2 = new GEPopularEventListAdapter(this, mEventTypes, this, mChannelID, this, GEItemType.EItemTypeList);
+        lAdapter2.setScrollMultiplier((float) 0.0);
+        lAdapter2.setShouldClipView(false);
         mSearchVideoListView.setAdapter(lAdapter2);// set adapter on recyclerview
         lAdapter2.setParallaxHeader(mParallaxHeader, mSearchVideoListView);
 
@@ -112,14 +114,19 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements
         if (lChannel == null)
             return;
 
-        BigInteger lSubscriptions = lChannel.getStatistics().getSubscriberCount();
-        NumberFormat nf = NumberFormat.getInstance(new Locale("en", "in"));
-        String lSubscriptionsStr = nf.format(lSubscriptions);
-        String lTitle = lChannel.getSnippet().getTitle();
-        String lBannerUrl = lChannel.getBrandingSettings().getImage().getBannerMobileImageUrl();
-        String lThumbUrl = lChannel.getSnippet().getThumbnails().getHigh().getUrl();
+        GEEventManager lMamager = GEEventManager.getInstance();
+        GEVideoListObj listObj = lMamager.videoListObjForInfo(mEventTypes, mChannelID);
+        ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
+        int lPageIndex = (mSelectedVideoIndex >= 50) ? mSelectedVideoIndex/50 : 0;
+        GEVideoListPage lPage = listPages.get(lPageIndex);
+        List<Video> lResults = lPage.getmVideoList();
+        int lPosition = mSelectedVideoIndex - lPageIndex*50;
+        Video lVideo = lResults.get(lPosition);
 
-        mParallaxHeader.refreshWithInfo(lBannerUrl, lThumbUrl, lTitle, lSubscriptionsStr);
+        if (lVideo == null)
+            return;
+
+        mParallaxHeader.refreshWithInfo(lVideo, lChannel);
     }
 
     private void loadVideoForSelectedIndex()
@@ -136,6 +143,7 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements
         int lPosition = mSelectedVideoIndex - lPageIndex*50;
         Video lVideo = lResults.get(lPosition);
         mPlayer.loadVideo(lVideo.getId());
+        refreshAndLoadBanner();
     }
 
     @Override
@@ -143,8 +151,9 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements
         mPlayer = youTubePlayer;
         youTubePlayer.setPlayerStateChangeListener(playerStateChangeListener);
         youTubePlayer.setPlaybackEventListener(playbackEventListener);
-        if (!b)
+        if (!b) {
             loadVideoForSelectedIndex();
+        }
     }
 
     @Override

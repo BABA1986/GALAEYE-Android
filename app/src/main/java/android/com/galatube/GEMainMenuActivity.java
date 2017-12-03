@@ -287,16 +287,17 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         }
 
         TextView lSettingTextView = (TextView) mSettingLayout.findViewById(R.id.setting_text);
-        lSettingTextView.setTextColor(lColor);
+        lSettingTextView.setTextColor(lTextColor);
         ImageView lSettingIconView = (ImageView) mSettingLayout.findViewById(R.id.setting_icon);
         Bitmap lBitmap = BitmapFactory.decodeResource(this.getResources(),
                 R.drawable.settingicon);
+        mSettingLayout.setBackgroundColor(lColor);
 
         GEThemeManager.getInstance(this).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
         Bitmap resultBitmap = Bitmap.createBitmap(lBitmap, 0, 0,
                 lBitmap.getWidth() - 1, lBitmap.getHeight() - 1);
         Paint p = new Paint();
-        ColorFilter filter = new PorterDuffColorFilter(lColor, PorterDuff.Mode.SRC_IN);
+        ColorFilter filter = new PorterDuffColorFilter(lTextColor, PorterDuff.Mode.SRC_IN);
         p.setColorFilter(filter);
         lSettingIconView.setImageBitmap(resultBitmap);
         Canvas canvas = new Canvas(resultBitmap);

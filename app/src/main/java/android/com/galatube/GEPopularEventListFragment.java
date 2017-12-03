@@ -237,7 +237,7 @@ public class GEPopularEventListFragment extends Fragment implements GEEventListn
         lIntent.putExtra("channelid", mChannelId);
         lIntent.putExtra("eventtype", eventType.ordinal());
         lIntent.putExtra("ischannelId", mISChannelId);
-        lIntent.putExtra("selectedIndex", position);
+        lIntent.putExtra("selectedIndex", position-1);
         startActivity(lIntent);
     }
 
