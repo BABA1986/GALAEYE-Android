@@ -62,6 +62,7 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements
     private GEServiceManager        mEvtServiceManger;
 
     private YouTubePlayer           mPlayer;
+    private boolean                 mIsPlayerFullScreen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +150,14 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
         mPlayer = youTubePlayer;
+
+        mPlayer.setOnFullscreenListener(new YouTubePlayer.OnFullscreenListener() {
+            @Override
+            public void onFullscreen(boolean b) {
+                mIsPlayerFullScreen = b;
+            }
+        });
+
         youTubePlayer.setPlayerStateChangeListener(playerStateChangeListener);
         youTubePlayer.setPlaybackEventListener(playbackEventListener);
         if (!b) {
@@ -224,6 +233,15 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements
 
         }
     };
+
+    @Override
+    public void onBackPressed() {
+        if (mPlayer != null && mIsPlayerFullScreen){
+            mPlayer.setFullscreen(false);
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     @Override
     public void loadMoreItems(RecyclerView.Adapter adapter) {

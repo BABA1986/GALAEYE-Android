@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
+    <RelativeLayout
+        android:id="@+id/titlebaseview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <TextView
         android:id="@+id/video_title"
         android:layout_width="wrap_content"
@@ -13,6 +18,7 @@
         android:textStyle="normal" />
     <TextView
         android:id="@+id/views_likes_dislikes"
+        android:layout_below="@+id/video_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
@@ -20,6 +26,22 @@
         android:textSize="12dp">
         </TextView>
 
+        <ImageView
+            android:id="@+id/expandcollapse"
+            android:layout_below="@+id/video_title"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:background="@drawable/expand"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/descriptionbaseview"
+        android:animateLayoutChanges="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
     <LinearLayout
         android:id="@+id/thumbnailbaseview"
         android:layout_width="match_parent"
@@ -92,3 +114,4 @@
         android:textSize="14dp">
     </TextView>
 </LinearLayout>
+    </LinearLayout>
