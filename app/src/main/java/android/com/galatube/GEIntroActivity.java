@@ -31,17 +31,21 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class GEIntroActivity extends AppIntro2
 {
+    private boolean         mDissmissOnDoneAndSkip;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        mDissmissOnDoneAndSkip = intent.getExtras().getBoolean("Dismiss");
         SharedPreferences sharedPreferences=getSharedPreferences("myTheme",MODE_PRIVATE);
         int lColor = Color.TRANSPARENT;
         int lTextColor = Color.DKGRAY;
-        addSlide(AppIntroFragment.newInstance("All in One \n" + "your favorite commedians",  "More than 50 commedy channels on single place with more than 10000 videos. Provides all the updated video for you.", R.drawable.iconintro2, lColor, lTextColor, lTextColor));
-        addSlide(AppIntroFragment.newInstance("All in One \n" + "your favorite dramas",  "More than 50 drama short films channels from defferent plateforms with more than 50000 videos. It provides you the latest video as soon as they published by any of the channel.", R.drawable.iconintro3, lColor, lTextColor, lTextColor));
-        addSlide(AppIntroFragment.newInstance("Your favorite poets",  "Indias largest poet platform here you can find all of your favorite poet videos. It provides you the latest video as soon as they published by any of the channel.", R.drawable.iconintro4, lColor, lTextColor, lTextColor));
-        addSlide(AppIntroFragment.newInstance("What do you know about Epic?",  "Application provides airs action, drama, comedy and narrative non-fiction and fictional programming with a focus on Indian history, folklore and mythology genre.", R.drawable.iconintro5, lColor, lTextColor, lTextColor));
-        addSlide(AppIntroFragment.newInstance("Motivational Speaker",  "To help you stay motivated, no matter what your job throws at you, we decided to compile 22 of the best motivational speeches from business, sports, entertainment, and more. If you want to get fired up for a project, watch these videos. Trust me, I was ready to write a 5,000 word blog post after I saw them.", R.drawable.iconintro6, lColor, lTextColor, lTextColor));
+        addSlide(AppIntroFragment.newInstance("Your Favourite Comedians Under One Roof",  "Gear up for a laugh riot with UR Tube. We provide your favourite comedians videos under a one roof.", R.drawable.iconintro2, lColor, lTextColor, lTextColor));
+        addSlide(AppIntroFragment.newInstance("Enjoy the Best Dramas",  "UR Tube is a great app for catching up on dramas you might not have heard of otherwise.", R.drawable.iconintro3, lColor, lTextColor, lTextColor));
+        addSlide(AppIntroFragment.newInstance("Your Favorite Poets",  "India's largest poet platform here you can find all of your favorite poet videos.", R.drawable.iconintro4, lColor, lTextColor, lTextColor));
+        addSlide(AppIntroFragment.newInstance("Do You Know?",  "A collection of popular mythological stories that brings to you stories of gods and goddesses, divine feats, tyranny, treachery, bravery, sacrifice, love and friendship.", R.drawable.iconintro5, lColor, lTextColor, lTextColor));
+        addSlide(AppIntroFragment.newInstance("Motivational Speakers",  "To help you stay motivated, no matter what your job throws at you, we decided to compile more than 20 of the best motivational speeches from business, sports, entertainment, and more.", R.drawable.iconintro6, lColor, lTextColor, lTextColor));
 
 //
 //        // OPTIONAL METHODS
@@ -50,7 +54,7 @@ public class GEIntroActivity extends AppIntro2
         setImmersiveMode(true, true);
         setIndicatorColor(Color.parseColor("#FA0018"), lTextColor);
         Drawable lDrawable = new ColorDrawable(Color.TRANSPARENT);
-        setImageSkipButton(lDrawable);
+//        setImageSkipButton(lDrawable);
 
 
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -72,13 +76,19 @@ public class GEIntroActivity extends AppIntro2
     }
     @Override
     public void onSkipPressed(Fragment currentFragment){
-
+        if (mDissmissOnDoneAndSkip)
+            finish();
+        else
+            launchMainMenu();
     }
 
     @Override
     public void onDonePressed(Fragment fragment) {
         // Do something when users tap on Done button.
-        launchMainMenu();
+        if (mDissmissOnDoneAndSkip)
+            finish();
+        else
+            launchMainMenu();
     }
 
     @Override

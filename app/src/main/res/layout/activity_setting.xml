@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_setting"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+<LinearLayout  android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_below="@+id/toolbar"
+    android:layout_height="wrap_content">
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_setting"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:scrollbars="none"
@@ -102,13 +119,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Auto"
-                android:layout_gravity="center"
-                android:textSize="17sp"
-               />
-            <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:src="@drawable/right_arrow"
+                android:textColor="#808080"
+                android:textSize="15sp"
+                android:layout_marginRight="5dp"
                 android:layout_gravity="center"
                 />
         </LinearLayout>
@@ -134,8 +147,9 @@
                 android:layout_marginLeft="15dp"
                 android:textSize="17sp"/>
             <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginRight="5dp"
                 android:src="@drawable/right_arrow"
                 android:layout_gravity="center"
                 />
@@ -178,6 +192,36 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="42dp"
+            android:id="@+id/apptour"
+            android:weightSum="1"
+            android:background="@android:color/white"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="App Tour"
+                android:textColor="#4e4d4d"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_marginLeft="15dp"
+                android:textSize="17sp"/>
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/right_arrow"
+                android:layout_gravity="center"
+                />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.2dp"
+            android:background="#aba8a8"
+            android:layout_marginLeft="12dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
             android:id="@+id/disclaimerEvent"
             android:weightSum="1"
             android:background="@android:color/white"
@@ -192,8 +236,9 @@
                 android:layout_marginLeft="15dp"
                 android:textSize="17sp"/>
             <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginRight="5dp"
                 android:src="@drawable/right_arrow"
                 android:layout_gravity="center"
                 />
@@ -220,8 +265,9 @@
                 android:layout_marginLeft="15dp"
                 android:textSize="17sp"/>
             <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginRight="5dp"
                 android:src="@drawable/right_arrow"
                 android:layout_gravity="center"
                 />
@@ -271,7 +317,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Support"
+                android:text="Feedback"
                 android:textColor="#4e4d4d"
                 android:layout_weight="1"
                 android:layout_marginLeft="15dp"
@@ -328,69 +374,15 @@
                 android:layout_marginLeft="15dp"
                 android:textSize="17sp"/>
         </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.2dp"
-            android:background="#aba8a8"
-            android:layout_marginLeft="12dp"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:id="@+id/twitterEvent"
-            android:background="@android:color/white"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="Twitter"
-                android:textColor="#4e4d4d"
-                android:layout_weight="1"
-                android:layout_marginLeft="15dp"
-                android:textSize="17sp"/>
-        </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.2dp"
-            android:background="#aba8a8"
-            android:layout_marginLeft="12dp"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:background="@android:color/white"
-            android:id="@+id/instagramEvent"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="Instagram"
-                android:textColor="#4e4d4d"
-                android:layout_weight="1"
-                android:layout_marginLeft="15dp"
-                android:textSize="17sp"/>
-        </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.2dp"
-            android:background="#aba8a8"
-            android:layout_marginLeft="12dp"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:id="@+id/googleEvent"
-            android:background="@android:color/white"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="Google Plus"
-                android:textColor="#4e4d4d"
-                android:layout_weight="1"
-                android:layout_marginLeft="15dp"
-                android:textSize="17sp"/>
-        </LinearLayout>
     </LinearLayout>
 
 </ScrollView>
+</LinearLayout>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    </RelativeLayout>

@@ -54,6 +54,8 @@ public class GEChannelInfoHeader extends RelativeLayout {
     public void refreshWithInfo(String imageUrl, String thumbUrl, String title, String subtitle)
     {
         mTitleView.setText(title);
+        if (subtitle.equals("")) mSubTitleView.setVisibility(GONE);
+        else  mSubTitleView.setVisibility(VISIBLE);
         mSubTitleView.setText(subtitle + " " + "subscribers");
         String lUrl = imageUrl;
         String lThumbUrl = thumbUrl;

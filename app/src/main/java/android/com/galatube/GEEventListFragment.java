@@ -261,7 +261,7 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
 
         BigInteger lSubscriptions = lChannel.getStatistics().getSubscriberCount();
         NumberFormat nf = NumberFormat.getInstance(new Locale("en", "in"));
-        String lSubscriptionsStr = nf.format(lSubscriptions);
+        String lSubscriptionsStr = (lSubscriptions.equals(BigInteger.ZERO))? "" : nf.format(lSubscriptions);
         String lTitle = lChannel.getSnippet().getTitle();
         String lBannerUrl = lChannel.getBrandingSettings().getImage().getBannerMobileImageUrl();
         String lThumbUrl = lChannel.getSnippet().getThumbnails().getHigh().getUrl();
@@ -300,6 +300,11 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
 
     @Override
     public void playlistsItemsLoadedFromPlaylist(String playlistID, boolean success) {
+
+    }
+
+    @Override
+    public void dynamicLinkItemLoaded(Video video, boolean success) {
 
     }
 

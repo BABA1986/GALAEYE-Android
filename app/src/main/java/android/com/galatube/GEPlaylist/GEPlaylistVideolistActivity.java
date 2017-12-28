@@ -27,6 +27,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import com.google.api.services.youtube.model.Playlist;
+import com.google.api.services.youtube.model.Video;
 
 import java.io.IOException;
 
@@ -125,6 +126,11 @@ public class GEPlaylistVideolistActivity extends AppCompatActivity implements GE
     @Override
     public void playlistsItemsLoadedFromPlaylist(String playlistID, boolean success) {
         mPlaylistVideoListView.getAdapter().notifyDataSetChanged();
+    }
+
+    @Override
+    public void dynamicLinkItemLoaded(Video video, boolean success) {
+
     }
 
     @Override

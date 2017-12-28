@@ -6,26 +6,34 @@ import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.GEUserModal.GEUserManager;
 import android.com.galatube.Connectivity.GENetworkState;
 import android.com.galatube.GEWebView.WebViewActivity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -36,6 +44,15 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.api.services.youtube.YouTube;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
+
+import java.net.URI;
+import java.util.List;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -52,9 +69,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     private LinearLayout mSupportlEvent;
     private LinearLayout mRatelEvent;
     private LinearLayout mFacebooklEvent;
-    private LinearLayout mTwitterlEvent;
-    private LinearLayout mInstagram;
-    private LinearLayout mGooglelEvent;
+    private LinearLayout mAppTour;
     private GoogleApiClient googleApiClient;
     private static final int REQ_CODE=9001;
     private TextView mGoogleSignInTv;
@@ -62,16 +77,23 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     private LinearLayout mGoogleSignInId;
     private TextView mGoogleSignInIdTv;
     private View mSwitchBtn;
+    private ProgressBar mProgressBar;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+        Toolbar lToolBar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(lToolBar);
         getSupportActionBar().setTitle("Setting");
         getSupportActionBar().setElevation(0);
         SharedPreferences sharedPreferences=getSharedPreferences("myTheme",MODE_PRIVATE);
         GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
+
+        mProgressBar = (ProgressBar)findViewById(R.id.progressBar);
+        mProgressBar.setVisibility(View.INVISIBLE);
         mSignView=(View)findViewById(R.id.signout);
         mGoogleSignIn=(LinearLayout)findViewById(R.id.google_signin);
         mGoogleSignInId=(LinearLayout)findViewById(R.id.google_signinId);
@@ -84,9 +106,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         mSupportlEvent=(LinearLayout)findViewById(R.id.supportEvent);
         mRatelEvent=(LinearLayout)findViewById(R.id.rateEvent);
         mFacebooklEvent=(LinearLayout)findViewById(R.id.facebookEvent);
-        mTwitterlEvent=(LinearLayout)findViewById(R.id.twitterEvent);
-        mInstagram=(LinearLayout)findViewById(R.id.instagramEvent);
-        mGooglelEvent=(LinearLayout)findViewById(R.id.googleEvent);
+        mAppTour=(LinearLayout)findViewById(R.id.apptour);
+
         mGoogleSignInTv=(TextView)findViewById(R.id.GoogleSignIn_tv);
         mGoogleSignInIdTv=(TextView)findViewById(R.id.GoogleSignInId_tv);
         mSwitchBtn=(Switch)findViewById(R.id.simpleSwitch);
@@ -102,10 +123,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         mSupportlEvent.setOnClickListener(this);
         mRatelEvent.setOnClickListener(this);
         mFacebooklEvent.setOnClickListener(this);
-        mTwitterlEvent.setOnClickListener(this);
-        mInstagram.setOnClickListener(this);
-        mGooglelEvent.setOnClickListener(this);
         mGoogleSignInId.setOnClickListener(this);
+        mAppTour.setOnClickListener(this);
 
         GEUserManager lGEUsermanager=GEUserManager.getInstance(getApplicationContext());
         if (lGEUsermanager.getmUserInfo().getUserEmail().length() != 0)
@@ -140,14 +159,15 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void applyTheme() {
-
         SharedPreferences sharedPreferences=getSharedPreferences("myTheme",MODE_PRIVATE);
         GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
         ActionBar lActionBar = getSupportActionBar();
         int lColor = GEThemeManager.getInstance(this).getSelectedNavColor();
+        int lTextColor = GEThemeManager.getInstance(this).getSelectedNavTextColor();
         ColorDrawable lColorDrawable = new ColorDrawable(lColor);
         lActionBar.setBackgroundDrawable(lColorDrawable);
-
+        Toolbar lToolBar = (Toolbar)findViewById(R.id.toolbar);
+        lToolBar.setTitleTextColor(lTextColor);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -172,6 +192,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                         public void onResult(GoogleSignInResult googleSignInResult) {
                             hideProgressDialog();
                             handleResult(googleSignInResult);
+                            mProgressBar.setVisibility(View.INVISIBLE);
                         }
                     });
 
@@ -200,60 +221,116 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 startActivity(intent);
                 break;
             case R.id.disclaimerEvent:
+                Intent intent1=new Intent(SettingActivity.this, WebViewActivity.class);
+                intent1.putExtra("URL","file:///android_asset/www/disclaimer.html");
+                intent1.putExtra("Title","Disclaimer");
+                startActivity(intent1);
                 Log.i("disclaimerEvent","disclaimerEvent");
                 break;
             case R.id.aboutEvent:
+                intent1=new Intent(SettingActivity.this, WebViewActivity.class);
+                intent1.putExtra("URL","file:///android_asset/www/aboutapp.html");
+                intent1.putExtra("Title","About App");
+                startActivity(intent1);
                 Log.i("aboutEvent","aboutEvent");
                 break;
+
+            case R.id.apptour:
+                Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(), android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
+                Intent i = new Intent(SettingActivity.this, GEIntroActivity.class);
+                i.putExtra("Dismiss",true);
+                startActivity(i, bundle);
+                Log.i("aboutEvent","aboutEvent");
+                break;
+
             case R.id.shareEvent:
+
+                mProgressBar.setVisibility(View.VISIBLE);
+
+                DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
+                        .setLink(Uri.parse("https://urtube.com/"))
+                        .setDynamicLinkDomain("v7whn.app.goo.gl")
+                        // Open links with this app on Android
+                        .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
+                        // Open links with com.example.ios on iOS
+                        .buildDynamicLink();
+
+                Uri dynamicLinkUri = dynamicLink.getUri();
+
+
+                Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
+//                        .setLink(Uri.parse("https://example.com/"))
+                        .setLongLink(dynamicLinkUri)
+                        .buildShortDynamicLink()
+                        .addOnCompleteListener(this, new OnCompleteListener<ShortDynamicLink>() {
+                            @Override
+                            public void onComplete(@NonNull Task<ShortDynamicLink> task) {
+                                mProgressBar.setVisibility(View.INVISIBLE);
+                                if (task.isSuccessful()) {
+                                    // Short link created
+                                    Uri shortLink = task.getResult().getShortLink();
+                                    Uri flowchartLink = task.getResult().getPreviewLink();
+                                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                                    sharingIntent.setType("text/plain");
+                                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Enjoy UR Tube Android App");
+                                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, "UR Tube app allows you to watch unlimited instant streaming of your favorite Comedians, Poets, " +
+                                            "Speakers & Chefs videos and helps you to keep smiling, to feel joy and happiness in every " +
+                                            "moment. It's a great app for catching up on Comedy, Funny Prank, Stand Up Comedy, Dramas, Short\n " +
+                                            "Films & Epic Stories you might not have heard of otherwise.\n\n Find it from below link \uD83D\uDC47\uD83C\uDFFD \n " + shortLink.toString());
+                                    startActivity(Intent.createChooser(sharingIntent, "Share App"));
+
+                                } else {
+                                    // Error
+                                    Log.e("TAG", "Short Dynamic link error", task.getException());
+
+                                    // ...
+                                }
+                            }
+                        });
+
                 Log.i("shareEvent","shareEvent");
                 break;
             case R.id.supportEvent:
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto", "urtubefeedback@gmail.com", null));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback to UR Tube Support Team");
+                startActivity(Intent.createChooser(emailIntent, null));
+
                 Log.i("supportEvent","supportEvent");
                 break;
             case R.id.rateEvent:
+                Uri uri = Uri.parse("market://details?id=" + "com.google.android.youtube");
+                Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                // To count with Play market backstack, After pressing back button,
+                // to taken back to our application, we need to add following flags to intent.
+                goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                        Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                        Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                try {
+                    startActivity(goToMarket);
+                } catch (ActivityNotFoundException e) {
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("http://play.google.com/store/apps/details?id=" + getPackageName())));
+                }
                 Log.i("rateEvent","rateEvent");
                 break;
             case R.id.facebookEvent:
-
-                Intent intent1=new Intent(SettingActivity.this, WebViewActivity.class);
-                intent1.putExtra("Facebook",1);
+                intent1=new Intent(SettingActivity.this, WebViewActivity.class);
+                intent1.putExtra("URL","https://www.facebook.com/URTubeOfficial/");
+                intent1.putExtra("Title","Facebook Page");
                 startActivity(intent1);
                 Log.i("facebookEvent","facebookEvent");
-                break;
-            case R.id.twitterEvent:
-
-                    Intent intent2 = new Intent(SettingActivity.this, WebViewActivity.class);
-                    intent2.putExtra("Twitter", 2);
-                    startActivity(intent2);
-                    Log.i("twitterEvent", "twitterEvent");
-
-                break;
-            case R.id.instagramEvent:
-
-                    Intent intent3 = new Intent(SettingActivity.this, WebViewActivity.class);
-                    intent3.putExtra("Instagram", 3);
-                    startActivity(intent3);
-                    Log.i("instagramEvent", "instagramEvent");
-
-                break;
-            case R.id.googleEvent:
-
-                    Intent intent4 = new Intent(SettingActivity.this, WebViewActivity.class);
-                    intent4.putExtra("GooglePlus", 4);
-                    startActivity(intent4);
-                    Log.i("googleEvent", "googleEvent");
-
                 break;
         }
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        mProgressBar.setVisibility(View.INVISIBLE);
     }
 
     public void signIn(){
+        mProgressBar.setVisibility(View.VISIBLE);
         Intent intent=Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
         startActivityForResult(intent,REQ_CODE);
     }

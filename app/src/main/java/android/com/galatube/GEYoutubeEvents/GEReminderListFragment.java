@@ -168,6 +168,11 @@ public class GEReminderListFragment extends Fragment implements GEEventListner, 
     }
 
     @Override
+    public void dynamicLinkItemLoaded(Video video, boolean success) {
+
+    }
+
+    @Override
     public void loadMoreItems(RecyclerView.Adapter adapter) {
         if (mEvtServiceManger != null)
             mEvtServiceManger.loadEventsAsync(mChannelId, GEEventTypes.EFetchEventsReminders, true);

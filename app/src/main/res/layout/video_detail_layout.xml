@@ -11,19 +11,38 @@
         android:id="@+id/video_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minHeight="35dp"
         android:layout_marginLeft="5dp"
+        android:layout_marginRight="35dp"
         android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:textColor="#696969"
         android:textSize="15dp"
         android:textStyle="normal" />
-    <TextView
+
+        <ImageView
+            android:id="@+id/sharelink"
+            android:layout_alignTop="@+id/video_title"
+            android:layout_alignParentRight="true"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@drawable/forwardarrow" />
+        <ImageView
+            android:id="@+id/sharetouchlink"
+            android:layout_alignTop="@+id/video_title"
+            android:layout_alignParentRight="true"
+            android:layout_width="45dp"
+            android:layout_height="45dp" />
+
+
+        <TextView
         android:id="@+id/views_likes_dislikes"
         android:layout_below="@+id/video_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:textColor="#C0C0C0"
-        android:textSize="12dp">
+        android:textSize="13dp">
         </TextView>
 
         <ImageView
@@ -111,6 +130,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:textColor="#C0C0C0"
+        android:autoLink="all"
         android:textSize="14dp">
     </TextView>
 </LinearLayout>

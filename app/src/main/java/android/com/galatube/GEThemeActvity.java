@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,8 +37,10 @@ public class GEThemeActvity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_getheme_actvity);
+        Toolbar lToolBar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(lToolBar);
         getSupportActionBar().setElevation(0);
-        getSupportActionBar().setTitle("Gala Themes");
+        getSupportActionBar().setTitle("Themes");
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
         btnNext = (Button) findViewById(R.id.btn_next);
@@ -73,8 +76,12 @@ public class GEThemeActvity extends AppCompatActivity {
     {
        ActionBar lActionBar = getSupportActionBar();
         int lColor = GEThemeManager.getInstance(this).getSelectedNavColor();
+        int lTextColor = GEThemeManager.getInstance(this).getSelectedNavTextColor();
         ColorDrawable lColorDrawable = new ColorDrawable(lColor);
         lActionBar.setBackgroundDrawable(lColorDrawable);
+        Toolbar lToolBar = (Toolbar)findViewById(R.id.toolbar);
+        lToolBar.setTitleTextColor(lTextColor);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -151,9 +158,9 @@ public class GEThemeActvity extends AppCompatActivity {
             layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = layoutInflater.inflate(R.layout.ge_theme1, container, false);
             TextView lTextView = (TextView)view.findViewById(R.id.themenametextviewid);
+            lTextView.setText("UR Tube");
             RelativeLayout lHeaderlout=(RelativeLayout)view.findViewById(R.id.header_lout);
             GEThemeManager lThemeManager = GEThemeManager.getInstance(mContext);
-            lTextView.setText(lThemeManager.getThemeNameAtIndex(position));
             lTextView.setTextColor(lThemeManager.getSelectedNavTextColorAtIndex(position));
             lHeaderlout.setBackgroundColor(lThemeManager.getNavColorAtIndex(position));
             container.addView(view);

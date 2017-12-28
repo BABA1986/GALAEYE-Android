@@ -2,6 +2,8 @@ package android.com.galatube;
 
 import android.app.Activity;
 import android.com.galatube.Connectivity.GENetworkState;
+import android.com.galatube.GELaunchModal.GELaunchLinkInfo;
+import android.com.galatube.GELaunchModal.GELaunchLinkResolveListner;
 import android.com.galatube.GEPlayer.GEPlayerActivity;
 import android.com.galatube.GEYoutubeEvents.GEChannelInfoHeader;
 import android.com.galatube.GEYoutubeEvents.GEChannelManager;
@@ -31,7 +33,11 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.api.services.youtube.model.Channel;
+import com.google.api.services.youtube.model.Video;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -45,7 +51,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  * Created by deepak on 29/01/17.
  */
 
-public class GEPopularEventListFragment extends Fragment implements GEEventListner, GEOnLoadMore,GERecyclerItemClickListner
+public class GEPopularEventListFragment extends Fragment implements GEEventListner, GEOnLoadMore,GERecyclerItemClickListner, GELaunchLinkResolveListner
 {
     private GEServiceManager        mEvtServiceManger;
     private RecyclerView            mSearchVideoListView;
@@ -59,6 +65,8 @@ public class GEPopularEventListFragment extends Fragment implements GEEventListn
     private RelativeLayout lLayout;
     private View lNoInternetView;
     GEChannelInfoHeader mParallaxHeader;
+    private GELaunchLinkInfo mGELaunchLinkInfo;
+
 
 
     // Your developer key goes here
@@ -77,10 +85,12 @@ public class GEPopularEventListFragment extends Fragment implements GEEventListn
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mPage = getArguments().getInt(GEConstants.ARG_PAGE1);
         mChannelId = getArguments().getString("channelid");
         mISChannelId = getArguments().getBoolean("ischannelId");
         mEventTypes = GEEventTypes.values()[getArguments().getInt("eventtype")];
+        mGELaunchLinkInfo = new GELaunchLinkInfo(this.getActivity(), this);
         mParallaxHeader = new GEChannelInfoHeader(getContext()); //(GEChannelInfoHeader)view.findViewById(R.id.paralaxbaseview);
 
         try {
@@ -93,7 +103,8 @@ public class GEPopularEventListFragment extends Fragment implements GEEventListn
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-         view = inflater.inflate(R.layout.ge_videolist_fragment, container, false);
+        view = inflater.inflate(R.layout.ge_videolist_fragment, container, false);
+
         if(!GENetworkState.isNetworkStatusAvialable(getContext()))
         {
              lLayout = (RelativeLayout)view.findViewById(R.id.AllVideoList);
@@ -160,7 +171,7 @@ public class GEPopularEventListFragment extends Fragment implements GEEventListn
 
         BigInteger lSubscriptions = lChannel.getStatistics().getSubscriberCount();
         NumberFormat nf = NumberFormat.getInstance(new Locale("en", "in"));
-        String lSubscriptionsStr = nf.format(lSubscriptions);
+        String lSubscriptionsStr = lSubscriptions.equals(BigInteger.ZERO) ? "" : nf.format(lSubscriptions);
         String lTitle = lChannel.getSnippet().getTitle();
         String lBannerUrl = lChannel.getBrandingSettings().getImage().getBannerMobileImageUrl();
         String lThumbUrl = lChannel.getSnippet().getThumbnails().getHigh().getUrl();
@@ -222,6 +233,11 @@ public class GEPopularEventListFragment extends Fragment implements GEEventListn
     }
 
     @Override
+    public void dynamicLinkItemLoaded(Video video, boolean success) {
+
+    }
+
+    @Override
     public void loadMoreItems(RecyclerView.Adapter adapter) {
         if (mEvtServiceManger != null)
             mEvtServiceManger.loadEventsAsync(mChannelId, mEventTypes, mISChannelId);
@@ -244,5 +260,19 @@ public class GEPopularEventListFragment extends Fragment implements GEEventListn
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+    }
+
+    @Override
+    public void onResolveLaunchLink(GELaunchLinkInfo linkLaunchInfo, boolean success) {
+        if (success == false)
+            return;
+
+        Intent lIntent = new Intent(getContext(), GEPlayerActivity.class);
+        lIntent.putExtra("channelid", linkLaunchInfo.mChannelSrc);
+        lIntent.putExtra("eventtype", mEventTypes);
+        lIntent.putExtra("ischannelId", linkLaunchInfo.mIsChannelId);
+        lIntent.putExtra("videoid", linkLaunchInfo.mVideoId);
+        lIntent.putExtra("selectedIndex", -1);
+        startActivity(lIntent);
     }
 }

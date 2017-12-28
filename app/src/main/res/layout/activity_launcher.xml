@@ -3,7 +3,7 @@
     style="?android:attr/buttonBarStyle"
     android:id="@+id/lauout_launcher_activity"
     android:orientation="vertical"
-    android:background="#FA0018"
+    android:background="#424242"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >

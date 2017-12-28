@@ -1,9 +1,20 @@
 package android.com.galatube.GEPlayer;
 
+import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.GEYoutubeEvents.GEDateUtils;
 import android.com.galatube.GEYoutubeEvents.GENumFormatter;
 import android.com.galatube.R;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.View;
@@ -41,6 +52,7 @@ public class GEVideoDetailView extends LinearLayout implements View.OnClickListe
     TextView            mVideoPublishOnView;
     TextView            mVideoDescView;
     ImageView           mExpandCollapseView;
+    ImageView           mShareLinkView;
     boolean             mExpanded;
 
     public GEVideoDetailView(Context context) {
@@ -58,11 +70,22 @@ public class GEVideoDetailView extends LinearLayout implements View.OnClickListe
         init();
     }
 
+    public void setVideoDetailListner(final GEVideoDetailInterface listner){
+        ImageView lShareTouchLinkView = (ImageView) this.findViewById(R.id.sharetouchlink);
+        lShareTouchLinkView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listner.onShareBtnClicked();
+            }
+        });
+    }
+
     private void init() {
         View view = inflate(getContext(), R.layout.video_detail_layout, this);
         view.setOnClickListener(this);
 
         mThumbnailView = (ImageView) view.findViewById(R.id.channelthumbicon);
+        mShareLinkView = (ImageView) view.findViewById(R.id.sharelink);
         mExpandCollapseView = (ImageView) view.findViewById(R.id.expandcollapse);
         mChannelTitleView = (TextView) view.findViewById(R.id.channelName);
         mChannelSubTitleView = (TextView) view.findViewById(R.id.subscriptiontextviewid);
@@ -71,6 +94,29 @@ public class GEVideoDetailView extends LinearLayout implements View.OnClickListe
         mVideoSubTitleView = (TextView) view.findViewById(R.id.views_likes_dislikes);
         mVideoPublishOnView = (TextView) view.findViewById(R.id.pulished_at);
         mVideoDescView = (TextView) view.findViewById(R.id.description);
+
+        applyTheme();
+    }
+
+    public void applyTheme()
+    {
+        Resources resources = getContext().getResources();
+        int resourceId = resources.getIdentifier("expand", "drawable",
+                getContext().getPackageName());
+        Bitmap lBitmap = BitmapFactory.decodeResource(getContext().getResources(),
+                resourceId);
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("myTheme", Context.MODE_PRIVATE);
+        GEThemeManager.getInstance(getContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
+        int lColor = GEThemeManager.getInstance(getContext()).getSelectedNavColor();
+        mExpandCollapseView.setImageBitmap(lBitmap);
+        changeBitmapColor(lBitmap, mExpandCollapseView, lColor);
+
+        resourceId = resources.getIdentifier("forwardarrow", "drawable",
+                getContext().getPackageName());
+        lBitmap = BitmapFactory.decodeResource(getContext().getResources(),
+                resourceId);
+        mShareLinkView.setImageBitmap(lBitmap);
+        changeBitmapColor(lBitmap, mShareLinkView, lColor);
     }
 
     public void refreshWithInfo(Video videoInfo, Channel channelInfo)
@@ -127,14 +173,26 @@ public class GEVideoDetailView extends LinearLayout implements View.OnClickListe
         LinearLayout lLayout = (LinearLayout)findViewById(R.id.descriptionbaseview);
         TranslateAnimation anim = null;
         if (mExpanded) {
-            mExpandCollapseView.animate().rotation(180).start();
+            mExpandCollapseView.animate().rotation(0).start();
             lLayout.setVisibility(GONE);
             mExpanded = false;
         }
         else {
-            mExpandCollapseView.animate().rotation(0).start();
+            mExpandCollapseView.animate().rotation(180).start();
             lLayout.setVisibility(VISIBLE);
             mExpanded = true;
         }
+    }
+
+    private void changeBitmapColor(Bitmap sourceBitmap, ImageView image, int color)
+    {
+        Bitmap resultBitmap = Bitmap.createBitmap(sourceBitmap, 0, 0,
+                sourceBitmap.getWidth() - 1, sourceBitmap.getHeight() - 1);
+        Paint p = new Paint();
+        ColorFilter filter = new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN);
+        p.setColorFilter(filter);
+        image.setImageBitmap(resultBitmap);
+        Canvas canvas = new Canvas(resultBitmap);
+        canvas.drawBitmap(resultBitmap, 0, 0, p);
     }
 }

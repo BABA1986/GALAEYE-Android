@@ -26,6 +26,7 @@ import com.google.api.services.youtube.model.PlaylistItemListResponse;
 import com.google.api.services.youtube.model.PlaylistListResponse;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
+import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
 
 import java.io.IOException;
@@ -65,88 +66,7 @@ public class GEServiceManager
             lCredential.setSelectedAccount(lAccount);
             mYTService = new YouTube.Builder(new NetHttpTransport(), new GsonFactory(), lCredential ).setApplicationName(
                     mContext.getString(R.string.app_name)).build();
-//            mListner.onYoutubeServicesAuhtenticated();
 
-
-
-
-//        GETokenRefreshTask lRefreshTask = new GETokenRefreshTask(new GETokenRefreshListner() {
-//            @Override
-//            public Void onCompleteRefreshToken(String newToken) {
-//                if (newToken.equals("error"))
-//                {
-//                    mYTService = new YouTube.Builder(new NetHttpTransport(), new GsonFactory(), null).setApplicationName(
-//                            mContext.getString(R.string.app_name)).build();
-//                    mListner.onYoutubeServicesAuhtenticated();
-//                    return null;
-//                }
-//
-//                GoogleCredential lCredential = new GoogleCredential().setAccessToken(newToken);
-//                ArrayList scopes = Lists.newArrayList();
-//                scopes.add("https://www.googleapis.com/auth/youtube");
-//                lCredential .createScoped(scopes);
-//                mYTService = new YouTube.Builder(new NetHttpTransport(), new GsonFactory(), lCredential ).setApplicationName(
-//                        mContext.getString(R.string.app_name)).build();
-//                mListner.onYoutubeServicesAuhtenticated();
-//                return null;
-//            }
-//        }, mContext);
-//
-//        lRefreshTask.execute();
-
-//
-//        String lClientID = clientSecrets.getDetails().getClientId();
-//        String lClientSecret = clientSecrets.getDetails().getClientSecret();
-//        String lAccessToken = GEUserManager.getInstance(mContext).getmUserInfo().getmAccessToken();
-//        String lRefreshToken = GEUserManager.getInstance(mContext).getmUserInfo().getmRefreshToken();
-//
-//        if (lAuthToken.length() > 0) {
-//            {
-//                try {
-//                    GoogleTokenResponse tokenResponse =
-//                            new GoogleAuthorizationCodeTokenRequest(
-//                                    new NetHttpTransport(),
-//                                    JacksonFactory.getDefaultInstance(),
-//                                    "https://www.googleapis.com/oauth2/v4/token",
-//                                    lClientID,
-//                                    lClientSecret,
-//                                    lAuthToken, "")
-//                                    .execute();
-//                    lAccessToken = tokenResponse.getAccessToken();
-//                    lRefreshToken = tokenResponse.getRefreshToken();
-//
-//                    GEUserManager.getInstance(mContext).setAccessToken(lAccessToken);
-//                    GEUserManager.getInstance(mContext).setRefreshToken(lRefreshToken);
-//                } catch (IOException e) {
-//                    GoogleTokenResponse response = null;
-//                    if (lRefreshToken != null && lRefreshToken.length() > 0) {
-//                        GoogleRefreshTokenRequest req = new GoogleRefreshTokenRequest(new NetHttpTransport(),
-//                                JacksonFactory.getDefaultInstance(), lRefreshToken, lClientID, lClientSecret);
-//                        req.setGrantType("refresh_token");
-//                        try {
-//                            response = req.execute();
-//                            System.out.println("RF token = " + response.getAccessToken());
-//                            lAccessToken = response.getAccessToken();
-//                            GEUserManager.getInstance(mContext).setAccessToken(lAccessToken);
-//                        } catch (IOException ex) {
-//                            ex.printStackTrace();
-//                        }
-//                    }
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            GoogleCredential lCredential = new GoogleCredential().setAccessToken(lAccessToken);
-//            ArrayList scopes = Lists.newArrayList();
-//            scopes.add("https://www.googleapis.com/auth/youtube");
-//            lCredential .createScoped(scopes);
-//            mYTService = new YouTube.Builder(new NetHttpTransport(), new GsonFactory(), lCredential ).setApplicationName(
-//                    mContext.getString(R.string.app_name)).build();
-//        }
-//        else
-//        {
-//
-//        }
     }
 
     private YouTube.Search.List eventQueryFor(GEEventTypes eventTypes, String channelID, String nextPageToken)
@@ -415,6 +335,41 @@ public class GEServiceManager
         }catch(IOException e){
             Log.d("YC", "Could not search: "+e);
         }
+    }
+
+    public void loadChannelAndVideoAsync(final String channelName, final String videoId, boolean isId)
+    {
+        final  String fChannelId = channelName;
+        final  boolean lISId = isId;
+        mHandler = new android.os.Handler();
+        new Thread(){
+            public void run(){
+                final String lChannelId = getChannelIdFromName(channelName, lISId);
+
+                YouTube.Videos.List lVideoQuery = queryForVideos(videoId, null);
+                try {
+                    VideoListResponse lVideoResponse = lVideoQuery.execute();
+                    final List<Video> lVideos = lVideoResponse.getItems();
+
+                    mHandler.post(new Runnable(){
+                        public void run(){
+                            if (lVideos.size() > 0)
+                                mListner.dynamicLinkItemLoaded(lVideos.get(0), true);
+                            else
+                                mListner.dynamicLinkItemLoaded(null, false);
+                        }
+                    });
+
+
+                } catch (IOException e) {
+                    mHandler.post(new Runnable(){
+                        public void run(){
+                            mListner.dynamicLinkItemLoaded(null, false);
+                        }
+                    });
+                }
+            }
+        }.start();
     }
 
     public void loadEventsAsync(final String channelName, GEEventTypes eventType, boolean isId)

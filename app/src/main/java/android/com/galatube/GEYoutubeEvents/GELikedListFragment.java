@@ -16,6 +16,8 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.google.api.services.youtube.model.Video;
+
 import java.io.IOException;
 
 /**
@@ -158,6 +160,11 @@ public class GELikedListFragment extends Fragment implements GEEventListner, GEO
 
     @Override
     public void playlistsItemsLoadedFromPlaylist(String playlistID, boolean success) {
+
+    }
+
+    @Override
+    public void dynamicLinkItemLoaded(Video video, boolean success) {
 
     }
 

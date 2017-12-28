@@ -5,6 +5,9 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.com.galatube.GELaunchModal.GELaunchLinkResolveListner;
+import android.com.galatube.GELaunchModal.GELaunchLinkInfo;
+import android.com.galatube.GEPlayer.GEInterstitialAdMgr;
 import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.GEUserModal.GEUserManager;
 import android.com.galatube.Connectivity.GENetworkState;
@@ -17,27 +20,23 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -50,8 +49,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -60,6 +59,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -75,14 +78,15 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import org.w3c.dom.Text;
-
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
@@ -104,10 +108,55 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     private LinearLayout mTabToolbar;
     private Menu mActionBarMenu;
     private int mDrawerSelectedMenuIndex;
+    ArrayList<GEMenu> mMenuItems;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
+        MobileAds.initialize(this, "ca-app-pub-5685624800532639~9200779434");
+        GEInterstitialAdMgr.initWithContext(this);
+
+        mMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
+
+        String android_id = Settings.Secure.getString(this.getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        String deviceId = md5(android_id).toUpperCase();
+
+
+        AdView lAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        lAdView.loadAd(adRequest);
+        lAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when when the user is about to return
+                // to the app after tapping on an ad.
+            }
+        });
+
+
         mtoolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mtoolbar);
         mGoogleNavigationSignIn = (LinearLayout) findViewById(R.id.Google_Navigation_Header);
@@ -129,8 +178,8 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
 
                                      @Override
                                      public void onDrawerClosed(View drawerView) {
-                                         ArrayList<GEMenu> lMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
-                                         initialisePagesForMenu(lMenuItems.get(mDrawerSelectedMenuIndex), "video");
+                                         mMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
+                                         initialisePagesForMenu(mMenuItems.get(mDrawerSelectedMenuIndex), "video");
                                      }
 
                                      @Override
@@ -177,6 +226,8 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
                 mDrawerSelectedMenuIndex = position;
                 mDrawer.closeDrawers();
                 lListView.invalidateViews();
+
+                GEInterstitialAdMgr.showInterstitialAd();
             }
         });
 
@@ -209,6 +260,25 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         String lContent = "This is the notification scheduled.";
 //        Notification lNotification = getNotification(lContent);
 //        scheduleNotification(lNotification, 5000);
+    }
+
+    public String md5(String s) {
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
+            digest.update(s.getBytes());
+            byte messageDigest[] = digest.digest();
+
+            // Create Hex String
+            StringBuffer hexString = new StringBuffer();
+            for (int i=0; i<messageDigest.length; i++)
+                hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     @Override
@@ -250,6 +320,41 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         } else {
             updateUi(false);
         }
+
+        applyFontOnTab();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        applyFontOnTab();
+    }
+
+    private void applyFontOnTab(){
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // this code will be executed after 2 seconds
+                TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+                ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
+                int tabsCount = vg.getChildCount();
+                for (int j = 0; j < tabsCount; j++) {
+                    ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
+                    int tabChildsCount = vgTab.getChildCount();
+                    for (int i = 0; i < tabChildsCount; i++) {
+                        final View tabViewChild = vgTab.getChildAt(i);
+                        if (tabViewChild instanceof TextView) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ((TextView) tabViewChild).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Muli-SemiBold.ttf"));
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        }, 5);
     }
 
     private void applyTheme() {
@@ -262,6 +367,9 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         mTabToolbar.setBackgroundColor(lColor);
         mtoolbar.setBackgroundColor(lColor);
         ColorDrawable lColorDrawable = new ColorDrawable(lColor);
+
+        mWelcom_SignIn.setTextColor(lTextColor);
+        mSignIn_Navigation.setTextColor(lTextColor);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawer , mtoolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -387,6 +495,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         if (lAdapter != null) {
             lAdapter.reloadWithSubMenu(menuInfo.getmSubMenus(), filter);
             viewPager.setCurrentItem(0);
+            applyFontOnTab();
             return;
         }
 
@@ -394,12 +503,14 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
                 GEMainMenuActivity.this, menuInfo.getmSubMenus(), filter));
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+
         SharedPreferences sharedPreferences = getSharedPreferences("myTheme", MODE_PRIVATE);
         GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition", 0));
         int lTextColor = GEThemeManager.getInstance(this).getSelectedNavTextColor();
         tabLayout.setSelectedTabIndicatorColor(lTextColor);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(0);
+        applyFontOnTab();
     }
 
     @Override
@@ -564,4 +675,5 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
+
 }

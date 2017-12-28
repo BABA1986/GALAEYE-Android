@@ -24,4 +24,18 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:background="@android:color/white" />
+
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="ca-app-pub-5685624800532639/1582267577"
+        android:layout_gravity="center_horizontal"
+        android:background="#ffffff"
+        android:layout_alignParentBottom="true">
+    </com.google.android.gms.ads.AdView>
+
 </LinearLayout>

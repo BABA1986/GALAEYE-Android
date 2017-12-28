@@ -3,15 +3,20 @@ package android.com.galatube;
 import android.app.Activity;
 import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.model.GEMenu.GESharedMenu;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.content.SharedPreferences;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -22,6 +27,12 @@ import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -104,14 +115,33 @@ public class GELauncherActivity extends Activity {
                             }
 
                             public void onAnimationEnd(Animation anim) {
+
                                 new Timer().schedule(new TimerTask() {
                                     @Override
                                     public void run() {
+                                        SharedPreferences lPreferences = getSharedPreferences("MyPreference", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = lPreferences.edit();
+                                        int lLaunchCount = lPreferences.getInt("LaunchCount", 1);
+                                        if (lLaunchCount == 1) {
+                                            editor.putInt("LaunchCount", 2);
+                                            editor.apply();
+                                            editor.commit();
+                                        }
+
                                         Bundle bundle = ActivityOptionsCompat.makeCustomAnimation(getBaseContext(), android.R.anim.fade_in, android.R.anim.fade_out).toBundle();
-                                        Intent i = new Intent(GELauncherActivity.this, GEIntroActivity.class);
-                                        startActivity(i, bundle);
+                                        if (lLaunchCount == 1) {
+                                            Intent i = new Intent(GELauncherActivity.this, GEIntroActivity.class);
+                                            i.putExtra("Dismiss", false);
+                                            startActivity(i, bundle);
+                                            finish();
+                                        }
+                                        else
+                                        {
+                                            Intent i = new Intent(GELauncherActivity.this, GEMainMenuActivity.class);
+                                            startActivity(i);
+                                            finish();
+                                        }
                                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                                        finish();
                                     }
                                 }, 1000);
                             }
