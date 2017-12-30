@@ -5,11 +5,11 @@
     android:layout_height="match_parent"
     android:id="@+id/ge_player_activity">
 
-    <android.com.galatube.GEPlayer.GEVideoPlayerView xmlns:android="http://schemas.android.com/apk/res/android"
+    <gala.com.urtube.GEPlayer.GEVideoPlayerView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/gevideoplayerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        </android.com.galatube.GEPlayer.GEVideoPlayerView>
+        </gala.com.urtube.GEPlayer.GEVideoPlayerView>
 
     <android.support.v7.widget.RecyclerView
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -20,22 +20,8 @@
         android:layout_marginTop="0dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_above="@+id/adView"
         android:background="@android:color/transparent"
         android:scrollbars="none" />
-
-    <com.google.android.gms.ads.AdView
-        xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/adView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        ads:adSize="SMART_BANNER"
-        ads:adUnitId="ca-app-pub-5685624800532639/1582267577"
-        android:layout_gravity="center_horizontal"
-        android:background="#ffffff"
-        android:layout_alignParentBottom="true">
-    </com.google.android.gms.ads.AdView>
 
 
     <ProgressBar

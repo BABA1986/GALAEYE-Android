@@ -1,27 +1,35 @@
 {
   "project_info": {
-    "project_number": "22321969548",
-    "firebase_url": "https://urtube-2bc5b.firebaseio.com",
-    "project_id": "urtube-2bc5b",
-    "storage_bucket": "urtube-2bc5b.appspot.com"
+    "project_number": "403770149720",
+    "firebase_url": "https://urtube-190517.firebaseio.com",
+    "project_id": "urtube-190517",
+    "storage_bucket": "urtube-190517.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:22321969548:android:b898368f5aba22a8",
+        "mobilesdk_app_id": "1:403770149720:android:969a09f0dc08ad6b",
         "android_client_info": {
-          "package_name": "android.com.galatube"
+          "package_name": "gala.com.urtube"
         }
       },
       "oauth_client": [
         {
-          "client_id": "22321969548-6qdhe04u3rc9a6h1ecvc08p5o5pbff6i.apps.googleusercontent.com",
+          "client_id": "403770149720-k0cvo9vahlm110o6j14ec7e308tprk62.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "gala.com.urtube",
+            "certificate_hash": "aecaaf4b033e887116e58a58c77b347ed240e168"
+          }
+        },
+        {
+          "client_id": "403770149720-l50se8m410h1qi57d54q5stmiq95vtt8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCblQrtcMoum6weI5bVSfZ-FdIm6Fk-_2s"
+          "current_key": "AIzaSyDt9OTB7dWWCoryvtFC7ndjn8GoJiSouk8"
         }
       ],
       "services": {
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "403770149720-l50se8m410h1qi57d54q5stmiq95vtt8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="android.com.galatube">
+    package="gala.com.urtube">
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
-        android:name=".UrTubeApplication"
+        android:name="gala.com.urtube.UrTubeApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,7 +18,7 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true">
         <activity
-            android:name=".GELauncherActivity"
+            android:name="gala.com.urtube.GELauncherActivity"
             android:theme="@style/SplashTheme"
             android:screenOrientation="portrait"
             android:label="@string/app_name">
@@ -39,29 +38,29 @@
 
         </activity>
         <activity
-            android:name=".GEIntroActivity"
+            android:name="gala.com.urtube.GEIntroActivity"
             android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
-            android:name=".GEMainMenuActivity"
+            android:name="gala.com.urtube.GEMainMenuActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity android:name=".GEPlaylist.GEPlaylistVideolistActivity"
+        <activity android:name="gala.com.urtube.GEPlaylist.GEPlaylistVideolistActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".SettingActivity"
+        <activity android:name="gala.com.urtube.SettingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             />
-        <activity android:name=".GEThemeActvity"
+        <activity android:name="gala.com.urtube.GEThemeActvity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             />
-        <activity android:name=".GEWebView.WebViewActivity"
+        <activity android:name="gala.com.urtube.GEWebView.WebViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             />
-        <activity android:name=".GEPlayer.GEPlayerActivity"
+        <activity android:name="gala.com.urtube.GEPlayer.GEPlayerActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation|screenSize"
             ></activity>/>

@@ -5,7 +5,7 @@
     android:id="@+id/activity_web_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="android.com.galatube.GEWebView.WebViewActivity">
+    tools:context="android.com.urtube.gala.com.urtube.GEWebView.WebViewActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
