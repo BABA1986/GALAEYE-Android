@@ -109,7 +109,9 @@ public class GEVideoDetailView extends LinearLayout implements View.OnClickListe
         GEThemeManager.getInstance(getContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
         int lColor = GEThemeManager.getInstance(getContext()).getSelectedNavColor();
         mExpandCollapseView.setImageBitmap(lBitmap);
-        changeBitmapColor(lBitmap, mExpandCollapseView, lColor);
+        mExpandCollapseView.setColorFilter(lColor);
+
+       // changeBitmapColor(lBitmap, mExpandCollapseView, lColor);
 
         resourceId = resources.getIdentifier("forwardarrow", "drawable",
                 getContext().getPackageName());
@@ -158,7 +160,6 @@ public class GEVideoDetailView extends LinearLayout implements View.OnClickListe
         long lDeff = lCurrTimeStamp - lTimeStamp;
         String lAgoString = GEDateUtils.getTimeAgo(lDeff);
         mVideoPublishOnView.setText(lAgoString);
-
         String lDescStr = videoInfo.getSnippet().getDescription();
         mVideoDescView.setText(lDescStr);
     }

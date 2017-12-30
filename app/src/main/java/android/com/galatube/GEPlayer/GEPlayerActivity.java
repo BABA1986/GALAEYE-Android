@@ -1,6 +1,5 @@
 package android.com.galatube.GEPlayer;
 
-import android.com.galatube.GEConstants;
 import android.com.galatube.GETheme.GEThemeManager;
 import android.com.galatube.GEYoutubeEvents.GEChannelManager;
 import android.com.galatube.GEYoutubeEvents.GEEventListner;
@@ -22,6 +21,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -29,26 +29,20 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
-
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerView;
 import com.google.api.services.youtube.model.Channel;
 import com.google.api.services.youtube.model.Video;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -349,5 +343,12 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
     @Override
     public void onEnterToFullScreen(boolean b){
        mIsPlayerFullScreen = b;
+    }
+
+    @Override
+    public void openSheet() {
+        BottemSheet myBottomSheetDialog = BottemSheet.getInstance(this);
+        myBottomSheetDialog.setCanceledOnTouchOutside(true);
+        myBottomSheetDialog.show();
     }
 }

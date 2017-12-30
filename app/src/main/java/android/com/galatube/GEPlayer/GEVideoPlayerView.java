@@ -165,7 +165,7 @@ public class GEVideoPlayerView extends RelativeLayout implements YouTubePlayer.O
 
         @Override
         public void onPaused() {
-
+            mListner.openSheet();
         }
 
         @Override
@@ -180,7 +180,6 @@ public class GEVideoPlayerView extends RelativeLayout implements YouTubePlayer.O
 
         @Override
         public void onSeekTo(int i) {
-
         }
     };
 
@@ -196,7 +195,7 @@ public class GEVideoPlayerView extends RelativeLayout implements YouTubePlayer.O
 
         @Override
         public void onAdStarted() {
-
+            mListner.openSheet();
         }
 
         @Override
@@ -205,7 +204,7 @@ public class GEVideoPlayerView extends RelativeLayout implements YouTubePlayer.O
 
         @Override
         public void onVideoEnded() {
-
+          mListner.openSheet();
         }
 
         @Override

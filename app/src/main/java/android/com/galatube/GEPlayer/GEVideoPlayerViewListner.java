@@ -11,4 +11,5 @@ public interface GEVideoPlayerViewListner {
     public void onInitializationSuccess(GEVideoPlayerView playerView, boolean b);
     public void onInitializationFailure(GEVideoPlayerView playerView, YouTubeInitializationResult youTubeInitializationResult);
     public void onEnterToFullScreen(boolean b);
+    public void openSheet();
 }

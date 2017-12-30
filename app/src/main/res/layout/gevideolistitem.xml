@@ -1,6 +1,7 @@
 <android.support.v7.widget.CardView
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_view_video"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -33,7 +34,6 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintVertical_bias="0.5"
                     app:layout_constraintVertical_chainStyle="packed"
                     />
 
@@ -46,7 +46,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintDimensionRatio="16:9"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    tools:layout_editor_absoluteY="90dp" />
 
                 <TextView
                     android:id="@+id/durationtextview"
@@ -60,7 +61,7 @@
                     android:alpha="1.0"
                     android:maxLines="1"
                     android:background="@drawable/durationbacklayout"
-                    />
+                    android:layout_marginEnd="5dp" />
             </android.support.constraint.ConstraintLayout>
 
         <RelativeLayout
