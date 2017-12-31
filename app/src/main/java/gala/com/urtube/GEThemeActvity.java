@@ -156,7 +156,7 @@ public class GEThemeActvity extends AppCompatActivity {
             layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = layoutInflater.inflate(R.layout.ge_theme1, container, false);
             TextView lTextView = (TextView)view.findViewById(R.id.themenametextviewid);
-            lTextView.setText("UR Tube");
+            lTextView.setText("URTube");
             RelativeLayout lHeaderlout=(RelativeLayout)view.findViewById(R.id.header_lout);
             GEThemeManager lThemeManager = GEThemeManager.getInstance(mContext);
             lTextView.setTextColor(lThemeManager.getSelectedNavTextColorAtIndex(position));

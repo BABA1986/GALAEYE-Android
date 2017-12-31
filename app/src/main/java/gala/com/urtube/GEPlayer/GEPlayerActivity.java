@@ -36,6 +36,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.api.services.youtube.model.Channel;
+import com.google.api.services.youtube.model.Thumbnail;
+import com.google.api.services.youtube.model.ThumbnailDetails;
 import com.google.api.services.youtube.model.Video;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
@@ -152,6 +154,9 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
         mProgressBar.setVisibility(View.VISIBLE);
 
         final Video lVideo = getVideoFromSelectedIndex();
+        ThumbnailDetails lThumbUrls = lVideo.getSnippet().getThumbnails();
+        Thumbnail lThumbnail = lThumbUrls.getHigh();
+        String lUrl = lThumbnail.getUrl();
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("https")
                 .authority("urtube.com")
@@ -167,6 +172,11 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
                 .setDynamicLinkDomain("vnpy3.app.goo.gl")
                 // Open links with this app on Android
                 .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
+                .setSocialMetaTagParameters(
+                        new DynamicLink.SocialMetaTagParameters.Builder()
+                                .setTitle(lVideo.getSnippet().getTitle())
+                                .setImageUrl(Uri.parse(lUrl))
+                                .build())
                 // Open links with com.example.ios on iOS
                 .buildDynamicLink();
 
@@ -187,7 +197,7 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
 
                             Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                             sharingIntent.setType("text/plain");
-                            sharingIntent.putExtra(Intent.EXTRA_TEXT, lVideo.getSnippet().getTitle() + "\n\n Stream Video on URTube App"+"\uD83D\uDC47\uD83C\uDFFD \n " + shortLink.toString());
+                            sharingIntent.putExtra(Intent.EXTRA_TEXT,"\n Stream Video on URTube App"+"\uD83D\uDC47\uD83C\uDFFD \n " + shortLink.toString());
                             startActivityForResult(sharingIntent.createChooser(sharingIntent, "Share App"), 101);
                         } else {
                             // Error

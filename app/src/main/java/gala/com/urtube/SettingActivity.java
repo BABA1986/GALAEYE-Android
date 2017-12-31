@@ -263,7 +263,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                                     Uri flowchartLink = task.getResult().getPreviewLink();
                                     Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                                     sharingIntent.setType("text/plain");
-                                    sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Enjoy UR Tube Android App");
+                                    sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Enjoy URTube Android App");
                                     sharingIntent.putExtra(Intent.EXTRA_TEXT, "It's a great app for catching up on Comedy, Funny Prank, Stand Up Comedy, Dramas, Short\n" +
                                             " Films & Epic Stories you might not have heard of otherwise.\n\n Google Play Store link \uD83D\uDC47\uD83C\uDFFD \n " + shortLink.toString());
                                     startActivity(Intent.createChooser(sharingIntent, "Share App"));
@@ -282,7 +282,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.supportEvent:
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                         "mailto", "urtubefeedback@gmail.com", null));
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback to UR Tube Support Team");
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback to URTube Support Team");
                 startActivity(Intent.createChooser(emailIntent, null));
 
                 Log.i("supportEvent","supportEvent");

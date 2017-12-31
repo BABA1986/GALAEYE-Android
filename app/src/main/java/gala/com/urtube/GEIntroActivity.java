@@ -34,8 +34,8 @@ public class GEIntroActivity extends AppIntro2
         SharedPreferences sharedPreferences=getSharedPreferences("myTheme",MODE_PRIVATE);
         int lColor = Color.TRANSPARENT;
         int lTextColor = Color.DKGRAY;
-        addSlide(AppIntroFragment.newInstance("Your Favourite Comedians" + "\n" + "Under One Roof",  "Gear up for a laugh riot with UR Tube. We provide your favourite comedians videos under a one roof.", R.drawable.iconintro2, lColor, lTextColor, lTextColor));
-        addSlide(AppIntroFragment.newInstance("Enjoy the Best Dramas",  "UR Tube is a great app for catching up on dramas you might not have heard of otherwise.", R.drawable.iconintro3, lColor, lTextColor, lTextColor));
+        addSlide(AppIntroFragment.newInstance("Your Favourite Comedians" + "\n" + "Under One Roof",  "Gear up for a laugh riot with URTube. We provide your favourite comedians videos under a one roof.", R.drawable.iconintro2, lColor, lTextColor, lTextColor));
+        addSlide(AppIntroFragment.newInstance("Enjoy the Best Dramas",  "URTube is a great app for catching up on dramas you might not have heard of otherwise.", R.drawable.iconintro3, lColor, lTextColor, lTextColor));
         addSlide(AppIntroFragment.newInstance("Your Favorite Poets",  "India's largest poet platform here you can find all of your favorite poet videos.", R.drawable.iconintro4, lColor, lTextColor, lTextColor));
         addSlide(AppIntroFragment.newInstance("Do You Know?",  "A collection of popular mythological stories that brings to you stories of gods and goddesses, divine feats, tyranny, treachery, bravery, sacrifice, love and friendship.", R.drawable.iconintro5, lColor, lTextColor, lTextColor));
         addSlide(AppIntroFragment.newInstance("Motivational Speakers",  "To help you stay motivated, no matter what your job throws at you, we decided to compile more than 20 of the best motivational speeches from business, sports, entertainment, and more.", R.drawable.iconintro6, lColor, lTextColor, lTextColor));
