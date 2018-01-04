@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:orientation="vertical">
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingPrefix"
+    android:id="@+id/cordinatorlayout"
     android:layout_width="match_parent"
+    android:layout_above="@+id/adView"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     >
@@ -39,3 +48,17 @@
     <include layout="@layout/content_main_menu" />
 
 </android.support.design.widget.CoordinatorLayout>
+
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="ca-app-pub-5685624800532639/1582267577"
+        android:layout_gravity="bottom|center"
+        android:background="#ffffff"
+        android:layout_alignParentBottom="true">
+    </com.google.android.gms.ads.AdView>
+</RelativeLayout>

@@ -115,18 +115,20 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         MobileAds.initialize(this,"ca-app-pub-5685624800532639/9624409126");
         GEInterstitialAdMgr.initWithContext(this);
 
-        AdView lAdView = (AdView) findViewById(R.id.adView);
+        final AdView lAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         lAdView.loadAd(adRequest);
         lAdView.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
+                lAdView.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onAdFailedToLoad(int errorCode) {
                 // Code to be executed when an ad request fails.
+                lAdView.setVisibility(View.GONE);
             }
 
             @Override
@@ -144,6 +146,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
             public void onAdClosed() {
                 // Code to be executed when when the user is about to return
                 // to the app after tapping on an ad.
+                lAdView.setVisibility(View.GONE);
             }
         });
 

@@ -317,7 +317,6 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
 
     @Override
     public void onRecyclerItemClicked(View view, RecyclerView.ViewHolder viewHolder, int position) {
-        startActivity(new Intent(getActivity(),GEEventPlayActivity.class));
     }
 
     @Override
@@ -350,6 +349,5 @@ public class GEEventListFragment extends Fragment implements GEEventListner, GEO
             lBellBtn.setSelected(!lBellBtn.isSelected());
             return;
         }
-        startActivity(new Intent(getActivity(),GEEventPlayActivity.class));
     }
 }

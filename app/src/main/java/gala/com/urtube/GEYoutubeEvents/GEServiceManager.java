@@ -405,7 +405,10 @@ public class GEServiceManager
             return;
 
         GEEventManager lManager = GEEventManager.getInstance();
-        String lNextPageToken = lManager.pageTokenForInfo(eventType, channelID);
+//        String lSaveWithRef = channelID;
+//        if(channelID.equalsIgnoreCase(channelName))
+
+        String lNextPageToken = lManager.pageTokenForInfo(eventType, channelName);
         if (!lManager.canFetchMore(eventType, channelID) && lNextPageToken == null){
             return;
         }
