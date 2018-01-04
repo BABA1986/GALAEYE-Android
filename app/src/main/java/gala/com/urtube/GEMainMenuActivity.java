@@ -2,6 +2,7 @@ package gala.com.urtube;
 
 import android.accounts.Account;
 
+import gala.com.urtube.GEPlayer.GEInterstitialAdMgr;
 import gala.com.urtube.GETheme.GEThemeManager;
 import gala.com.urtube.GEUserModal.GEUserManager;
 import gala.com.urtube.Connectivity.GENetworkState;
@@ -24,6 +25,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -50,7 +52,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -60,6 +68,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
+import com.google.gson.FieldAttributes;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -103,9 +112,40 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
 
         mMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
 
-        String android_id = Settings.Secure.getString(this.getContentResolver(),
-                Settings.Secure.ANDROID_ID);
-        String deviceId = md5(android_id).toUpperCase();
+        MobileAds.initialize(this,"ca-app-pub-5685624800532639/9624409126");
+        GEInterstitialAdMgr.initWithContext(this);
+
+        AdView lAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        lAdView.loadAd(adRequest);
+        lAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when when the user is about to return
+                // to the app after tapping on an ad.
+            }
+        });
 
 
         mtoolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -125,12 +165,11 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
 
                                      @Override
                                      public void onDrawerOpened(View drawerView) {
+                                         GEInterstitialAdMgr.showInterstitialAd();
                                      }
 
                                      @Override
                                      public void onDrawerClosed(View drawerView) {
-                                         mMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
-                                         initialisePagesForMenu(mMenuItems.get(mDrawerSelectedMenuIndex), "video");
                                      }
 
                                      @Override
@@ -177,6 +216,9 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
                 mDrawerSelectedMenuIndex = position;
                 mDrawer.closeDrawers();
                 lListView.invalidateViews();
+
+                mMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
+                initialisePagesForMenu(mMenuItems.get(mDrawerSelectedMenuIndex), "video");
             }
         });
 
@@ -277,6 +319,13 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     protected void onResume() {
         super.onResume();
         applyFontOnTab();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        GEInterstitialAdMgr.showInterstitialAd();
     }
 
     private void applyFontOnTab(){
@@ -386,14 +435,22 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         return false;
     }
 
+    boolean doubleBackToExitPressedOnce = true;
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+            return;
         }
+
+        if (doubleBackToExitPressedOnce) {
+            doubleBackToExitPressedOnce = false;
+            Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        super.onBackPressed();
     }
 
     @Override

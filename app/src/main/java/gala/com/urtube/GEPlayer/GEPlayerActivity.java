@@ -29,8 +29,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 
-//import com.google.android.gms.ads.AdRequest;
-//import com.google.android.gms.ads.AdView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.youtube.player.YouTubeBaseActivity;
@@ -73,9 +71,6 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
         setContentView(gala.com.urtube.R.layout.ge_player_activity);
         mPlayerView = (GEVideoPlayerView)findViewById(gala.com.urtube.R.id.gevideoplayerview);
         mPlayerView.setListner(this);
-//        AdView lAdView = (AdView) findViewById(gala.com.urtube.R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        lAdView.loadAd(adRequest);
 
         mSelectedVideoIndex = getIntent().getIntExtra("selectedIndex", 0);
         mISChannelId = getIntent().getBooleanExtra("ischannelId", true);
@@ -129,6 +124,13 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (mPlayerView != null)
+            mPlayerView.pauseVideo();
+    }
+
+    @Override
     protected void onRestart() {
         super.onRestart();
         mPlayerView.playVideo();
@@ -136,6 +138,7 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
 
     @Override
     protected void onDestroy() {
+        mPlayerView.removeListner();
         super.onDestroy();
     }
 
@@ -302,7 +305,6 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
     public void onRecyclerItemClicked(View view, RecyclerView.ViewHolder viewHolder, int position, GEEventTypes eventType) {
         mSelectedVideoIndex = position-1;
         loadVideoForSelectedIndex();
-//        GEInterstitialAdMgr.showInterstitialAd();
     }
 
     @Override

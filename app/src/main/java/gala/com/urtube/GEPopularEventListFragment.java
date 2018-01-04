@@ -4,6 +4,7 @@ import android.app.Activity;
 import gala.com.urtube.Connectivity.GENetworkState;
 import gala.com.urtube.GELaunchModal.GELaunchLinkInfo;
 import gala.com.urtube.GELaunchModal.GELaunchLinkResolveListner;
+import gala.com.urtube.GEPlayer.GEInterstitialAdMgr;
 import gala.com.urtube.GEPlayer.GEPlayerActivity;
 import gala.com.urtube.GEYoutubeEvents.GEChannelInfoHeader;
 import gala.com.urtube.GEYoutubeEvents.GEChannelManager;

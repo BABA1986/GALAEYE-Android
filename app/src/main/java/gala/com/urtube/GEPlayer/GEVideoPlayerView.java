@@ -5,6 +5,7 @@ import gala.com.urtube.R;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -46,6 +47,7 @@ public class GEVideoPlayerView extends RelativeLayout implements YouTubePlayer.O
         initialisePlayer();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public GEVideoPlayerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initialisePlayer();
@@ -70,6 +72,11 @@ public class GEVideoPlayerView extends RelativeLayout implements YouTubePlayer.O
         mPlayer.loadVideo(videoId);
         mPlayer.play();
         hideWindowControls();
+    }
+
+    public void removeListner(){
+        mListner = null;
+        mHandler.removeCallbacksAndMessages(null);
     }
 
     public void playVideo() {
@@ -226,6 +233,9 @@ public class GEVideoPlayerView extends RelativeLayout implements YouTubePlayer.O
     };
 
     public void promptShareAfter(int after){
+        if (mListner == null)
+            return;
+
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
