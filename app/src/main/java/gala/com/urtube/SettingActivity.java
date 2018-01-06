@@ -41,9 +41,12 @@ import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.ShortDynamicLink;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -101,7 +104,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
         mGoogleSignInTv=(TextView)findViewById(R.id.GoogleSignIn_tv);
         mGoogleSignInIdTv=(TextView)findViewById(R.id.GoogleSignInId_tv);
-        mSwitchBtn=(Switch)findViewById(R.id.simpleSwitch);
         mGoogleSignOut.setVisibility(View.GONE);
         mSignView.setVisibility(View.GONE);
         mGoogleSignIn.setOnClickListener(this);
@@ -288,7 +290,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 Log.i("supportEvent","supportEvent");
                 break;
             case R.id.rateEvent:
-                Uri uri = Uri.parse("market://details?id=" + "com.google.android.youtube");
+                Uri uri = Uri.parse("market://details?id=" + getPackageName());
                 Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
                 // To count with Play market backstack, After pressing back button,
                 // to taken back to our application, we need to add following flags to intent.
@@ -353,6 +355,17 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                lGEUserManager.setUserId(tokenId);
                lGEUserManager.setUserEmail(email);
                lGEUserManager.setUserImageUrl(image);
+
+               String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+               if (refreshedToken != null) {
+
+                   FirebaseDatabase database = FirebaseDatabase.getInstance();
+                   DatabaseReference myRef = database.getReference("users");
+                   myRef.child(refreshedToken).child("name").setValue(name);
+                   myRef.child(refreshedToken).child("email").setValue(email);
+                   myRef.child(refreshedToken).child("imageurl").setValue(image);
+               }
+
                updateUi(true);
            }
         else

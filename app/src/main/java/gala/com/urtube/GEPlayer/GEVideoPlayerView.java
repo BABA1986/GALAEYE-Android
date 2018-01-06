@@ -215,9 +215,7 @@ public class GEVideoPlayerView extends RelativeLayout implements YouTubePlayer.O
         @Override
         public void onVideoStarted() {
             int lDuration = mPlayer.getDurationMillis();
-            int lScheduleAfter = lDuration/4;
-            promptShareAfter(lScheduleAfter);
-            lScheduleAfter = lDuration/2;
+            int lScheduleAfter = lDuration/2;
             promptShareAfter(lScheduleAfter);
         }
 

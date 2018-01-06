@@ -5,8 +5,12 @@ import android.content.SharedPreferences;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+
+import java.util.HashMap;
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
@@ -20,6 +24,14 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         Log.i("regId", refreshedToken);
         // Saving reg id to shared preferences
         storeRegIdInPref(refreshedToken);
+
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("users");
+        HashMap<String, String> lUserInfo = new HashMap<String, String>();
+        lUserInfo.put("name", "Not Yet Login");
+        lUserInfo.put("email", "Not Yet Login");
+        lUserInfo.put("imageurl", "Not Yet Login");
+        lUserInfo.put("token", refreshedToken);
+        mDatabase.child(refreshedToken).setValue(lUserInfo);
 
         // Registration has completed, send token to server.
         Intent registrationComplete = new Intent(NotificationConfig.REGISTRATION_COMPLETE);

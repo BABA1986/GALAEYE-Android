@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import gala.com.urtube.GEMainMenuActivity;
+import gala.com.urtube.GEPlayer.GEPlayerActivity;
 
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -40,8 +41,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.e(TAG, "Data Payload: " + remoteMessage.getData().toString());
 
             try {
-                JSONObject json = new JSONObject(remoteMessage.getData().toString());
-                handleDataMessage(json);
+                JSONObject json = new JSONObject(remoteMessage.getData());
+                String lClickAction = "";//remoteMessage.getNotification().getClickAction();
+                handleDataMessage(json, lClickAction);
             } catch (Exception e) {
                 Log.e(TAG, "Exception: " + e.getMessage());
             }
@@ -63,40 +65,41 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
 
-    private void handleDataMessage(JSONObject json) {
+    private void handleDataMessage(JSONObject json, String clickAction) {
         Log.e(TAG, "push json: " + json.toString());
 
         try {
-            JSONObject data = json.getJSONObject("data");
+            JSONObject data = json;
 
             String title = data.getString("title");
             String message = data.getString("message");
-            boolean isBackground = data.getBoolean("is_background");
+//            boolean isBackground = data.getBoolean("is_background");
             String imageUrl = data.getString("image");
-            String timestamp = data.getString("timestamp");
-            JSONObject payload = data.getJSONObject("payload");
+            String timestamp = "";//data.getString("timestamp");
 
-            Log.e(TAG, "title: " + title);
-            Log.e(TAG, "message: " + message);
-            Log.e(TAG, "isBackground: " + isBackground);
-            Log.e(TAG, "payload: " + payload.toString());
-            Log.e(TAG, "imageUrl: " + imageUrl);
-            Log.e(TAG, "timestamp: " + timestamp);
+            String lVideoId = data.getString("videoid");
+            String lChannelId = data.getString("channelid");
+            String lIsChannelId = data.getString("ischannelid");
 
 
             if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
                 // app is in foreground, broadcast the push message
                 Intent pushNotification = new Intent(NotificationConfig.PUSH_NOTIFICATION);
-                pushNotification.putExtra("message", message);
                 LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
-
-                // play notification sound
                 NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
-                notificationUtils.playNotificationSound();
-            } else {
+//                notificationUtils.playNotificationSound();
+            }
+//            else
+            {
+                Intent resultIntent = null;
                 // app is in background, show the notification in notification tray
-                Intent resultIntent = new Intent(getApplicationContext(), GEMainMenuActivity.class);
+
+                resultIntent = new Intent(getApplicationContext(), GEMainMenuActivity.class);
                 resultIntent.putExtra("message", message);
+                resultIntent.putExtra("message", message);
+                resultIntent.putExtra("videoid", lVideoId);
+                resultIntent.putExtra("channelid", lChannelId);
+                resultIntent.putExtra("ischannelid", lIsChannelId);
 
                 // check for image attachment
                 if (TextUtils.isEmpty(imageUrl)) {

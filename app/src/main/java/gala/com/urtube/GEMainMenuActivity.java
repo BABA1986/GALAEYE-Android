@@ -3,9 +3,11 @@ package gala.com.urtube;
 import android.accounts.Account;
 
 import gala.com.urtube.GEPlayer.GEInterstitialAdMgr;
+import gala.com.urtube.GEPlayer.GEPlayerActivity;
 import gala.com.urtube.GETheme.GEThemeManager;
 import gala.com.urtube.GEUserModal.GEUserManager;
 import gala.com.urtube.Connectivity.GENetworkState;
+import gala.com.urtube.GEYoutubeEvents.GEEventTypes;
 import gala.com.urtube.model.GEMenu.GEMenu;
 import gala.com.urtube.model.GEMenu.GEMenuAdapter;
 import gala.com.urtube.model.GEMenu.GESharedMenu;
@@ -23,6 +25,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -68,6 +71,13 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.FieldAttributes;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
@@ -80,6 +90,7 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -135,18 +146,20 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
             public void onAdOpened() {
                 // Code to be executed when an ad opens an overlay that
                 // covers the screen.
+                lAdView.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onAdLeftApplication() {
                 // Code to be executed when the user has left the app.
+                lAdView.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onAdClosed() {
                 // Code to be executed when when the user is about to return
                 // to the app after tapping on an ad.
-                lAdView.setVisibility(View.GONE);
+//                lAdView.setVisibility(View.GONE);
             }
         });
 
@@ -168,11 +181,11 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
 
                                      @Override
                                      public void onDrawerOpened(View drawerView) {
-                                         GEInterstitialAdMgr.showInterstitialAd();
                                      }
 
                                      @Override
                                      public void onDrawerClosed(View drawerView) {
+                                         GEInterstitialAdMgr.showInterstitialAd();
                                      }
 
                                      @Override
@@ -231,7 +244,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         }
 
         mDrawerSelectedMenuIndex = 0;
-//
+
         initialisePagesForMenu(lMenuItems.get(mDrawerSelectedMenuIndex), "video");
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestServerAuthCode("403770149720-l50se8m410h1qi57d54q5stmiq95vtt8.apps.googleusercontent.com")
@@ -251,9 +264,13 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
                 .addOnConnectionFailedListener(this)
                 .build();
 
-//        String lContent = "This is the notification scheduled.";
-//        Notification lNotification = getNotification(lContent);
-//        scheduleNotification(lNotification, 5000);
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // this code will be executed after 2 seconds
+               openPlayerThroughNotificationIntent(getIntent());
+            }
+        }, 1000);
     }
 
     public String md5(String s) {
@@ -276,6 +293,33 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     }
 
     @Override
+    protected void onNewIntent(Intent intent){
+        super.onNewIntent(intent);
+
+        openPlayerThroughNotificationIntent(intent);
+    }
+
+    private void openPlayerThroughNotificationIntent(Intent intent){
+        String lchannelId = intent.getStringExtra("channelid");
+        String lVideolId = intent.getStringExtra("videoid");
+        Boolean lIsChannelID = intent.getBooleanExtra("ischannelId", true);
+
+        if (lchannelId == null)
+            return;
+
+        if (lVideolId == null)
+            return;
+
+        Intent lIntent = new Intent(this, GEPlayerActivity.class);
+        lIntent.putExtra("channelid", lchannelId);
+        lIntent.putExtra("eventtype", GEEventTypes.EFetchEventsArchivedVideos);
+        lIntent.putExtra("ischannelId", lIsChannelID);
+        lIntent.putExtra("videoid", lVideolId);
+        lIntent.putExtra("selectedIndex", -1);
+        startActivity(lIntent);
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
 
@@ -291,10 +335,6 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         }
         else
         {
-            // If the user has not previously signed in on this device or the sign-in has
-            // expired,
-            // this asynchronous branch will attempt to sign in the user silently.  Cross-device
-            // single sign-on will occur in this branch.
             lOpt.setResultCallback(new ResultCallback<GoogleSignInResult>() {
                 @Override
                 public void onResult(GoogleSignInResult googleSignInResult) {
@@ -327,7 +367,6 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     @Override
     protected void onRestart() {
         super.onRestart();
-
         GEInterstitialAdMgr.showInterstitialAd();
     }
 
@@ -577,6 +616,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     }
 
     private void handleResult(GoogleSignInResult result) throws IOException {
+
         if (result.isSuccess()) {
             GoogleSignInAccount account = result.getSignInAccount();
 
@@ -597,6 +637,17 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
             lGEUserManager.setAuthToken(lAccessToken);
             lGEUserManager.setIdToken(lIDToken);
             lGEUserManager.setUserId(lID);
+
+            String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+            if (refreshedToken != null) {
+
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference("users");
+                myRef.child(refreshedToken).child("name").setValue(name);
+                myRef.child(refreshedToken).child("email").setValue(email);
+                myRef.child(refreshedToken).child("imageurl").setValue(image);
+            }
+
             googleApiClient.connect();
             updateUi(true);
         } else {

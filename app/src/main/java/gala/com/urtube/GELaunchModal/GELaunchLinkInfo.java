@@ -8,6 +8,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
  * Created by deepak on 25/12/17.
@@ -25,6 +26,7 @@ public class GELaunchLinkInfo
     public GELaunchLinkInfo(Activity mainActivity, GELaunchLinkResolveListner listner) {
         mListner = listner;
         initialseDynamicLinkIfAny(mainActivity);
+
     }
 
     private void initialseDynamicLinkIfAny(final Activity launchActivity){
