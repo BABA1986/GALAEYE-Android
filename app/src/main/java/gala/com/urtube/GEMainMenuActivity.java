@@ -58,6 +58,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.github.javiersantos.appupdater.AppUpdater;
+import com.github.javiersantos.appupdater.enums.Display;
+import com.github.javiersantos.appupdater.enums.Duration;
+import com.github.javiersantos.appupdater.enums.UpdateFrom;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -120,6 +124,21 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
+        // App Updater dialog
+
+        AppUpdater appUpdater = new AppUpdater(this);
+        appUpdater.setDisplay(Display.DIALOG)
+                .setUpdateFrom(UpdateFrom.GOOGLE_PLAY)
+                .showEvery(3)
+                .setTitleOnUpdateAvailable("Update available")
+                .setContentOnUpdateAvailable("Check out the latest version available of URTube! Play with new fetures and improvements.")
+                .setButtonUpdate("Update now?")
+                .setButtonDismiss("Maybe later")
+                .setButtonDoNotShowAgain(null)
+                .setCancelable(false)
+                .start();
+
 
         mMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
 
