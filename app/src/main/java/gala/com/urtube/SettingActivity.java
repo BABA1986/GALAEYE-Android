@@ -362,7 +362,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                    DatabaseReference myRef = database.getReference("users");
                    myRef.child(refreshedToken).child("name").setValue(name);
                    myRef.child(refreshedToken).child("email").setValue(email);
-                   myRef.child(refreshedToken).child("imageurl").setValue(image);
                }
 
                updateUi(true);

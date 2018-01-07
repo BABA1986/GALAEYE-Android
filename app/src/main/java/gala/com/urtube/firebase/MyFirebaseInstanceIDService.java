@@ -29,27 +29,9 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         GEUserManager lGEUserManager = GEUserManager.getInstance(getApplicationContext());
         String lUserName = lGEUserManager.getmUserInfo().getUserName();
         String lUserEmail = lGEUserManager.getmUserInfo().getUserEmail();
-        String lUserImage = lGEUserManager.getmUserInfo().getmUserImageUrl();
-
-        if (lUserName != null)
-            lUserInfo.put("name", lUserName);
-        else
-            lUserInfo.put("name", "NA");
-
-        if (lUserEmail != null)
-            lUserInfo.put("email", lUserEmail);
-        else
-            lUserInfo.put("email", "NA");
-
-        if (lUserImage != null)
-            lUserInfo.put("imageurl", lUserImage);
-        else
-            lUserInfo.put("imageurl", "NA");
-
-        if (refreshedToken != null)
-            lUserInfo.put("token", refreshedToken);
-        else
-            lUserInfo.put("token", "NA");
+        lUserInfo.put("name", lUserName);
+        lUserInfo.put("email", lUserEmail);
+        lUserInfo.put("token", refreshedToken);
 
         mDatabase.child(refreshedToken).setValue(lUserInfo);
     }

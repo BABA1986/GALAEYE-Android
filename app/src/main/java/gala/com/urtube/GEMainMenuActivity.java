@@ -645,7 +645,6 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
                 DatabaseReference myRef = database.getReference("users");
                 myRef.child(refreshedToken).child("name").setValue(name);
                 myRef.child(refreshedToken).child("email").setValue(email);
-                myRef.child(refreshedToken).child("imageurl").setValue(image);
             }
 
             googleApiClient.connect();
