@@ -135,9 +135,21 @@ public class GEVideoDetailView extends LinearLayout implements View.OnClickListe
             mThumbnailView.setImageURI(Uri.parse(lThumbfile.getAbsolutePath()));
         }
 
-        int lViewCount = videoInfo.getStatistics().getViewCount().intValue();
-        int lLikeCount = videoInfo.getStatistics().getLikeCount().intValue();
-        int lDisLikeCount = videoInfo.getStatistics().getDislikeCount().intValue();
+        BigInteger lBViewCount = videoInfo.getStatistics().getViewCount();
+        int lViewCount = 0;
+        if (lBViewCount != null)
+            lViewCount = lBViewCount.intValue();
+
+        BigInteger lBLikeCount = videoInfo.getStatistics().getLikeCount();
+        int lLikeCount = 0;
+        if (lBLikeCount != null)
+            lLikeCount = lBLikeCount.intValue();
+
+        BigInteger lBDisLikeCount = videoInfo.getStatistics().getDislikeCount();
+        int lDisLikeCount = 0;
+        if (lBDisLikeCount != null)
+            lDisLikeCount = lBLikeCount.intValue();
+
 
         String lViewCountStr = GENumFormatter.format(lViewCount);
         String lLikeCountStr = GENumFormatter.format(lLikeCount);

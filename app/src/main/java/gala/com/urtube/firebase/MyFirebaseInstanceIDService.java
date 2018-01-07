@@ -12,6 +12,8 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 
 import java.util.HashMap;
 
+import gala.com.urtube.GEUserModal.GEUserManager;
+
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
     private static final String TAG = MyFirebaseInstanceIDService.class.getSimpleName();
@@ -22,31 +24,34 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.i("regId", refreshedToken);
-        // Saving reg id to shared preferences
-        storeRegIdInPref(refreshedToken);
-
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("users");
         HashMap<String, String> lUserInfo = new HashMap<String, String>();
-        lUserInfo.put("name", "Not Yet Login");
-        lUserInfo.put("email", "Not Yet Login");
-        lUserInfo.put("imageurl", "Not Yet Login");
-        lUserInfo.put("token", refreshedToken);
+        GEUserManager lGEUserManager = GEUserManager.getInstance(getApplicationContext());
+        String lUserName = lGEUserManager.getmUserInfo().getUserName();
+        String lUserEmail = lGEUserManager.getmUserInfo().getUserEmail();
+        String lUserImage = lGEUserManager.getmUserInfo().getmUserImageUrl();
+
+        if (lUserName != null)
+            lUserInfo.put("name", lUserName);
+        else
+            lUserInfo.put("name", "NA");
+
+        if (lUserEmail != null)
+            lUserInfo.put("email", lUserEmail);
+        else
+            lUserInfo.put("email", "NA");
+
+        if (lUserImage != null)
+            lUserInfo.put("imageurl", lUserImage);
+        else
+            lUserInfo.put("imageurl", "NA");
+
+        if (refreshedToken != null)
+            lUserInfo.put("token", refreshedToken);
+        else
+            lUserInfo.put("token", "NA");
+
         mDatabase.child(refreshedToken).setValue(lUserInfo);
-
-        // Registration has completed, send token to server.
-        Intent registrationComplete = new Intent(NotificationConfig.REGISTRATION_COMPLETE);
-        registrationComplete.putExtra("token", refreshedToken);
-        //registrationComplete.setAction(AppConstants.IntentFilterConstants.FilterPushNotification);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(registrationComplete);
-    }
-
-    private void storeRegIdInPref(String token) {
-//        AppPreference preference = MyCircleApplication.get(MyCircleApplication.mAppContext).getComponent().prefs();
-//        preference.saveFcmToken(token);
-        SharedPreferences pref = getApplicationContext().getSharedPreferences(NotificationConfig.SHARED_PREF, 0);
-        SharedPreferences.Editor editor = pref.edit();
-        //editor.putString(AppConstants.FCM_TOKEN, token);
-        editor.commit();
     }
 }
 

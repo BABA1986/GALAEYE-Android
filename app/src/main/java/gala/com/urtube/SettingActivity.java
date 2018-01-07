@@ -358,7 +358,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
                String refreshedToken = FirebaseInstanceId.getInstance().getToken();
                if (refreshedToken != null) {
-
                    FirebaseDatabase database = FirebaseDatabase.getInstance();
                    DatabaseReference myRef = database.getReference("users");
                    myRef.child(refreshedToken).child("name").setValue(name);

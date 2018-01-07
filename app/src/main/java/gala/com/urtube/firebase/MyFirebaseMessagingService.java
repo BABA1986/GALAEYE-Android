@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -60,7 +61,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             // play notification sound
             NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
             notificationUtils.playNotificationSound();
-        }else{
+        } else {
             // If the app is in background, firebase itself handles the notification
         }
     }
@@ -81,33 +82,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String lChannelId = data.getString("channelid");
             String lIsChannelId = data.getString("ischannelid");
 
+            Intent resultIntent = null;
+            // app is in background, show the notification in notification tray
 
-            if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
-                // app is in foreground, broadcast the push message
-                Intent pushNotification = new Intent(NotificationConfig.PUSH_NOTIFICATION);
-                LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
-                NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
-//                notificationUtils.playNotificationSound();
-            }
-//            else
-            {
-                Intent resultIntent = null;
-                // app is in background, show the notification in notification tray
+            resultIntent = new Intent(getApplicationContext(), GEMainMenuActivity.class);
+            resultIntent.putExtra("message", message);
+            resultIntent.putExtra("message", message);
+            resultIntent.putExtra("videoid", lVideoId);
+            resultIntent.putExtra("channelid", lChannelId);
+            resultIntent.putExtra("ischannelid", lIsChannelId);
 
-                resultIntent = new Intent(getApplicationContext(), GEMainMenuActivity.class);
-                resultIntent.putExtra("message", message);
-                resultIntent.putExtra("message", message);
-                resultIntent.putExtra("videoid", lVideoId);
-                resultIntent.putExtra("channelid", lChannelId);
-                resultIntent.putExtra("ischannelid", lIsChannelId);
-
-                // check for image attachment
-                if (TextUtils.isEmpty(imageUrl)) {
-                    showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent);
-                } else {
-                    // image is present, show notification with image
-                    showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl);
-                }
+            // check for image attachment
+            if (TextUtils.isEmpty(imageUrl)) {
+                showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent);
+            } else {
+                // image is present, show notification with image
+                showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl);
             }
         } catch (JSONException e) {
             Log.e(TAG, "Json Exception: " + e.getMessage());
