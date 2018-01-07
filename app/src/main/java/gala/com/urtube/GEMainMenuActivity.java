@@ -132,7 +132,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
                 .setUpdateFrom(UpdateFrom.GOOGLE_PLAY)
                 .showEvery(3)
                 .setTitleOnUpdateAvailable("Update available")
-                .setContentOnUpdateAvailable("Check out the latest version available of URTube! Play with new fetures and improvements.")
+                .setContentOnUpdateAvailable("New version of URTube is available on Play Store. Please update URTube application to get new fetures and improvements.")
                 .setButtonUpdate("Update now?")
                 .setButtonDismiss("Maybe later")
                 .setButtonDoNotShowAgain(null)
