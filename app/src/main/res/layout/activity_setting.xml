@@ -243,6 +243,64 @@
                 android:layout_gravity="center"
                 />
         </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.2dp"
+            android:background="#aba8a8"
+            android:layout_marginLeft="12dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:weightSum="1"
+            android:background="@android:color/white"
+            android:id="@+id/privacypolicy"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Privacy Policy"
+                android:textColor="#4e4d4d"
+                android:layout_weight="1"
+                android:layout_marginLeft="15dp"
+                android:textSize="17sp"/>
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/right_arrow"
+                android:layout_gravity="center"
+                />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.2dp"
+            android:background="#aba8a8"
+            android:layout_marginLeft="12dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:weightSum="1"
+            android:background="@android:color/white"
+            android:id="@+id/earnMoney"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="How To Earn Money"
+                android:textColor="#4e4d4d"
+                android:layout_weight="1"
+                android:layout_marginLeft="15dp"
+                android:textSize="17sp"/>
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/right_arrow"
+                android:layout_gravity="center"
+                />
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="36dp"

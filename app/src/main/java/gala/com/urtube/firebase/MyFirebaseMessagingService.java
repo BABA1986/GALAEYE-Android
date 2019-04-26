@@ -80,7 +80,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             String lVideoId = data.getString("videoid");
             String lChannelId = data.getString("channelid");
-            String lIsChannelId = data.getString("ischannelid");
+            boolean lIsChannelId = data.getBoolean("ischannelid");
 
             Intent resultIntent = null;
             // app is in background, show the notification in notification tray
@@ -90,7 +90,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             resultIntent.putExtra("message", message);
             resultIntent.putExtra("videoid", lVideoId);
             resultIntent.putExtra("channelid", lChannelId);
-            resultIntent.putExtra("ischannelid", lIsChannelId);
+            resultIntent.putExtra("ischannelId", lIsChannelId);
 
             // check for image attachment
             if (TextUtils.isEmpty(imageUrl)) {

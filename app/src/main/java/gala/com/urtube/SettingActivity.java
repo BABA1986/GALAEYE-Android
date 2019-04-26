@@ -59,6 +59,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     private LinearLayout mThemelEvent;
     private LinearLayout mDieclaimerlEvent;
     private LinearLayout mAboutlEvent;
+    private LinearLayout mEarnMoney;
+    private LinearLayout mPrivacyPolicy;
     private LinearLayout mSharelEvent;
     private LinearLayout mSupportlEvent;
     private LinearLayout mRatelEvent;
@@ -96,6 +98,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         mThemelEvent=(LinearLayout)findViewById(R.id.themeEvent);
         mDieclaimerlEvent=(LinearLayout)findViewById(R.id.disclaimerEvent);
         mAboutlEvent=(LinearLayout)findViewById(R.id.aboutEvent);
+        mEarnMoney = (LinearLayout)findViewById(R.id.earnMoney);
+        mPrivacyPolicy = (LinearLayout)findViewById(R.id.privacypolicy);
         mSharelEvent=(LinearLayout)findViewById(R.id.shareEvent);
         mSupportlEvent=(LinearLayout)findViewById(R.id.supportEvent);
         mRatelEvent=(LinearLayout)findViewById(R.id.rateEvent);
@@ -112,6 +116,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         mThemelEvent.setOnClickListener(this);
         mDieclaimerlEvent.setOnClickListener(this);
         mAboutlEvent.setOnClickListener(this);
+        mEarnMoney.setOnClickListener(this);
+        mPrivacyPolicy.setOnClickListener(this);
         mSharelEvent.setOnClickListener(this);
         mSupportlEvent.setOnClickListener(this);
         mRatelEvent.setOnClickListener(this);
@@ -222,10 +228,35 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.aboutEvent:
                 intent1=new Intent(SettingActivity.this, WebViewActivity.class);
-                intent1.putExtra("URL","file:///android_asset/www/aboutapp.html");
+                intent1.putExtra("URL","https://earnextrapenny.wordpress.com");
                 intent1.putExtra("Title","About App");
                 startActivity(intent1);
                 Log.i("aboutEvent","aboutEvent");
+                break;
+
+            case R.id.earnMoney:
+                String url = "https://earnextrapenny.wordpress.com";
+                try {
+                    Uri uri = Uri.parse("googlechrome://navigate?url=" + url);
+                    Intent i = new Intent(Intent.ACTION_VIEW, uri);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
+                } catch (ActivityNotFoundException e) {
+                    // Chrome is probably not installed
+                }
+                Log.i("earn Money","earn Money");
+                break;
+
+            case R.id.privacypolicy:
+                url = "https://galaentertainment.github.io/URTube/privacypolicy.html";
+                try {
+                    Uri uri = Uri.parse("googlechrome://navigate?url=" + url);
+                    Intent i = new Intent(Intent.ACTION_VIEW, uri);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
+                } catch (ActivityNotFoundException e) {
+                    // Chrome is probably not installed
+                }
                 break;
 
             case R.id.apptour:

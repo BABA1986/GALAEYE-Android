@@ -1,5 +1,6 @@
 package gala.com.urtube.GEPlayer;
 
+import gala.com.urtube.GEConstants;
 import gala.com.urtube.GETheme.GEThemeManager;
 import gala.com.urtube.GEYoutubeEvents.GEChannelManager;
 import gala.com.urtube.GEYoutubeEvents.GEEventListner;
@@ -61,10 +62,12 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
     private int                     mSelectedVideoIndex;
     private GEVideoDetailView       mParallaxHeader;
     private RecyclerView            mSearchVideoListView;
-    private GEServiceManager mEvtServiceManger;
+    private GEServiceManager        mEvtServiceManger;
     private GEVideoPlayerView       mPlayerView;
     private boolean                 mIsPlayerFullScreen;
     private ProgressBar             mProgressBar;
+
+    private Video                   mPlayerVideo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +76,7 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
         mPlayerView = (GEVideoPlayerView)findViewById(gala.com.urtube.R.id.gevideoplayerview);
         mPlayerView.setListner(this);
 
-        mSelectedVideoIndex = getIntent().getIntExtra("selectedIndex", 0);
+        mSelectedVideoIndex = getIntent().getIntExtra("selectedIndex", -1);
         mISChannelId = getIntent().getBooleanExtra("ischannelId", true);
         mEventTypes = GEEventTypes.values()[getIntent().getIntExtra("eventtype", 0)];
         mChannelID = getIntent().getStringExtra("channelid");
@@ -103,6 +106,8 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
         refreshAndLoadBanner();
 
         try {
+            if (mSelectedVideoIndex >= 0) return;
+
             mEvtServiceManger = new GEServiceManager((GEEventListner) this, this);
             mEvtServiceManger.loadEventsAsync(mChannelID, mEventTypes, mISChannelId);
             if (mVideoId != null)
@@ -157,15 +162,15 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
     private void shareDynamicLink(){
         mProgressBar.setVisibility(View.VISIBLE);
 
-        final Video lVideo = getVideoFromSelectedIndex();
-        ThumbnailDetails lThumbUrls = lVideo.getSnippet().getThumbnails();
+
+        ThumbnailDetails lThumbUrls = mPlayerVideo.getSnippet().getThumbnails();
         Thumbnail lThumbnail = lThumbUrls.getHigh();
         String lUrl = lThumbnail.getUrl();
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("https")
                 .authority("urtube.com")
                 .appendQueryParameter("channelsrc", mChannelID)
-                .appendQueryParameter("videoid", lVideo.getId())
+                .appendQueryParameter("videoid", mPlayerVideo.getId())
                 .appendQueryParameter("ischannelid", String.valueOf(mISChannelId))
                 .fragment("section-name");
 
@@ -178,7 +183,7 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
                 .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
                 .setSocialMetaTagParameters(
                         new DynamicLink.SocialMetaTagParameters.Builder()
-                                .setTitle(lVideo.getSnippet().getTitle())
+                                .setTitle(mPlayerVideo.getSnippet().getTitle())
                                 .setImageUrl(Uri.parse(lUrl))
                                 .build())
                 // Open links with com.example.ios on iOS
@@ -231,22 +236,22 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
         if (lChannel == null)
             return;
 
-        if (mSelectedVideoIndex < 0)
+        if (mSelectedVideoIndex < 0 && mPlayerVideo == null)
             return;
 
-        GEEventManager lMamager = GEEventManager.getInstance();
-        GEVideoListObj listObj = lMamager.videoListObjForInfo(mEventTypes, mChannelID);
-        ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
-        int lPageIndex = (mSelectedVideoIndex >= 50) ? mSelectedVideoIndex/50 : 0;
-        GEVideoListPage lPage = listPages.get(lPageIndex);
-        List<Video> lResults = lPage.getmVideoList();
-        int lPosition = mSelectedVideoIndex - lPageIndex*50;
-        Video lVideo = lResults.get(lPosition);
+        if (mSelectedVideoIndex >= 0) {
+            int lPageSize = (int)GEConstants.PAGE_SIZE;
+            GEEventManager lMamager = GEEventManager.getInstance();
+            GEVideoListObj listObj = lMamager.videoListObjForInfo(mEventTypes, mChannelID);
+            ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
+            int lPageIndex = (mSelectedVideoIndex >= lPageSize) ? mSelectedVideoIndex / lPageSize: 0;
+            GEVideoListPage lPage = listPages.get(lPageIndex);
+            List<Video> lResults = lPage.getmVideoList();
+            int lPosition = mSelectedVideoIndex - lPageIndex * GEConstants.PAGE_SIZE;
+            mPlayerVideo = lResults.get(lPosition);
+        }
 
-        if (lVideo == null)
-            return;
-
-        mParallaxHeader.refreshWithInfo(lVideo, lChannel);
+        mParallaxHeader.refreshWithInfo(mPlayerVideo, lChannel);
     }
 
     private void loadVideoForSelectedIndex()
@@ -255,8 +260,8 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
             return;
 
         if (mSelectedVideoIndex >= 0) {
-            Video lVideo = getVideoFromSelectedIndex();
-            mPlayerView.loadVideo(lVideo.getId());
+            mPlayerVideo = getVideoFromSelectedIndex();
+            mPlayerView.loadVideo(mPlayerVideo.getId());
         }
         else{
             mPlayerView.loadVideo(mVideoId);
@@ -269,10 +274,10 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
         GEEventManager lMamager = GEEventManager.getInstance();
         GEVideoListObj listObj = lMamager.videoListObjForInfo(mEventTypes, mChannelID);
         ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
-        int lPageIndex = (mSelectedVideoIndex >= 50) ? mSelectedVideoIndex/50 : 0;
+        int lPageIndex = (mSelectedVideoIndex >= GEConstants.PAGE_SIZE) ? mSelectedVideoIndex/GEConstants.PAGE_SIZE : 0;
         GEVideoListPage lPage = listPages.get(lPageIndex);
         List<Video> lResults = lPage.getmVideoList();
-        int lPosition = mSelectedVideoIndex - lPageIndex*50;
+        int lPosition = mSelectedVideoIndex - lPageIndex*GEConstants.PAGE_SIZE;
         Video lVideo = lResults.get(lPosition);
         return lVideo;
     }
@@ -334,13 +339,14 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
     public void dynamicLinkItemLoaded(Video video, boolean success) {
         if (video == null)
             return;
+
+        mPlayerVideo = video;
         GEChannelManager lChannelMgr = GEChannelManager.getInstance();
         Channel lChannel = lChannelMgr.channelWithName(mChannelID);
         if (lChannel == null)
             return;
 
         mParallaxHeader.refreshWithInfo(video, lChannel);
-
     }
 
     @Override
@@ -385,10 +391,10 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
         GEEventManager lMamager = GEEventManager.getInstance();
         GEVideoListObj listObj = lMamager.videoListObjForInfo(mEventTypes, mChannelID);
         ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
-        int lPageIndex = (mSelectedVideoIndex >= 50) ? mSelectedVideoIndex/50 : 0;
+        int lPageIndex = (mSelectedVideoIndex >= GEConstants.PAGE_SIZE) ? mSelectedVideoIndex/GEConstants.PAGE_SIZE : 0;
         GEVideoListPage lPage = listPages.get(lPageIndex);
         List<Video> lResults = lPage.getmVideoList();
-        int lPosition = mSelectedVideoIndex - lPageIndex*50;
+        int lPosition = mSelectedVideoIndex - lPageIndex*GEConstants.PAGE_SIZE;
         Video lVideo = lResults.get(lPosition);
 
         return lVideo.getSnippet().getTitle();

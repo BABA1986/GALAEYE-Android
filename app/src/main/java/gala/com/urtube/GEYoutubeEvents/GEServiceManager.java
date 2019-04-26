@@ -76,7 +76,7 @@ public class GEServiceManager
             query.setType("video");
             query.setChannelId(channelID);
             query.setOrder("date");
-            query.setMaxResults(50L);
+            query.setMaxResults((long) GEConstants.PAGE_SIZE);
             query.setPageToken(nextPageToken);
             if (eventTypes == GEEventTypes.EFetchEventsLive) {
                 query.setEventType("live");
@@ -116,7 +116,7 @@ public class GEServiceManager
             String lAuthToken = GEUserManager.getInstance(mContext).getmUserInfo().getmAuthToken();
             query.setOauthToken(lAuthToken);
             query.setMyRating("like");
-            query.setMaxResults(50L);
+            query.setMaxResults((long)GEConstants.PAGE_SIZE);
             query.setPageToken(nextPageToken);
 //            query.setFields("items(kind,id/kind,id/videoId,snippet/title,snippet/thumbnails),nextPageToken,pageInfo,prevPageToken");
         }catch(IOException e){
@@ -132,7 +132,7 @@ public class GEServiceManager
         try {
             query = mYTService.videos().list("id,snippet,contentDetails,statistics");
             query.setKey(GEConstants.GEAPIKEY);
-            query.setMaxResults(50L);
+            query.setMaxResults((long)GEConstants.PAGE_SIZE);
             query.setPageToken(nextPageToken);
             query.setId(lVideoIds);
         }catch(IOException e){
@@ -208,7 +208,7 @@ public class GEServiceManager
             query = mYTService.playlists().list("id,snippet,contentDetails");
             query.setKey(GEConstants.GEAPIKEY);
             query.setChannelId(channelID);
-            query.setMaxResults(50L);
+            query.setMaxResults((long)GEConstants.PAGE_SIZE);
             query.setPageToken(nextPageToken);
 //            query.setFields("items(kind,id/kind,id/videoId,snippet/title,snippet/thumbnails),nextPageToken,pageInfo,prevPageToken");
         }catch(IOException e){
@@ -224,7 +224,7 @@ public class GEServiceManager
         try{
             query = mYTService.playlistItems().list("id,snippet,contentDetails");
             query.setKey(GEConstants.GEAPIKEY);
-            query.setMaxResults(50L);
+            query.setMaxResults((long)GEConstants.PAGE_SIZE);
             query.setPlaylistId(playlistID);
             query.setPageToken(nextPageToken);
 //            query.setFields("items(kind,id/kind,id/videoId,snippet/title,snippet/thumbnails),nextPageToken,pageInfo,prevPageToken");
@@ -444,7 +444,7 @@ public class GEServiceManager
                 String lVideoIds = videoIdsFromResponse(response);
                 YouTube.Videos.List lVideoQuery = queryForVideos(lVideoIds, null);
                 VideoListResponse lVideoResponse = lVideoQuery.execute();
-                if (response.getItems().size() >= 50) {//Sometimes results are less than page size and next page token exist in response
+                if (response.getItems().size() >= (long)GEConstants.PAGE_SIZE) {//Sometimes results are less than page size and next page token exist in response
                     lVideoResponse.setNextPageToken(response.getNextPageToken());
                     lVideoResponse.setPrevPageToken(response.getPrevPageToken());
                 }

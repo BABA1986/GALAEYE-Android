@@ -1,6 +1,8 @@
 package gala.com.urtube.GEYoutubeEvents;
 
 import gala.com.urtube.R;
+
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
@@ -46,6 +48,8 @@ public class GEEventListItemView extends RecyclerView.ViewHolder implements View
         this.mNotificationBtn = (ImageButton) view.findViewById(R.id.notificationbtn);
         this.mClickListner = clickListner;
         this.mEventType = eventType;
+        this.mImageView.setBackgroundColor(Color.TRANSPARENT);
+
         if (this.mNotificationBtnForTouch != null)
          this.mNotificationBtnForTouch.setOnClickListener(this);
         view.setOnClickListener(this);

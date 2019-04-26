@@ -1,5 +1,6 @@
 package gala.com.urtube.GEPlaylist;
 
+import gala.com.urtube.GEConstants;
 import gala.com.urtube.GETheme.GEThemeManager;
 import gala.com.urtube.GEYoutubeEvents.GEOnLoadMore;
 import gala.com.urtube.GEYoutubeEvents.GERecyclerItemClickListner;
@@ -53,30 +54,33 @@ public class GEPlaylistListAdapter extends  RecyclerView.Adapter<GEPlaylistListI
 
     @Override
     public int getItemCount() {
+        int lPageSize = GEConstants.PAGE_SIZE;
         GEPlaylistManager lMamager = GEPlaylistManager.getInstance();
         GEPlaylistObj listObj = lMamager.playlistListObjForInfo(mChannelName);
         if (listObj == null) return 0;
         ArrayList<GEPlaylistPage> listPages = listObj.getmPlayListListPages();
         GEPlaylistPage lPage = listPages.get(listPages.size() - 1);
         List<Playlist> lResults = lPage.getmPlaylistList();
-        if (lResults.size() < 50 && listPages.size() == 1)
+        if (lResults.size() < lPageSize && listPages.size() == 1)
             return lResults.size();
-        else if (lResults.size() < 50 && listPages.size() > 1)
-            return (listPages.size()-1)*50 + lResults.size();
+        else if (lResults.size() < lPageSize && listPages.size() > 1)
+            return (listPages.size()-1)*lPageSize + lResults.size();
 
-        return listPages.size()*50;
+        return listPages.size()*lPageSize;
     }
 
     @Override
     public void onBindViewHolder(GEPlaylistListItemView holder, int position) {
+        int lPageSize = GEConstants.PAGE_SIZE;
+
         GEPlaylistListItemView lListItem = (GEPlaylistListItemView) holder;// holder
         GEPlaylistManager lMamager = GEPlaylistManager.getInstance();
         GEPlaylistObj listObj = lMamager.playlistListObjForInfo(mChannelName);
         ArrayList<GEPlaylistPage> listPages = listObj.getmPlayListListPages();
-        int lPageIndex = (position >= 50) ? position/50 : 0;
+        int lPageIndex = (position >= lPageSize) ? position/lPageSize : 0;
         GEPlaylistPage lPage = listPages.get(lPageIndex);
         List<Playlist> lResults = lPage.getmPlaylistList();
-        int lPosition = position - lPageIndex*50;
+        int lPosition = position - lPageIndex*lPageSize;
         Playlist lResult = lResults.get(lPosition);
         lListItem.mTitleView.setText(lResult.getSnippet().getTitle());
         long lItemCounts = lResult.getContentDetails().getItemCount();
@@ -101,7 +105,7 @@ public class GEPlaylistListAdapter extends  RecyclerView.Adapter<GEPlaylistListI
 //            handle exception
         }
 
-        if (position == listPages.size()*50-1)
+        if (position == listPages.size()*lPageSize-1)
         {
             mLoadMoreListner.loadMoreItems(this);
         }

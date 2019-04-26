@@ -1,5 +1,6 @@
 package gala.com.urtube.GEYoutubeEvents;
 
+import gala.com.urtube.GEConstants;
 import gala.com.urtube.GETheme.GEThemeManager;
 import gala.com.urtube.R;
 import android.content.Context;
@@ -80,18 +81,19 @@ public class GEPopularEventListAdapter extends ParallaxRecyclerAdapter<GEEventLi
         GEVideoListPage lPage = listPages.get(listPages.size() - 1);
         List<Video> lResults = lPage.getmVideoList();
 
-        if (lResults.size() < 50 && listPages.size() == 1) {
+        int lPageSize = GEConstants.PAGE_SIZE;
+        if (lResults.size() < lPageSize && listPages.size() == 1) {
             if (lPage.getmNextPageToken() != null)
                 return lResults.size() + 1;
             return lResults.size();
         }
-        else if (lResults.size() < 50 && listPages.size() > 1)
-            return (listPages.size()-1)*50 + lResults.size();
+        else if (lResults.size() < lPageSize && listPages.size() > 1)
+            return (listPages.size()-1)*lPageSize + lResults.size();
 
         if (lPage.getmNextPageToken() != null)
-            return listPages.size()*50 + 1;
+            return listPages.size()*lPageSize + 1;
 
-        return listPages.size()*50;
+        return listPages.size()*lPageSize;
     }
 
     @Override
@@ -100,15 +102,18 @@ public class GEPopularEventListAdapter extends ParallaxRecyclerAdapter<GEEventLi
             return;
 
         GEEventListItemView lListItem = (GEEventListItemView) viewHolder;// holder
-
+        int lPageSize = GEConstants.PAGE_SIZE;
         GEEventManager lMamager = GEEventManager.getInstance();
         GEVideoListObj listObj = lMamager.videoListObjForInfo(mEventType, mChannelId);
         ArrayList<GEVideoListPage> listPages = listObj.getmVideoListPages();
-        int lPageIndex = (position >= 50) ? position/50 : 0;
+        int lPageIndex = (position >= lPageSize) ? position/lPageSize : 0;
         if (lPageIndex >= listPages.size()) return;
         GEVideoListPage lPage = listPages.get(lPageIndex);
         List<Video> lResults = lPage.getmVideoList();
-        int lPosition = position - lPageIndex*50;
+        int lPosition = position - lPageIndex*lPageSize;
+        if(lPosition >= lResults.size())
+            return;
+
         Video lResult = lResults.get(lPosition);
         lListItem.mTitleView.setText(lResult.getSnippet().getTitle());
 
@@ -169,7 +174,8 @@ public class GEPopularEventListAdapter extends ParallaxRecyclerAdapter<GEEventLi
             lListItem.mImageView.setImageURI(Uri.parse(file.getAbsolutePath()));
         }
 
-        if (position == listPages.size()*50-1)
+
+        if (position == listPages.size()*lPageSize-1)
         {
             mLoadMoreListner.loadMoreItems(this);
         }
@@ -219,7 +225,8 @@ public class GEPopularEventListAdapter extends ParallaxRecyclerAdapter<GEEventLi
         GEVideoListPage lPage = listPages.get(listPages.size() - 1);
         List<Video> lResults = lPage.getmVideoList();
 
-        if (position == listPages.size()*50 + 1 && lPage.getmNextPageToken() != null)
+        int lPageSize = GEConstants.PAGE_SIZE;
+        if (position == listPages.size()*lPageSize + 1 && lPage.getmNextPageToken() != null)
             return LOADING_VIEW;
 
         return VIEW_TYPES.NORMAL;
