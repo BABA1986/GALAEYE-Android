@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#E83B32">
+
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@color/colorAccent">
+
+        <ImageView android:id="@+id/icwhitecircle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_circle_white"
+            android:scaleType="centerInside"
+            android:gravity="center"
+            android:layout_centerInParent="true" />
+
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/saperator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="#F83C32"
+            android:layout_centerHorizontal="true"
+
+            android:layout_alignLeft="@+id/icwhitecircle"
+            android:layout_alignRight="@+id/icwhitecircle"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:elevation="2dp"
+                android:src="@drawable/video_icon" />
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/saperatorview"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="-15dp"
+                android:background="@drawable/logo_roundview" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="#00FFFF"
+            android:layout_below="@+id/saperator">
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/kids"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="false"
+                android:layout_marginTop="-20dp"
+                android:orientation="horizontal">
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="54dp"
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="0dp"
+                    android:text=" ">
+                </TextView>
+                <TextView android:layout_width="wrap_content" android:id="@+id/ktext"
+                    android:layout_height="wrap_content" android:textColor="#E83B32"
+                    android:textSize="54dp"
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="0dp"
+                    android:text="K">
+                </TextView>
+                <TextView android:layout_width="wrap_content" android:id="@+id/itext"
+                    android:layout_height="wrap_content" android:textColor="#397DE4"
+                    android:textSize="54dp"
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="0dp"
+                    android:text="I">
+                </TextView>
+                <TextView android:layout_width="wrap_content" android:id="@+id/dtext"
+                    android:layout_height="wrap_content" android:textColor="#06A156"
+                    android:textSize="54dp"
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="0dp"
+                    android:text="D">
+                </TextView>
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="24dp"
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="0dp"
+                    android:text=" ">
+                </TextView>
+                <TextView android:layout_width="wrap_content" android:id="@+id/stext"
+                    android:layout_height="wrap_content" android:textColor="#F3B43B"
+                    android:textSize="54dp"
+                    android:text="S"
+                    android:rotationY="180"
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="0dp">
+                </TextView>
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="54dp"
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="0dp"
+                    android:text=" ">
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#008080"
+                android:layout_marginTop="-20dp"
+                android:orientation="horizontal"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/kids">
+
+                <TextView android:layout_width="wrap_content"
+                    android:id="@+id/tvtext"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-10dp"
+                    android:textSize="44dp"
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="0dp"
+                    android:textColor="#E83B32"
+                    android:rotationX="180"
+                    android:text="TV">
+                </TextView>
+            </LinearLayout>
+        </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+    <TextView android:layout_width="wrap_content"
+        android:id="@+id/poweredby"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:textSize="14dp"
+        android:layout_centerHorizontal="true"
+        android:includeFontPadding="false"
+        android:lineSpacingExtra="0dp"
+        android:textColor="#FDFEFE"
+        android:text="Powered by GALA EYE. Copyright @2019">
+    </TextView>
+
+</RelativeLayout>

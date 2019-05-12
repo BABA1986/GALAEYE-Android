@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:403770149720:android:969a09f0dc08ad6b",
         "android_client_info": {
-          "package_name": "gala.com.urtube"
+          "package_name": "gala.com.kidstv"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "403770149720-vbt19rlndmv6druiekuj8c6ucec09dtv.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "gala.com.urtube",
+            "package_name": "gala.com.kidstv",
             "certificate_hash": "9b17621c2411ae9b5a6888fda5ee81e83be28600"
           }
         },
@@ -26,7 +26,7 @@
           "client_id": "403770149720-rn0bn81bo1pfgnsgasr6ugti7i9i7r8k.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "gala.com.urtube",
+            "package_name": "gala.com.kidstv",
             "certificate_hash": "aecaaf4b033e887116e58a58c77b347ed240e168"
           }
         },

@@ -5,11 +5,11 @@
     android:layout_height="match_parent"
     android:id="@+id/ge_player_activity">
 
-    <gala.com.urtube.GEPlayer.GEVideoPlayerView xmlns:android="http://schemas.android.com/apk/res/android"
+    <gala.com.kidstv.GEPlayer.GEVideoPlayerView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/gevideoplayerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        </gala.com.urtube.GEPlayer.GEVideoPlayerView>
+        </gala.com.kidstv.GEPlayer.GEVideoPlayerView>
 
     <android.support.v7.widget.RecyclerView
         xmlns:android="http://schemas.android.com/apk/res/android"

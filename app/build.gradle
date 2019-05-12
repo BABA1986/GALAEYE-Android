@@ -15,7 +15,7 @@ android {
     compileSdkVersion 24
     buildToolsVersion '25.0.2'
     defaultConfig {
-        applicationId "gala.com.urtube"
+        applicationId 'gala.com.kidstv'
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 15
@@ -31,6 +31,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+    }
 }
 
 dependencies {
@@ -41,7 +43,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
     compile 'com.github.nirhart:parallaxscroll:1.0'
-
     compile('com.google.http-client:google-http-client-gson:1.17.0-rc') {
         exclude module: 'httpclient'
     }
@@ -55,13 +56,12 @@ dependencies {
     compile 'com.google.firebase:firebase-invites:11.8.0'
     compile 'com.google.android.gms:play-services-auth:11.8.0'
     compile 'com.google.firebase:firebase-ads:11.8.0'
-
     compile 'com.google.api-client:google-api-client:1.22.0'
     compile 'com.google.api-client:google-api-client-android:1.22.0'
     compile 'uk.co.chrisjenx:calligraphy:2.2.0'
-    compile "com.google.firebase:firebase-core:11.8.0"
+    compile 'com.google.firebase:firebase-core:11.8.0'
     compile 'com.google.firebase:firebase-database:11.8.0'
-    compile "com.google.firebase:firebase-messaging:11.8.0"
+    compile 'com.google.firebase:firebase-messaging:11.8.0'
     compile 'com.github.javiersantos:AppUpdater:2.6.4'
 }
 
