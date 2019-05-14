@@ -133,7 +133,6 @@
                     android:includeFontPadding="false"
                     android:lineSpacingExtra="0dp"
                     android:textColor="#E83B32"
-                    android:rotationX="180"
                     android:text="TV">
                 </TextView>
             </LinearLayout>

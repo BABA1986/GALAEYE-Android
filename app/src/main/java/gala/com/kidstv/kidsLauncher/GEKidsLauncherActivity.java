@@ -11,6 +11,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
@@ -87,10 +88,11 @@ public class GEKidsLauncherActivity extends Activity {
 
     public void kidsCharacterAnimation() {
         TextView lTVText = (TextView) findViewById(R.id.tvtext);
+//        lTVText.setRotationX(0);
         Animation lTVAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.text_rotate_bounce);
+        lTVAnimation.setFillAfter(true);
         lTVText.startAnimation(lTVAnimation);
-
         TextView lSText = (TextView) findViewById(R.id.stext);
-        lTVText.startAnimation(lTVAnimation);
+        lSText.startAnimation(lTVAnimation);
     }
 }
