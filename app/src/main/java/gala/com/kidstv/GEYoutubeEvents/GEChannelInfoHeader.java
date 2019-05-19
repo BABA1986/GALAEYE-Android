@@ -57,8 +57,14 @@ public class GEChannelInfoHeader extends RelativeLayout {
         String lUrl = imageUrl;
         String lThumbUrl = thumbUrl;
         ImageLoader lImageLoader = ImageLoader.getInstance();
-        File file = ImageLoader.getInstance().getDiskCache().get(lUrl);
-        File lThumbfile = ImageLoader.getInstance().getDiskCache().get(lThumbUrl);
+        File file = null;
+        File lThumbfile = null;
+        if(lUrl != null)
+            file = ImageLoader.getInstance().getDiskCache().get(lUrl);
+
+        if(lThumbUrl != null)
+            lThumbfile = ImageLoader.getInstance().getDiskCache().get(lThumbUrl);
+
         if (file == null) {
             //Load image from network
             lImageLoader.displayImage(lUrl, mBannerView);
