@@ -2,14 +2,15 @@ package gala.com.kidstv;
 
 import gala.com.kidstv.GETheme.GEThemeManager;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,10 +39,14 @@ public class GEThemeActvity extends AppCompatActivity {
         Toolbar lToolBar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(lToolBar);
         getSupportActionBar().setElevation(0);
-        getSupportActionBar().setTitle("Themes");
+        getSupportActionBar().setTitle("");
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
         btnNext = (Button) findViewById(R.id.btn_next);
+
+        TextView lTitleBar = (TextView)lToolBar.findViewById(R.id.toolbar_title);
+        lTitleBar.setText("Theme");
+        lTitleBar.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/wicked.otf"));
 
         // layouts of all GETheme
         // add few more layouts if you want
@@ -156,7 +161,7 @@ public class GEThemeActvity extends AppCompatActivity {
             layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = layoutInflater.inflate(R.layout.ge_theme1, container, false);
             TextView lTextView = (TextView)view.findViewById(R.id.themenametextviewid);
-            lTextView.setText("URTube");
+            lTextView.setText("KidsTV");
             RelativeLayout lHeaderlout=(RelativeLayout)view.findViewById(R.id.header_lout);
             GEThemeManager lThemeManager = GEThemeManager.getInstance(mContext);
             lTextView.setTextColor(lThemeManager.getSelectedNavTextColorAtIndex(position));

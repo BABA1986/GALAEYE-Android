@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
@@ -156,7 +156,7 @@ public abstract class ParallaxRecyclerAdapter<T> extends RecyclerView.Adapter<Re
 
     /**
      * Defines if we will clip the layout or not. MUST BE CALLED BEFORE {@link
-     * #setParallaxHeader(android.view.View, android.support.v7.widget.RecyclerView)}
+     * #setParallaxHeader(android.view.View, RecyclerView)}
      */
     public void setShouldClipView(boolean shouldClickView) {
         mShouldClipView = shouldClickView;

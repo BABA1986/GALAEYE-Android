@@ -11,10 +11,10 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -24,10 +24,12 @@ import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
+import gala.com.kidstv.R;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class WebViewActivity extends AppCompatActivity {
@@ -47,10 +49,12 @@ public class WebViewActivity extends AppCompatActivity {
         setContentView(gala.com.kidstv.R.layout.activity_web_view);
         Toolbar lToolBar = (Toolbar)findViewById(gala.com.kidstv.R.id.toolbar);
         setSupportActionBar(lToolBar);
+        getSupportActionBar().setTitle("");
+        TextView mTitleBar = (TextView)lToolBar.findViewById(R.id.toolbar_title);
         getSupportActionBar().setElevation(0);
         Intent intent = getIntent();
         String lTitle = intent.getExtras().getString("Title");
-        getSupportActionBar().setTitle(lTitle);
+        mTitleBar.setText(lTitle);
 
         applyTheme();
         mWebView=(WebView)findViewById(gala.com.kidstv.R.id.webview);

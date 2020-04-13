@@ -2,13 +2,15 @@ package gala.com.kidstv;
 
 import android.app.Activity;
 import gala.com.kidstv.GETheme.GEThemeManager;
+import gala.com.kidstv.Refactored.GEAppMainActiviry;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.content.SharedPreferences;
-import android.support.v4.app.ActivityOptionsCompat;
+import androidx.core.app.ActivityOptionsCompat;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -124,7 +126,10 @@ public class GELauncherActivity extends Activity {
                                             finish();
                                         }
                                         else {
-                                            Intent i = new Intent(GELauncherActivity.this, GEMainMenuActivity.class);
+                                            //NewLayout-DK Related Code
+//                                            Intent i = new Intent(GELauncherActivity.this, GEMainMenuActivity.class);
+                                            Intent i = new Intent(GELauncherActivity.this, GEAppMainActiviry.class);
+
                                             startActivity(i);
                                             finish();
                                         }

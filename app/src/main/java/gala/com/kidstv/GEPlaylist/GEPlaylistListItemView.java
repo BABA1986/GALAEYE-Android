@@ -5,7 +5,7 @@ import gala.com.kidstv.GEYoutubeEvents.GERecyclerItemClickListner;
 import gala.com.kidstv.R;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;

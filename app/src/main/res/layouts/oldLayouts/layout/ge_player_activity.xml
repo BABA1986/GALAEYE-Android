@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/ge_player_activity">
+
+    <gala.com.kidstv.GEPlayer.GEVideoPlayerView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/gevideoplayerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        </gala.com.kidstv.GEPlayer.GEVideoPlayerView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/videolist_onplayer"
+        android:layout_below="@+id/gevideoplayerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@android:color/transparent"
+        android:scrollbars="none" />
+
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+</RelativeLayout>

@@ -25,7 +25,7 @@ public class GEInterstitialAdMgr {
 
     public static void showInterstitialAd() {
         if (ourInstance.mAttemptCount % 3 == 0 || ourInstance.mAttemptCount == 2) {
-            ourInstance.mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            ourInstance.mInterstitialAd.loadAd(new AdRequest.Builder().tagForChildDirectedTreatment(true).build());
         }
 
         ourInstance.mAttemptCount += 1;

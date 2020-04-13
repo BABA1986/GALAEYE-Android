@@ -1,0 +1,69 @@
+{
+  status: 200,
+  msg: 'OK',
+  result: [
+    {
+      mCategoryId: 'home-c-1',
+      mId: 1,
+      mCategoryName: '',
+      mCategoryDesc: '',
+      mCategoryIcon: '',
+      mCategoryType: 0,
+      mDataSource: 'LocalJsonAppData/home/home-category/home-c-1-list.json'
+    },
+    {
+      mCategoryId: 'home-c-2',
+      mId: 2,
+      mCategoryName: 'Top Picks For You',
+      mCategoryDesc: '',
+      mCategoryIcon: '',
+      mCategoryType: 1,
+      mDataSource: 'LocalJsonAppData/home/home-category/home-c-2-list.json'
+    },
+    {
+      mCategoryId: 'home-c-3',
+      mId: 3,
+      mCategoryName: 'New Arrivals',
+      mCategoryDesc: '',
+      mCategoryIcon: '',
+      mCategoryType: 1,
+      mDataSource: 'LocalJsonAppData/home/home-category/home-c-3-list.json'
+    },
+    {
+      mCategoryId: 'home-c-4',
+      mId: 4,
+      mCategoryName: 'Popular Channels',
+      mCategoryDesc: '',
+      mCategoryIcon: '',
+      mCategoryType: 2,
+      mDataSource: 'LocalJsonAppData/home/home-category/home-c-4-list.json'
+    },
+    {
+      mCategoryId: 'home-c-5',
+      mId: 5,
+      mCategoryName: 'English Cartoons Series',
+      mCategoryDesc: '',
+      mCategoryIcon: '',
+      mCategoryType: 3,
+      mDataSource: 'LocalJsonAppData/home/home-category/home-c-5-list.json'
+    },
+    {
+      mCategoryId: 'home-c-6',
+      mId: 6,
+      mCategoryName: 'Hindi Cartoons Series',
+      mCategoryDesc: '',
+      mCategoryIcon: '',
+      mCategoryType: 1,
+      mDataSource: 'LocalJsonAppData/home/home-category/home-c-6-list.json'
+    },
+    {
+      mCategoryId: 'home-c-7',
+      mId: 7,
+      mCategoryName: 'Best From Crafting',
+      mCategoryDesc: '',
+      mCategoryIcon: '',
+      mCategoryType: 1,
+      mDataSource: 'LocalJsonAppData/home/home-category/home-c-7-list.json'
+    }
+  ]
+}

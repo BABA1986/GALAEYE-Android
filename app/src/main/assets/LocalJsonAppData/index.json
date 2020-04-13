@@ -1,0 +1,41 @@
+{
+  status: 200,
+  msg: 'OK',
+  result: [
+    {
+      mTabId: 1,
+      mTabName: 'Home',
+      mDataSource: 'LocalJsonAppData/home/home-category-list.json',
+      mTabType: 'category',
+      mTabIcon: ''
+    },
+    {
+      mTabId: 2,
+      mTabName: 'Channels',
+      mDataSource: 'channel-category-list',
+      mTabType: 'category',
+      mTabIcon: ''
+    },
+    {
+      mTabId: 3,
+      mTabName: 'Movies',
+      mDataSource: 'movies-category-list',
+      mTabType: 'category',
+      mTabIcon: ''
+    },
+    {
+      mTabId: 4,
+      mTabName: 'Clips',
+      mDataSource: 'clips-category-list',
+      mTabType: 'category',
+      mTabIcon: ''
+    },
+    {
+      mTabId: 5,
+      mTabName: 'Profile',
+      mDataSource: '',
+      mTabType: 'profile',
+      mTabIcon: ''
+    }
+  ]
+}

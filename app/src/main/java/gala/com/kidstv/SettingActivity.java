@@ -10,16 +10,17 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -82,10 +83,14 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_setting);
         Toolbar lToolBar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(lToolBar);
-        getSupportActionBar().setTitle("Setting");
+        getSupportActionBar().setTitle("");
         getSupportActionBar().setElevation(0);
         SharedPreferences sharedPreferences=getSharedPreferences("myTheme",MODE_PRIVATE);
         GEThemeManager.getInstance(getBaseContext()).setmSelectedIndex(sharedPreferences.getInt("MyThemePosition",0));
+
+        TextView lTitleBar = (TextView)lToolBar.findViewById(R.id.toolbar_title);
+        lTitleBar.setText("Settings");
+        lTitleBar.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/wicked.otf"));
 
         mProgressBar = (ProgressBar)findViewById(R.id.progressBar);
         mProgressBar.setVisibility(View.INVISIBLE);
@@ -134,11 +139,14 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             // GoogleApiClient
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestServerAuthCode("403770149720-l50se8m410h1qi57d54q5stmiq95vtt8.apps.googleusercontent.com")
+                .requestServerAuthCode("348352912171-h20m86clr8g8jurkcsekj3n4tg480r5t.apps.googleusercontent.com")
                 .requestScopes(
                         new Scope("https://www.googleapis.com/auth/youtube"),
-                        new Scope("https://www.googleapis.com/auth/youtube.upload"))
+                        new Scope("https://www.googleapis.com/auth/youtube.upload"),
+                        new Scope("https://www.googleapis.com/auth/youtube.force-ssl"))
                 .requestEmail()
+                .requestIdToken("348352912171-h20m86clr8g8jurkcsekj3n4tg480r5t.apps.googleusercontent.com")
+                .requestId()
                 .build();
 
         googleApiClient = new GoogleApiClient.Builder(this)
@@ -227,7 +235,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.aboutEvent:
                 intent1=new Intent(SettingActivity.this, WebViewActivity.class);
-                intent1.putExtra("URL","https://earnextrapenny.wordpress.com");
+                intent1.putExtra("URL","file:///android_asset/www/aboutapp.html");
                 intent1.putExtra("Title","About App");
                 startActivity(intent1);
                 Log.i("aboutEvent","aboutEvent");
@@ -247,7 +255,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
 
             case R.id.privacypolicy:
-                url = "https://galaentertainment.github.io/URTube/privacypolicy.html";
+                url = "https://galaentertainment.github.io/URTube/page9.html";
                 try {
                     Uri uri = Uri.parse("googlechrome://navigate?url=" + url);
                     Intent i = new Intent(Intent.ACTION_VIEW, uri);
@@ -271,8 +279,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 mProgressBar.setVisibility(View.VISIBLE);
 
                 DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
-                        .setLink(Uri.parse("https://urtube.com/"))
-                        .setDynamicLinkDomain("vnpy3.app.goo.gl")
+                        .setLink(Uri.parse("https://kidstube.com/"))
+                        .setDynamicLinkDomain("kidstv.page.link")
                         // Open links with this app on Android
                         .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
                         // Open links with com.example.ios on iOS
@@ -282,7 +290,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
 
                 Task<ShortDynamicLink> shortLinkTask = FirebaseDynamicLinks.getInstance().createDynamicLink()
-//                        .setLink(Uri.parse("https://example.com/"))
                         .setLongLink(dynamicLinkUri)
                         .buildShortDynamicLink()
                         .addOnCompleteListener(this, new OnCompleteListener<ShortDynamicLink>() {
@@ -292,12 +299,11 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                                 if (task.isSuccessful()) {
                                     // Short link created
                                     Uri shortLink = task.getResult().getShortLink();
-                                    Uri flowchartLink = task.getResult().getPreviewLink();
                                     Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                                     sharingIntent.setType("text/plain");
-                                    sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Enjoy URTube Android App");
-                                    sharingIntent.putExtra(Intent.EXTRA_TEXT, "It's a great app for catching up on Comedy, Funny Prank, Stand Up Comedy, Dramas, Short\n" +
-                                            " Films & Epic Stories you might not have heard of otherwise.\n\n Google Play Store link \uD83D\uDC47\uD83C\uDFFD \n " + shortLink.toString());
+                                    sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Enjoy KidsTV Android App");
+                                    sharingIntent.putExtra(Intent.EXTRA_TEXT, "Your kids can enjoy all of their favorite Cartoons, Crafting Channels\n" +
+                                            " Grand mother stories, Learning Education Videos and Safe Youtube content.\n\n Google Play Store link \uD83D\uDC47\uD83C\uDFFD \n " + shortLink.toString());
                                     startActivity(Intent.createChooser(sharingIntent, "Share App"));
 
                                 } else {
@@ -314,7 +320,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.supportEvent:
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                         "mailto", "urtubefeedback@gmail.com", null));
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback to URTube Support Team");
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback to KidsTV Support Team");
                 startActivity(Intent.createChooser(emailIntent, null));
 
                 Log.i("supportEvent","supportEvent");

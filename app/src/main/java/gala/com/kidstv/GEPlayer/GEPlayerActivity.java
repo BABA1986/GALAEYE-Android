@@ -21,9 +21,9 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -166,8 +166,9 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
         Thumbnail lThumbnail = lThumbUrls.getHigh();
         String lUrl = lThumbnail.getUrl();
         Uri.Builder builder = new Uri.Builder();
+
         builder.scheme("https")
-                .authority("urtube.com")
+                .authority("kidstube.com")
                 .appendQueryParameter("channelsrc", mChannelID)
                 .appendQueryParameter("videoid", mPlayerVideo.getId())
                 .appendQueryParameter("ischannelid", String.valueOf(mISChannelId))
@@ -177,7 +178,7 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
 
         DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
                 .setLink(lLinkURI)
-                .setDynamicLinkDomain("vnpy3.app.goo.gl")
+                .setDynamicLinkDomain("kidstv.page.link")
                 // Open links with this app on Android
                 .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().build())
                 .setSocialMetaTagParameters(
@@ -205,7 +206,7 @@ public class GEPlayerActivity extends YouTubeBaseActivity implements GEVideoPlay
 
                             Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                             sharingIntent.setType("text/plain");
-                            sharingIntent.putExtra(Intent.EXTRA_TEXT,"\n Stream Video on URTube App"+"\uD83D\uDC47\uD83C\uDFFD \n " + shortLink.toString());
+                            sharingIntent.putExtra(Intent.EXTRA_TEXT,"\n Stream Video on KidsTV App"+"\uD83D\uDC47\uD83C\uDFFD \n " + shortLink.toString());
                             startActivityForResult(sharingIntent.createChooser(sharingIntent, "Share App"), 101);
                         } else {
                             // Error

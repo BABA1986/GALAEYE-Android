@@ -1,62 +1,56 @@
 {
   "project_info": {
-    "project_number": "403770149720",
-    "firebase_url": "https://urtube-190517.firebaseio.com",
-    "project_id": "urtube-190517",
-    "storage_bucket": "urtube-190517.appspot.com"
+    "project_number": "348352912171",
+    "firebase_url": "https://kidstv-32dd3.firebaseio.com",
+    "project_id": "kidstv-32dd3",
+    "storage_bucket": "kidstv-32dd3.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:403770149720:android:969a09f0dc08ad6b",
+        "mobilesdk_app_id": "1:348352912171:android:60c9549cb4532140",
         "android_client_info": {
           "package_name": "gala.com.kidstv"
         }
       },
       "oauth_client": [
         {
-          "client_id": "403770149720-vbt19rlndmv6druiekuj8c6ucec09dtv.apps.googleusercontent.com",
+          "client_id": "348352912171-hs58n48ls8t6hodfbeeqkk2ftu04fund.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "gala.com.kidstv",
-            "certificate_hash": "9b17621c2411ae9b5a6888fda5ee81e83be28600"
+            "certificate_hash": "8f90997bd97fc77f385b6a36e22b8e0e9ff90258"
           }
         },
         {
-          "client_id": "403770149720-rn0bn81bo1pfgnsgasr6ugti7i9i7r8k.apps.googleusercontent.com",
+          "client_id": "348352912171-6d5c5a18am5bvnaamfnogdi3vhcrk0h6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "gala.com.kidstv",
-            "certificate_hash": "aecaaf4b033e887116e58a58c77b347ed240e168"
+            "certificate_hash": "d8974d2bf174c4464a96a9eb5a2087ad1315bf98"
           }
         },
         {
-          "client_id": "403770149720-l50se8m410h1qi57d54q5stmiq95vtt8.apps.googleusercontent.com",
+          "client_id": "348352912171-lpgd6j1jjufnoo4etoret17p6b357eg8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDt9OTB7dWWCoryvtFC7ndjn8GoJiSouk8"
+          "current_key": "AIzaSyDOas6hj1-Ny3wQJ6-oykNps2tId2mZnsE"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "403770149720-l50se8m410h1qi57d54q5stmiq95vtt8.apps.googleusercontent.com",
+              "client_id": "348352912171-h20m86clr8g8jurkcsekj3n4tg480r5t.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-5685624800532639~1286154295"
     }
   ],
   "configuration_version": "1"

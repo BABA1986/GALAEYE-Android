@@ -27,19 +27,19 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.graphics.drawable.DrawerArrowDrawable;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
+import androidx.core.view.GravityCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.graphics.drawable.DrawerArrowDrawable;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -96,7 +96,6 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class GEMainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
-    DrawerLayout mDrawer;
     private LinearLayout mSettingLayout;
     private LinearLayout mGoogleNavigationSignIn;
     private TextView mWelcom_SignIn;
@@ -105,7 +104,9 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     private GoogleApiClient googleApiClient;
     private static final int REQ_CODE = 9001;
     private LinearLayout mGooGleHeader;
+    DrawerLayout mDrawer;
     private Toolbar mtoolbar;
+    private TextView mToolbarTitle;
     private LinearLayout mTabToolbar;
     private Menu mActionBarMenu;
     private int mDrawerSelectedMenuIndex;
@@ -122,7 +123,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
                 .setUpdateFrom(UpdateFrom.GOOGLE_PLAY)
                 .showEvery(3)
                 .setTitleOnUpdateAvailable("Update available")
-                .setContentOnUpdateAvailable("New version of URTube is available on Play Store. Please update URTube application to get new fetures and improvements.")
+                .setContentOnUpdateAvailable("New version of KidsTV is available on Play Store. Please update KidsTV application to get new fetures and improvements.")
                 .setButtonUpdate("Update now?")
                 .setButtonDismiss("Maybe later")
                 .setButtonDoNotShowAgain(null)
@@ -132,11 +133,12 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
 
         mMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
 
-        MobileAds.initialize(this,"ca-app-pub-5685624800532639/9624409126");
+
+        MobileAds.initialize(this,"ca-app-pub-5685624800532639/7200115513");
         GEInterstitialAdMgr.initWithContext(this);
 
         final AdView lAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
+        AdRequest adRequest = new AdRequest.Builder().tagForChildDirectedTreatment(true).build();
         lAdView.loadAd(adRequest);
         lAdView.setAdListener(new AdListener() {
             @Override
@@ -175,14 +177,17 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
 
         mtoolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mtoolbar);
+        getSupportActionBar().setTitle("");
+        mToolbarTitle = (TextView)mtoolbar.findViewById(R.id.toolbar_title);
+        mToolbarTitle.setText("Theme");
         mGoogleNavigationSignIn = (LinearLayout) findViewById(R.id.Google_Navigation_Header);
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mTabToolbar = (LinearLayout) findViewById(R.id.tab_toolbar);
         mWelcom_SignIn = (TextView) findViewById(R.id.welcome_tv);
         mSignIn_Navigation = (TextView) findViewById(R.id.signIn_tv);
         mUserIv = (ImageView) findViewById(R.id.imageView);
         mUserIv.setOnClickListener(this);
         mSettingLayout = (LinearLayout) findViewById(R.id.setting_base_adapter);
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawer.setDrawerListener(new DrawerLayout.DrawerListener() {
                                      @Override
                                      public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -228,7 +233,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
         ArrayList<GEMenu> lMenuItems = GESharedMenu.getInstance(getApplicationContext()).getMenus();
         GEMenu lMenuInfo = lMenuItems.get(0);
         lMenuInfo.setSelected(true);
-        mtoolbar.setTitle(lMenuInfo.getmMenuName());
+        mToolbarTitle.setText(lMenuInfo.getmMenuName());
         final ListView lListView = (ListView) findViewById(R.id.left_drawer_list);
         lListView.setAdapter(new GEMenuAdapter(this, lMenuItems));
         lListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -256,13 +261,13 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
 
         initialisePagesForMenu(lMenuItems.get(mDrawerSelectedMenuIndex), "video");
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestServerAuthCode("403770149720-l50se8m410h1qi57d54q5stmiq95vtt8.apps.googleusercontent.com")
+                .requestServerAuthCode("348352912171-h20m86clr8g8jurkcsekj3n4tg480r5t.apps.googleusercontent.com")
                 .requestScopes(
                         new Scope("https://www.googleapis.com/auth/youtube"),
                         new Scope("https://www.googleapis.com/auth/youtube.upload"),
                 new Scope("https://www.googleapis.com/auth/youtube.force-ssl"))
                 .requestEmail()
-                .requestIdToken("403770149720-l50se8m410h1qi57d54q5stmiq95vtt8.apps.googleusercontent.com")
+                .requestIdToken("348352912171-h20m86clr8g8jurkcsekj3n4tg480r5t.apps.googleusercontent.com")
                 .requestId()
                 .build();
 
@@ -396,7 +401,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ((TextView) tabViewChild).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Muli-SemiBold.ttf"));
+                                    ((TextView) tabViewChild).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/wicked.otf"));
                                 }
                             });
                         }
@@ -430,7 +435,8 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
             mtoolbar.setNavigationIcon(arrow);
         }
 
-        mtoolbar.setTitleTextColor(lTextColor);
+        mToolbarTitle.setTextColor(lTextColor);
+        mToolbarTitle.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/wicked.otf"));
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setSelectedTabIndicatorColor(lTextColor);
         tabLayout.setTabTextColors(lTextColor, lTextColor);
@@ -545,7 +551,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
 
     public void initialisePagesForMenu(GEMenu menuInfo, String filter) {
         String lMenuName=menuInfo.getmMenuName();
-        getSupportActionBar().setTitle(lMenuName);
+        mToolbarTitle.setText(lMenuName);
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         GEPageAdapter lAdapter = (GEPageAdapter) viewPager.getAdapter();
         showOptionMenuIfRequired();
@@ -626,6 +632,11 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
 
     private void handleResult(GoogleSignInResult result) throws IOException {
 
+        String lResult = result.toString();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users");
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+
         if (result.isSuccess()) {
             GoogleSignInAccount account = result.getSignInAccount();
 
@@ -647,11 +658,7 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
             lGEUserManager.setIdToken(lIDToken);
             lGEUserManager.setUserId(lID);
 
-            String refreshedToken = FirebaseInstanceId.getInstance().getToken();
             if (refreshedToken != null) {
-
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference("users");
                 myRef.child(refreshedToken).child("name").setValue(name);
                 myRef.child(refreshedToken).child("email").setValue(email);
             }
@@ -716,5 +723,4 @@ public class GEMainMenuActivity extends AppCompatActivity implements NavigationV
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
-
 }

@@ -1,0 +1,56 @@
+<androidx.cardview.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="220dp"
+    card_view:cardUseCompatPadding="true"
+    card_view:cardBackgroundColor="@color/cardview_light_background"
+    >
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:orientation="vertical"
+        android:layout_height="fill_parent"
+        android:id="@+id/itemview"
+        >
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="156dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:paddingLeft="5dp"
+            android:gravity="center_vertical">
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:textSize="14dp"
+                android:includeFontPadding="false"
+                android:lines="2"
+                android:gravity="center_vertical"
+                android:textColor="#474747"
+                />
+            <TextView
+                android:id="@+id/datetime"
+                android:layout_width="wrap_content"
+                android:layout_height="22dp"
+                android:layout_below="@+id/title"
+                android:textSize="12dp"
+                android:includeFontPadding="false"
+                android:text="Live 21/09/17 at 7:30 PM"
+                android:gravity="center_vertical"
+                android:lines="1"
+                android:textColor="#474747"
+                />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

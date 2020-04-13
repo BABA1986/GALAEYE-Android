@@ -10,7 +10,7 @@ import android.content.DialogInterface;
 public class GEAlertDialog {
 
     public static void checkForAlertbox(Context context){
-        android.support.v7.app.AlertDialog.Builder builder =new android.support.v7.app.AlertDialog.Builder(context);
+        androidx.appcompat.app.AlertDialog.Builder builder =new androidx.appcompat.app.AlertDialog.Builder(context);
         builder.setTitle("No Internet Connection");
         builder.setMessage("Please turn on Internet connection to continue");
         builder.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
@@ -19,7 +19,7 @@ public class GEAlertDialog {
                 dialog.dismiss();
             }
         });
-        android.support.v7.app.AlertDialog alertDialog = builder.create();
+        androidx.appcompat.app.AlertDialog alertDialog = builder.create();
         alertDialog.show();
 
     }

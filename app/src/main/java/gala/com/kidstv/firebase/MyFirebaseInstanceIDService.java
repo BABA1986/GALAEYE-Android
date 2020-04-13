@@ -20,7 +20,6 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         super.onTokenRefresh();
 
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.i("regId", refreshedToken);
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("users");
         HashMap<String, String> lUserInfo = new HashMap<String, String>();
         GEUserManager lGEUserManager = GEUserManager.getInstance(getApplicationContext());

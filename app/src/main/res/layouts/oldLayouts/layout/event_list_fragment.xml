@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/alleventlist"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:orientation="vertical">
+
+    <com.nirhart.parallaxscroll.views.ParallaxScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:parallax_factor="1.9">
+
+        <LinearLayout
+            android:id="@+id/alllists"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <gala.com.kidstv.GEYoutubeEvents.GEChannelInfoHeader
+                android:id="@+id/paralaxbaseview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:id="@+id/livelistbase"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:background="#F6F6F6">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:gravity="center_vertical"
+                        android:text="Live"
+                        android:textColor="#696969"
+                        android:textSize="18dp"
+                        android:textStyle="normal" />
+
+                    <Button
+                        android:id="@+id/live_more_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="5dp"
+                        android:background="@android:color/transparent"
+                        android:gravity="right|center_vertical"
+                        android:text="More"
+                        android:textAlignment="center"
+                        android:textColor="#146c7e"
+                        android:textSize="16dp" />
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/recycler_view_live"
+                    android:layout_width="fill_parent"
+                    android:layout_height="220dp"
+                    android:background="@android:color/white"
+                    android:scrollbars="none" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/upcomminglistbase"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:background="#F6F6F6">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:gravity="center_vertical"
+                        android:text="Upcomming"
+                        android:textColor="#696969"
+                        android:textSize="18dp"
+                        android:textStyle="normal" />
+
+                    <Button
+                        android:id="@+id/upcomming_more_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="5dp"
+                        android:background="@android:color/transparent"
+                        android:gravity="right|center_vertical"
+                        android:text="More"
+                        android:textAlignment="center"
+                        android:textColor="#146c7e"
+                        android:textSize="16dp" />
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/recycler_view_upcomming"
+                    android:layout_width="fill_parent"
+                    android:layout_height="170dp"
+                    android:background="@android:color/white"
+                    android:scrollbars="none" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/completedlistbase"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:background="#F6F6F6">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:gravity="center_vertical"
+                        android:text="Completed"
+                        android:textColor="#696969"
+                        android:textSize="18dp"
+                        android:textStyle="normal" />
+
+                    <Button
+                        android:id="@+id/completed_more_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="5dp"
+                        android:background="@android:color/transparent"
+                        android:gravity="right|center_vertical"
+                        android:text="More"
+                        android:textAlignment="center"
+                        android:textColor="#146c7e"
+                        android:textSize="16dp" />
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/recycler_view_completed"
+                    android:layout_width="fill_parent"
+                    android:layout_height="170dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@android:color/white"
+                    android:scrollbars="none" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </com.nirhart.parallaxscroll.views.ParallaxScrollView>
+</LinearLayout>

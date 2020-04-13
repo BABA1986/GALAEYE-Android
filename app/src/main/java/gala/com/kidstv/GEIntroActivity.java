@@ -7,9 +7,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.view.View;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -40,7 +40,7 @@ public class GEIntroActivity extends AppIntro2
         addSlide(AppIntroFragment.newInstance("Learn Crafting",  "Crafts are a great way to bond with your children, foster them development and open doors for learning new skills.", R.drawable.iconintro3, lColor, lTextColor, lTextColor));
         addSlide(AppIntroFragment.newInstance("Engaging Video Lessons",  "Videos that help you visualize each concept, making it easier to understand. Clearer concepts lead to higher scores!", R.drawable.iconintro4, lColor, lTextColor, lTextColor));
 
-        addSlide(AppIntroFragment.newInstance("Safe Search Kids",  "We are happy to offer a video filtering." + "\n" +  "Kids TV gauranteed, Your kids is watching the safe videos.", R.drawable.iconintro5, lColor, lTextColor, lTextColor));
+        addSlide(AppIntroFragment.newInstance("Safe Search Kids",  "We are happy to offer a video filtering." + "\n" +  "Kids TV guaranteed, Your kids is watching the safe videos.", R.drawable.iconintro5, lColor, lTextColor, lTextColor));
 
 //
 //        // OPTIONAL METHODS

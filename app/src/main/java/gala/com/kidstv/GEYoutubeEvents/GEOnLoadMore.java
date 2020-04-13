@@ -1,6 +1,6 @@
 package gala.com.kidstv.GEYoutubeEvents;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by deepak on 21/01/17.

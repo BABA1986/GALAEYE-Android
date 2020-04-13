@@ -6,7 +6,7 @@ package gala.com.kidstv;
 
 public class GEConstants {
     public static final String GECHANNELID = "TheSanskarGroup";
-    public static final String GEAPIKEY = "AIzaSyD0t7z7dzw8WCrAZEk_Nla6hfbG7NtwoDo";
+    public static final String GEAPIKEY = "AIzaSyBiMwu6wXsFPb8JLAusDpjqyaIhug42y9c";
     public static final String ARG_PAGE = "ARG_PAGE";
     public static final String ARG_PAGE1 = "ARG_PAGE1";
     public static final String ARG_PAGE2 = "ARG_PAGE2";
