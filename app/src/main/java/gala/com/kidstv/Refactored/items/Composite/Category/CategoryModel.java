@@ -58,20 +58,33 @@ public class CategoryModel extends DefaultCompositeViewModel {
     public String categoryTypeString() {
         String lTypeStr = "Not Found";
         if(mCategoryType.categoryType == CategoryTypeEnum.ECategoryTypePager) {
-            return "Pager Type Category";
+            return "Pager Layout Category";
         }
-        else if(mCategoryType.categoryType == CategoryTypeEnum.ECategoryTypeMedia) {
-            return "Media Type Category";
+        else if(mCategoryType.categoryType == CategoryTypeEnum.ECategoryTypeCircular) {
+            return "Circular Layout Category";
+        }
+        else if(mCategoryType.categoryType == CategoryTypeEnum.ECategoryTypePosters) {
+            return "Poster Layout Category";
+        }
+        else if(mCategoryType.categoryType == CategoryTypeEnum.ECategoryTypeThumbnail) {
+            return "Thumbnail Layout Category";
+        }
+        else if(mCategoryType.categoryType == CategoryTypeEnum.ECategoryTypeCircularText) {
+            return "Circular Text Layout Category";
         }
         else if(mCategoryType.categoryType == CategoryTypeEnum.ECategoryTypeAdvertisement) {
-            return "Google Ads Category";
+            return "Google Ads Lauout Category";
         }
         else if(mCategoryType.categoryType == CategoryTypeEnum.ECategoryTypeAdvertisementURTube) {
-            return "URTube Ads Category";
+            return "URTube Ads Layout Category";
         }
         else {
             return lTypeStr;
         }
+    }
+
+    public CategoryTypeEnum categoryType() {
+        return mCategoryType;
     }
 
     @Override

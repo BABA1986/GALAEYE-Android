@@ -1,7 +1,9 @@
 package gala.com.kidstv.Refactored.items.Composite.Category;
 
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 import gala.com.kidstv.R;
+import gala.com.kidstv.Refactored.DataHandlers.emums.CategoryTypeEnum;
 import gala.com.kidstv.Refactored.items.Composite.BetweenSpacesItemDecoration;
 import gala.com.kidstv.Refactored.items.Composite.GENestedAdapter;
 import gala.com.kidstv.Refactored.items.Composite.GERecyclerViewState;
@@ -46,6 +49,11 @@ public class CategoryRenderer extends CompositeViewRenderer<CategoryModel, Categ
         lAdapter.notifyDataSetChanged();
         holder.mName.setText(model.categoryName());
         holder.mCategoryTypeDesc.setText(model.categoryTypeString());
+
+        if(model.categoryType().categoryType == CategoryTypeEnum.ECategoryTypePager) {
+            holder.mTitleBase.setVisibility(View.GONE);
+        }
+
 //		holder.getRecyclerView().addOnScrollListener(new EndlessScrollListener() {
 //			@Override
 //			public void onLoadMore(int page, int totalItemsCount) {

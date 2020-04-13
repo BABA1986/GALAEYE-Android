@@ -20,10 +20,14 @@ import java.util.ArrayList;
 import gala.com.kidstv.R;
 import gala.com.kidstv.Refactored.DataHandlers.TabsModel;
 import gala.com.kidstv.Refactored.DataHandlers.UTDataManager;
+import gala.com.kidstv.Refactored.items.CircularItems.CircularRenderer;
 import gala.com.kidstv.Refactored.items.Composite.Category.CategoryModel;
 import gala.com.kidstv.Refactored.items.Composite.Category.CategoryRenderer;
 import gala.com.kidstv.Refactored.items.MediaInfo.MediaModel;
 import gala.com.kidstv.Refactored.items.MediaInfo.MediaRenderer;
+import gala.com.kidstv.Refactored.items.PagerItems.PagerRenderer;
+import gala.com.kidstv.Refactored.items.PosterItems.PosterRenderer;
+import gala.com.kidstv.Refactored.items.ThumbnailItems.ThumbnailRenderer;
 import gala.com.kidstv.Refactored.items.widgetsUtils.BetweenSpacesItemDecoration;
 
 public class GERecyclerFragment extends GEBaseFragment {
@@ -57,12 +61,12 @@ public class GERecyclerFragment extends GEBaseFragment {
             e.printStackTrace();
         }
 
-        mRecyclerViewAdapter.registerRenderer(new CategoryRenderer().registerRenderer(new MediaRenderer(new MediaRenderer.Listener() {
-                    @Override
-                    public void onCategoryClicked(@NonNull MediaModel model) {
-
-                    }
-                })));
+        mRecyclerViewAdapter.registerRenderer(new CategoryRenderer()
+                .registerRenderer(new MediaRenderer(null))
+                .registerRenderer(new PagerRenderer(null))
+                .registerRenderer(new PosterRenderer(null))
+                .registerRenderer(new CircularRenderer(null))
+                .registerRenderer(new ThumbnailRenderer(null)));
 
 
         final RecyclerView recyclerView = (RecyclerView) inflate.findViewById(R.id.recycler_view);

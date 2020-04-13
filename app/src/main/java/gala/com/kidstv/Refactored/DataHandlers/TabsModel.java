@@ -4,24 +4,23 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONArray;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
+import gala.com.kidstv.Refactored.DataHandlers.emums.CategoryTypeEnum;
+import gala.com.kidstv.Refactored.DataHandlers.emums.MediaTypeEnum;
+import gala.com.kidstv.Refactored.items.CircularItems.CircularModel;
 import gala.com.kidstv.Refactored.items.Composite.Category.CategoryModel;
 import gala.com.kidstv.Refactored.items.MediaInfo.MediaModel;
+import gala.com.kidstv.Refactored.items.PagerItems.PagerModel;
+import gala.com.kidstv.Refactored.items.PosterItems.PosterModel;
+import gala.com.kidstv.Refactored.items.ThumbnailItems.ThumbnailModel;
 
 public class TabsModel {
     private Number                      mTabId;
     private String                      mTabName;
     private String                      mDataSource;
-    public String                      mTabFor;
+    public String                       mTabFor;
     private String                      mTabIcon;
     private ArrayList<CategoryModel>    mCatagories;
 
@@ -44,13 +43,43 @@ public class TabsModel {
         for(HashMap<String, Object> lCategoryInfo: categories) {
             ArrayList<HashMap<String, Object>> lMediaList = UTDataManager.getInstance().getMediaListFor(lCategoryInfo, context);
             ArrayList<MediaModel> lMediaObjs = new ArrayList<MediaModel>();
+
+            Number lCatTypeEnum = (Number)lCategoryInfo.get("mCategoryType");
+            CategoryTypeEnum lCategoryType = new CategoryTypeEnum(lCatTypeEnum.intValue());
+
             for(HashMap<String, Object> lMediaInfo: lMediaList) {
-                MediaModel lMedia = new MediaModel(lMediaInfo);
-                lMediaObjs.add(lMedia);
+                lMediaObjs.add(modelFor(lCategoryType, lMediaInfo));
             }
             CategoryModel lCategory = new CategoryModel(lCategoryInfo, lMediaObjs);
             mCatagories.add(lCategory);
         }
+    }
+
+    private MediaModel modelFor(CategoryTypeEnum categoryType, HashMap<String, Object> lMediaInfo) {
+        if(categoryType.categoryType == CategoryTypeEnum.ECategoryTypePosters)
+        {
+            PosterModel lPosterModel = new PosterModel(lMediaInfo);
+            return lPosterModel;
+        }
+        else if(categoryType.categoryType == CategoryTypeEnum.ECategoryTypePager)
+        {
+            PagerModel lPagerModel = new PagerModel(lMediaInfo);
+            return lPagerModel;
+        }
+        else if(categoryType.categoryType == CategoryTypeEnum.ECategoryTypeThumbnail)
+        {
+            ThumbnailModel lThumbnailModel = new ThumbnailModel(lMediaInfo);
+            return lThumbnailModel;
+        }
+        else if(categoryType.categoryType == CategoryTypeEnum.ECategoryTypeCircular
+        || categoryType.categoryType == CategoryTypeEnum.ECategoryTypeCircularText)
+        {
+            CircularModel lCircularModel = new CircularModel(lMediaInfo);
+            return lCircularModel;
+        }
+
+        MediaModel lMedia = new MediaModel(lMediaInfo);
+        return lMedia;
     }
 
     public ArrayList<CategoryModel> tabCategories() {
