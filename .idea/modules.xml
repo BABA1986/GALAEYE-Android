@@ -3,8 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/GALAEYE-Android.iml" filepath="$PROJECT_DIR$/GALAEYE-Android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/GALAEYE-Android-app.iml" filepath="$PROJECT_DIR$/app/GALAEYE-Android-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/GalaTube-Android.iml" filepath="$PROJECT_DIR$/GalaTube-Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ravi.rathore-GALAEYE-Android.iml" filepath="$PROJECT_DIR$/ravi.rathore-GALAEYE-Android.iml" />
     </modules>
   </component>
 </project>
