@@ -12,7 +12,7 @@
         tools:ignore="MissingPrefix"
         android:id="@+id/cordinatorlayout"
         android:layout_width="match_parent"
-        android:layout_above="@+id/adView"
+        android:layout_above="@+id/bottombar"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         >
@@ -45,6 +45,18 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottombar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorAccent"
+        android:foreground="?attr/selectableItemBackground"
+        app:itemIconTint="@android:color/white"
+        app:itemTextColor="@android:color/white"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/bottom_bar_menu" />
+
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/adView"
@@ -52,6 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         ads:adSize="SMART_BANNER"
+        android:visibility="gone"
         ads:adUnitId="ca-app-pub-5685624800532639/7335846884"
         android:layout_gravity="bottom|center"
         android:background="#ffffff"

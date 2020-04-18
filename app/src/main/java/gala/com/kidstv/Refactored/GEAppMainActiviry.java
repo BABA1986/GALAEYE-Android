@@ -2,25 +2,22 @@ package gala.com.kidstv.Refactored;
 
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import org.json.JSONException;
-
-import java.util.ArrayList;
-
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import gala.com.kidstv.R;
-import gala.com.kidstv.Refactored.DataHandlers.TabsModel;
-import gala.com.kidstv.Refactored.DataHandlers.UTDataManager;
 import gala.com.kidstv.Refactored.RoutersAndPresenters.AppPresenter;
 import gala.com.kidstv.Refactored.RoutersAndPresenters.AppRouting;
 
-public class GEAppMainActiviry  extends AppCompatActivity {
+public class GEAppMainActiviry  extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     private AppRouting mUIRouter;
     private AppPresenter mPresenter;
@@ -52,10 +49,34 @@ public class GEAppMainActiviry  extends AppCompatActivity {
         mToolbarTitle.setText("KidsTV");
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mTabToolbar = (LinearLayout) findViewById(R.id.tab_toolbar);
+        BottomNavigationView bottomBar = (BottomNavigationView) findViewById(R.id.bottombar);
+        bottomBar.setOnNavigationItemSelectedListener(this);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawer, mtoolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawer.addDrawerListener(toggle);
         toggle.syncState();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.home:
+                mToolbarTitle.setText("Home");
+                return true;
+            case R.id.channel:
+                mToolbarTitle.setText("Channel");
+                mPresenter.loadFragment();
+                return true;
+            case R.id.news:
+                mToolbarTitle.setText("News");
+                mPresenter.loadFragment();
+                return true;
+            case R.id.account:
+                mToolbarTitle.setText("Account");
+                mPresenter.loadFragment();
+                return true;
+        }
+        return false;
     }
 }
 

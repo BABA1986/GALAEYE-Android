@@ -13,4 +13,8 @@ public class AppPresenter extends BasePresenter {
             mUIRouter.openHomePage();
         }
     }
+
+    public void loadFragment(){
+        mUIRouter.openHomePage();
+    }
 }

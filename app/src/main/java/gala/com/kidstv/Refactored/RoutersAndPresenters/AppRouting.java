@@ -39,6 +39,7 @@ public class AppRouting {
         try {
             getFragmentManager().beginTransaction()
                     .replace(R.id.replace_content, fragment, fragment.getClass().getName())
+                    .addToBackStack(null)
                     .commitAllowingStateLoss();
         } catch (IllegalStateException ignored) {
         }
