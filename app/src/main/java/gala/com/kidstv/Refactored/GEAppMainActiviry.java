@@ -13,9 +13,17 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import org.json.JSONException;
+
+import java.util.ArrayList;
+
 import gala.com.kidstv.R;
+import gala.com.kidstv.Refactored.DataHandlers.TabsModel;
+import gala.com.kidstv.Refactored.DataHandlers.UTDataManager;
 import gala.com.kidstv.Refactored.RoutersAndPresenters.AppPresenter;
 import gala.com.kidstv.Refactored.RoutersAndPresenters.AppRouting;
+import gala.com.kidstv.Refactored.items.Composite.Category.CategoryModel;
 
 public class GEAppMainActiviry  extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -26,6 +34,9 @@ public class GEAppMainActiviry  extends AppCompatActivity implements BottomNavig
     private TextView mToolbarTitle;
     private LinearLayout mTabToolbar;
     private Menu mActionBarMenu;
+    private BottomNavigationView mBottomBar;
+    private ArrayList<TabsModel> mTabs;
+    private UTDataManager mManager;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +44,8 @@ public class GEAppMainActiviry  extends AppCompatActivity implements BottomNavig
         initLayoutElements();
         //TODO: NewLayout Related Code
         initRouting(savedInstanceState);
+
+        initTab();
     }
 
     private void initRouting(Bundle savedInstanceState) {
@@ -49,31 +62,70 @@ public class GEAppMainActiviry  extends AppCompatActivity implements BottomNavig
         mToolbarTitle.setText("KidsTV");
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mTabToolbar = (LinearLayout) findViewById(R.id.tab_toolbar);
-        BottomNavigationView bottomBar = (BottomNavigationView) findViewById(R.id.bottombar);
-        bottomBar.setOnNavigationItemSelectedListener(this);
+        mBottomBar = (BottomNavigationView) findViewById(R.id.bottombar);
+        mBottomBar.setOnNavigationItemSelectedListener(this);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawer, mtoolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawer.addDrawerListener(toggle);
         toggle.syncState();
     }
 
+    private void initTab() {
+        mManager = UTDataManager.getInstance();
+        try {
+            mTabs = mManager.initTabs(getApplicationContext());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (mTabs!=null && mTabs.size()>0){
+            for (int i=0;i<mBottomBar.getMenu().size();i++){
+                TabsModel lTabsModel = mTabs.get(i);
+                mBottomBar.getMenu().getItem(i).setTitle(lTabsModel.getmTabName());
+            }
+            initGERecyclerFragment(getCategory(mTabs.get(0)));
+        }
+    }
+
+    private ArrayList<CategoryModel> getCategory(TabsModel tabsModel) {
+        return mManager.getCategoriesFor(tabsModel, getApplicationContext());
+    }
+
+    private void initGERecyclerFragment(ArrayList<CategoryModel> categoryList) {
+        mPresenter.loadFragment(categoryList);
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.home:
-                mToolbarTitle.setText("Home");
+                if (mTabs.get(0)!=null){
+                    mToolbarTitle.setText("Home");
+                    initGERecyclerFragment(getCategory(mTabs.get(0)));
+                }
                 return true;
-            case R.id.channel:
-                mToolbarTitle.setText("Channel");
-                mPresenter.loadFragment();
+            case R.id.channels:
+                if (mTabs.get(1)!=null){
+                    mToolbarTitle.setText("Channel");
+                    initGERecyclerFragment(getCategory(mTabs.get(1)));
+                }
                 return true;
-            case R.id.news:
-                mToolbarTitle.setText("News");
-                mPresenter.loadFragment();
+            case R.id.movies:
+                if (mTabs.get(2)!=null){
+                    mToolbarTitle.setText("Movies");
+                    initGERecyclerFragment(getCategory(mTabs.get(2)));
+                }
                 return true;
-            case R.id.account:
-                mToolbarTitle.setText("Account");
-                mPresenter.loadFragment();
+            case R.id.clips:
+                if (mTabs.get(3)!=null){
+                    mToolbarTitle.setText("Clips");
+                    initGERecyclerFragment(getCategory(mTabs.get(3)));
+                }
+                return true;
+            case R.id.profile:
+                if (mTabs.get(4)!=null){
+                    mToolbarTitle.setText("Profile");
+                    initGERecyclerFragment(getCategory(mTabs.get(4)));
+                }
                 return true;
         }
         return false;

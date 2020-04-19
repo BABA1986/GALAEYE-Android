@@ -12,29 +12,29 @@
     {
       mTabId: 2,
       mTabName: 'Channels',
-      mDataSource: 'channel-category-list',
+      mDataSource: 'LocalJsonAppData/home/home-category-list.json',
       mTabType: 'category',
       mTabIcon: ''
     },
     {
       mTabId: 3,
       mTabName: 'Movies',
-      mDataSource: 'movies-category-list',
+      mDataSource: 'LocalJsonAppData/home/home-category-list.json',
       mTabType: 'category',
       mTabIcon: ''
     },
     {
       mTabId: 4,
       mTabName: 'Clips',
-      mDataSource: 'clips-category-list',
+      mDataSource: 'LocalJsonAppData/home/home-category-list.json',
       mTabType: 'category',
       mTabIcon: ''
     },
     {
       mTabId: 5,
       mTabName: 'Profile',
-      mDataSource: '',
-      mTabType: 'profile',
+      mDataSource: 'LocalJsonAppData/home/home-category-list.json',
+      mTabType: 'category',
       mTabIcon: ''
     }
   ]

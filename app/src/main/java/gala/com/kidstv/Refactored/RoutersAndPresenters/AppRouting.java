@@ -6,9 +6,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
+import java.util.ArrayList;
+
+import gala.com.kidstv.Refactored.DataHandlers.TabsModel;
 import gala.com.kidstv.Refactored.Fragments.GEBaseFragment;
 import gala.com.kidstv.Refactored.Fragments.GERecyclerFragment;
 import gala.com.kidstv.R;
+import gala.com.kidstv.Refactored.items.Composite.Category.CategoryModel;
 
 public class AppRouting {
     @NonNull
@@ -31,8 +35,8 @@ public class AppRouting {
         return mFragmentManager;
     }
 
-    public void openHomePage() {
-        showFragment(new GERecyclerFragment());
+    public void openHomePage(ArrayList<CategoryModel> categoryList) {
+        showFragment(new GERecyclerFragment(categoryList));
     }
 
     private void showFragment(@NonNull final GEBaseFragment fragment) {

@@ -6,17 +6,22 @@
         android:title="Home" />
 
     <item
-        android:id="@+id/channel"
+        android:id="@+id/channels"
         android:icon="@drawable/ic_home_default"
-        android:title="Channel" />
+        android:title="Channels" />
 
     <item
-        android:id="@+id/news"
+        android:id="@+id/movies"
         android:icon="@drawable/ic_home_default"
-        android:title="News" />
+        android:title="Movies" />
 
     <item
-        android:id="@+id/account"
+        android:id="@+id/clips"
         android:icon="@drawable/ic_home_default"
-        android:title="Account" />
+        android:title="Clips" />
+
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/ic_home_default"
+        android:title="Profile" />
 </menu>

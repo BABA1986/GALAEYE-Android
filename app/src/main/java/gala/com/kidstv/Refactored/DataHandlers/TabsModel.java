@@ -17,6 +17,11 @@ import gala.com.kidstv.Refactored.items.PosterItems.PosterModel;
 import gala.com.kidstv.Refactored.items.ThumbnailItems.ThumbnailModel;
 
 public class TabsModel {
+
+    public ArrayList<CategoryModel> getmCatagories() {
+        return mCatagories;
+    }
+
     private Number                      mTabId;
     private String                      mTabName;
     private String                      mDataSource;
@@ -84,5 +89,25 @@ public class TabsModel {
 
     public ArrayList<CategoryModel> tabCategories() {
         return mCatagories;
+    }
+
+    public Number getmTabId() {
+        return mTabId;
+    }
+
+    public String getmTabName() {
+        return mTabName;
+    }
+
+    public String getmDataSource() {
+        return mDataSource;
+    }
+
+    public String getmTabFor() {
+        return mTabFor;
+    }
+
+    public String getmTabIcon() {
+        return mTabIcon;
     }
 }

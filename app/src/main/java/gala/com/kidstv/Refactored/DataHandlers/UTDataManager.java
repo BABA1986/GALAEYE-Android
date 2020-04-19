@@ -53,7 +53,7 @@ public class UTDataManager {
     }
 
     public ArrayList<CategoryModel> getCategoriesFor(TabsModel tabInfo, Context context) {
-        if(!tabInfo.mTabFor.equals("category"))
+        if(!("category").equalsIgnoreCase(tabInfo.mTabFor))
             return null;
 
         if(tabInfo.tabCategories().size() > 0) return tabInfo.tabCategories();

@@ -34,13 +34,15 @@ public class GERecyclerFragment extends GEBaseFragment {
 
     private RendererRecyclerViewAdapter mRecyclerViewAdapter;
     private TabsModel                   mTabInfo;
+    private ArrayList<CategoryModel>    mCategories;
 
     @Nullable
     private Bundle                      mSavedInstanceState;
 
 
-    public void GERecyclerFragment(TabsModel tabInfo) {
-        mTabInfo = tabInfo;
+
+    public GERecyclerFragment(ArrayList<CategoryModel> categoryList) {
+         mCategories=categoryList;
     }
 
     @Nullable
@@ -51,15 +53,6 @@ public class GERecyclerFragment extends GEBaseFragment {
         View inflate = inflater.inflate(R.layout.ge_recycler_fragment, container, false);
 
         mRecyclerViewAdapter = new RendererRecyclerViewAdapter();
-        ArrayList<CategoryModel> lCategories = null;
-        UTDataManager lManager = UTDataManager.getInstance();
-        try {
-            Context lAppContext = getActivity().getApplicationContext();
-            ArrayList<TabsModel> lTabs = lManager.initTabs(lAppContext);
-            lCategories = lManager.getCategoriesFor(lTabs.get(0), lAppContext);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
         mRecyclerViewAdapter.registerRenderer(new CategoryRenderer()
                 .registerRenderer(new MediaRenderer(null))
@@ -72,7 +65,7 @@ public class GERecyclerFragment extends GEBaseFragment {
         final RecyclerView recyclerView = (RecyclerView) inflate.findViewById(R.id.recycler_view);
         recyclerView.setAdapter(mRecyclerViewAdapter);
         recyclerView.addItemDecoration(new BetweenSpacesItemDecoration(10, 10));
-        mRecyclerViewAdapter.setItems(lCategories);
+        mRecyclerViewAdapter.setItems(mCategories);
         return inflate;
     }
 
