@@ -59,7 +59,6 @@ public class CategoryRenderer extends CompositeViewRenderer<CategoryModel, Categ
             holder.mTitleBase.setVisibility(View.GONE);
             new PagerSnapHelper().attachToRecyclerView(holder.recyclerView);
         }
-
 //		holder.getRecyclerView().addOnScrollListener(new EndlessScrollListener() {
 //			@Override
 //			public void onLoadMore(int page, int totalItemsCount) {

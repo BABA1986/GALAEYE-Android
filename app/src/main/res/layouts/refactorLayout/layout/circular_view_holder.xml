@@ -1,39 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/view2"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_circuler"
+        android:layout_width="100dp"
         android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
-        android:elevation="12dp"
-        app:cardCornerRadius="75dp">
-
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center_horizontal"
-            android:background="#F44336" />
-    </androidx.cardview.widget.CardView>
-
-
+        android:layout_height="100dp"
+        android:elevation="3dp"
+        app:civ_border_width="2dp"
+        app:civ_border_color="@color/colorBlack"
+        android:src="@drawable/dummy"
+        app:cardCornerRadius="75dp"/>
     <TextView
-        android:id="@+id/mediatype"
+        android:id="@+id/tv_circuler"
+        android:layout_below="@+id/iv_circuler"
         android:layout_width="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_centerHorizontal="true"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|center_vertical"
-        android:background="@color/colorPrimary"
-        android:layout_marginTop="10dp"
-        android:text="Circular CARD LAYOUT"
-        android:textAllCaps="true"
-        android:textColor="@color/cardview_dark_background"
-        android:textSize="14sp" />
+        android:text="Angrezi Medium"
+        android:textColor="#000000"
+        android:textSize="12sp" />
 
-</LinearLayout>
+</RelativeLayout>
