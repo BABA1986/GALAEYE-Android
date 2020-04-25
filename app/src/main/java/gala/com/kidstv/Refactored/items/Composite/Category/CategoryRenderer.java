@@ -1,5 +1,6 @@
 package gala.com.kidstv.Refactored.items.Composite.Category;
 
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +8,8 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.vivchar.rendererrecyclerviewadapter.CompositeViewRenderer;
@@ -40,6 +43,7 @@ public class CategoryRenderer extends CompositeViewRenderer<CategoryModel, Categ
         holder.getAdapter().notifyDataSetChanged();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void bindView(@NonNull final CategoryModel model, @NonNull final CategoryViewHolder holder) {
         Log.d(TAG, "bindView " + model.toString());
@@ -52,6 +56,9 @@ public class CategoryRenderer extends CompositeViewRenderer<CategoryModel, Categ
 
         if(model.categoryType().categoryType == CategoryTypeEnum.ECategoryTypePager) {
             holder.mTitleBase.setVisibility(View.GONE);
+            holder.recyclerView.setClipToPadding(false);
+            holder.recyclerView.setPaddingRelative(12,0,12,0);
+            new PagerSnapHelper().attachToRecyclerView(holder.recyclerView);
         }
 
 //		holder.getRecyclerView().addOnScrollListener(new EndlessScrollListener() {

@@ -56,7 +56,7 @@ public class GERecyclerFragment extends GEBaseFragment {
 
         mRecyclerViewAdapter.registerRenderer(new CategoryRenderer()
                 .registerRenderer(new MediaRenderer(null))
-                .registerRenderer(new PagerRenderer(null))
+                .registerRenderer(new PagerRenderer(getActivity()))
                 .registerRenderer(new PosterRenderer(null))
                 .registerRenderer(new CircularRenderer(null))
                 .registerRenderer(new ThumbnailRenderer(null)));

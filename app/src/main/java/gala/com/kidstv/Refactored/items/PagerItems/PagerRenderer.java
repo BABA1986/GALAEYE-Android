@@ -1,10 +1,13 @@
 package gala.com.kidstv.Refactored.items.PagerItems;
 
+import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 
+import com.bumptech.glide.Glide;
 import com.github.vivchar.rendererrecyclerviewadapter.ViewRenderer;
 
 import gala.com.kidstv.R;
@@ -14,20 +17,19 @@ import gala.com.kidstv.Refactored.items.MediaInfo.MediaRenderer;
 
 public class PagerRenderer extends ViewRenderer<PagerModel, PagerViewHolder> {
 
-    @NonNull
-    private final MediaRenderer.Listener mListener;
+    private final Context mContext;
 
-    public PagerRenderer(@NonNull final MediaRenderer.Listener listener) {
+    public PagerRenderer(@NonNull final Context context) {
         super(PagerModel.class);
-        mListener = listener;
+        mContext = context;
     }
 
     @Override
     public void bindView(@NonNull final PagerModel model, @NonNull final PagerViewHolder holder) {
-//        holder.mName.setText(model.mediaName());
-//        holder.mMediaDesc.setText(model.mediaDescription());
-//        holder.mMediaTypeStr.setText(model.mediaTypeStr());
-//        holder.mViewAll.setOnClickListener(v -> mListener.onCategoryClicked(model));
+        holder.mTvCount.setText(holder.getAdapterPosition()+1+"/5");
+        if (model.getMediaLargeIcon()!=null){
+            Glide.with(mContext).load(model.getMediaLargeIcon()).into(holder.mIvMedia);
+        }
     }
 
     @NonNull

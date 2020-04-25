@@ -32,6 +32,10 @@ public class MediaModel implements ViewModel {
         return mMediaDescription;
     }
 
+    public String getMediaLargeIcon(){
+        return mMediaLargeIcon;
+    }
+
     public String mediaTypeStr() {
         String lMediaTypeStr = "No Media Type";
         if(mMediaType.mediaType == MediaTypeEnum.EMEDIATYPE_VIDEO) {
