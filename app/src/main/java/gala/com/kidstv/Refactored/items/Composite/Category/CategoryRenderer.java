@@ -1,6 +1,7 @@
 package gala.com.kidstv.Refactored.items.Composite.Category;
 
 import android.os.Build;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,8 +57,6 @@ public class CategoryRenderer extends CompositeViewRenderer<CategoryModel, Categ
 
         if(model.categoryType().categoryType == CategoryTypeEnum.ECategoryTypePager) {
             holder.mTitleBase.setVisibility(View.GONE);
-            holder.recyclerView.setClipToPadding(false);
-            holder.recyclerView.setPaddingRelative(12,0,12,0);
             new PagerSnapHelper().attachToRecyclerView(holder.recyclerView);
         }
 

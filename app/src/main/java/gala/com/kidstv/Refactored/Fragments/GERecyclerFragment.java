@@ -2,6 +2,7 @@ package gala.com.kidstv.Refactored.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +57,7 @@ public class GERecyclerFragment extends GEBaseFragment {
 
         mRecyclerViewAdapter.registerRenderer(new CategoryRenderer()
                 .registerRenderer(new MediaRenderer(null))
-                .registerRenderer(new PagerRenderer(getActivity()))
+                .registerRenderer(new PagerRenderer(getActivity(), getDisplayMetrics()))
                 .registerRenderer(new PosterRenderer(null))
                 .registerRenderer(new CircularRenderer(null))
                 .registerRenderer(new ThumbnailRenderer(null)));
@@ -86,5 +87,9 @@ public class GERecyclerFragment extends GEBaseFragment {
     public void onSaveInstanceState(@NonNull final Bundle outState) {
         super.onSaveInstanceState(outState);
         mRecyclerViewAdapter.onSaveInstanceState(outState);
+    }
+
+    private DisplayMetrics getDisplayMetrics() {
+        return getResources().getDisplayMetrics();
     }
 }
