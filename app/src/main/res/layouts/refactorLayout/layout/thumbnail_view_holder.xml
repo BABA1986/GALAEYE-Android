@@ -8,6 +8,7 @@
         android:layout_height="wrap_content">
         <ImageView
             android:layout_width="170dp"
+            android:id="@+id/iv_thumbnail"
             android:scaleType="centerCrop"
             android:layout_height="90dp"/>
         <TextView
@@ -15,6 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:padding="10dp"
+            android:id="@+id/tv_duration"
             android:text="5 min"
             android:textColor="@color/colorWhite"
             android:textSize="11sp"
@@ -30,8 +32,10 @@
             android:layout_width="wrap_content"
             android:layout_alignParentBottom="true"
             android:ellipsize="end"
+            android:id="@+id/tv_title"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
+            android:maxLines="1"
             android:layout_toRightOf="@+id/iv_play"
             android:textSize="11sp"
             android:textColor="@color/colorWhite"
