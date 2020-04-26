@@ -25,10 +25,6 @@ public class CircularRenderer extends ViewRenderer<CircularModel, CircularViewHo
 
     @Override
     public void bindView(@NonNull final CircularModel model, @NonNull final CircularViewHolder holder) {
-//        holder.mName.setText(model.mediaName());
-//        holder.mMediaDesc.setText(model.mediaDescription());
-//        holder.mMediaTypeStr.setText(model.mediaTypeStr());
-//        holder.mViewAll.setOnClickListener(v -> mListener.onCategoryClicked(model));
     }
 
     @NonNull

@@ -1,15 +1,20 @@
 package gala.com.kidstv.Refactored;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -38,10 +43,12 @@ public class GEAppMainActiviry  extends AppCompatActivity implements BottomNavig
     private ArrayList<TabsModel> mTabs;
     private UTDataManager mManager;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ge_refactored_app_main_activity);
         initLayoutElements();
+        initToolbar();
         //TODO: NewLayout Related Code
         initRouting(savedInstanceState);
 
@@ -55,11 +62,6 @@ public class GEAppMainActiviry  extends AppCompatActivity implements BottomNavig
     }
 
     private void initLayoutElements() {
-        mtoolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mtoolbar);
-        getSupportActionBar().setTitle("");
-        mToolbarTitle = (TextView)mtoolbar.findViewById(R.id.toolbar_title);
-        mToolbarTitle.setText("KidsTV");
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mTabToolbar = (LinearLayout) findViewById(R.id.tab_toolbar);
         mBottomBar = (BottomNavigationView) findViewById(R.id.bottombar);
@@ -68,6 +70,19 @@ public class GEAppMainActiviry  extends AppCompatActivity implements BottomNavig
                 this, mDrawer, mtoolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawer.addDrawerListener(toggle);
         toggle.syncState();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void initToolbar() {
+        mtoolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mtoolbar);
+        getSupportActionBar().setTitle("");
+        mToolbarTitle = (TextView)mtoolbar.findViewById(R.id.toolbar_title);
+        mToolbarTitle.setText("KidsTV");
+        Window window = GEAppMainActiviry.this.getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(ContextCompat.getColor(GEAppMainActiviry.this, R.color.colorBlack));
     }
 
     private void initTab() {

@@ -26,7 +26,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/holo_blue_bright"
+                android:background="@color/colorBlack"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/AppTheme.PopupOverlay">
                 <TextView
@@ -34,6 +34,7 @@
                     android:layout_height="wrap_content"
                     android:text="Toolbar Title"
                     android:textSize="16dp"
+                    android:textColor="@color/colorWhite"
                     android:layout_gravity="center_vertical"
                     android:id="@+id/toolbar_title" />
             </androidx.appcompat.widget.Toolbar>
@@ -50,7 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorAccent"
+        android:background="@color/colorBlack"
         android:foreground="?attr/selectableItemBackground"
         app:itemIconTint="@android:color/white"
         app:itemTextColor="@android:color/white"
