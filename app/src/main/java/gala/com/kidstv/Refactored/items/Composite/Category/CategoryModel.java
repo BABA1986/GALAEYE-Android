@@ -31,7 +31,7 @@ public class CategoryModel extends DefaultCompositeViewModel {
     {
         super(mediaList);
         mCategoryId = (String)categoryInfo.get("mCategoryId");
-        mID = (Number)categoryInfo.get("mId");
+        mID = (Number)categoryInfo.get("mID");
         mCategoryName = (String)categoryInfo.get("mCategoryName");
         mCategoryDesc = (String)categoryInfo.get("mCategoryDesc");
         mCategoryIcon = (String)categoryInfo.get("mCategoryIcon");

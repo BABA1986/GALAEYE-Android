@@ -40,7 +40,7 @@ public class UTDataManager {
             return mTabs;
 
         mTabs = new ArrayList<TabsModel>();
-        String lJSon = loadJsonFromAssets("LocalJsonAppData/index.json", context);
+        String lJSon = loadJsonFromAssets("URTubeAppData/index.json", context);
         JSONArray lTabsList = jsonListFormJsonString(lJSon);
         for(int i = 0; i < lTabsList.length(); ++i)
         {
@@ -53,8 +53,8 @@ public class UTDataManager {
     }
 
     public ArrayList<CategoryModel> getCategoriesFor(TabsModel tabInfo, Context context) {
-        if(!("category").equalsIgnoreCase(tabInfo.mTabFor))
-            return null;
+//        if(!("category").equalsIgnoreCase(tabInfo.mTabFor))
+//            return null;
 
         if(tabInfo.tabCategories().size() > 0) return tabInfo.tabCategories();
 

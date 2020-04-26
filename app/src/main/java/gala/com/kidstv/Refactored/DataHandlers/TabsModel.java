@@ -32,8 +32,8 @@ public class TabsModel {
     public TabsModel(@NonNull HashMap<String, Object> tabInfo)
     {
         mTabId = (Number)tabInfo.get("mTabId");
-        mTabName = (String)tabInfo.get("mTabName");
-        mDataSource = (String)tabInfo.get("mDataSource");
+        mTabName = (String)tabInfo.get("name");
+        mDataSource = (String)tabInfo.get("dataSource");
         mTabFor = (String)tabInfo.get("mTabType");
         mTabIcon = (String)tabInfo.get("mTabIcon");
 
