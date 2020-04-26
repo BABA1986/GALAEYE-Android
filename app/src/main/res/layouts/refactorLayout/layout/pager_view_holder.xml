@@ -14,8 +14,8 @@
         android:layout_alignParentEnd="true" />
     <com.makeramen.roundedimageview.RoundedImageView
         android:id = "@+id/iv_media"
-        android:layout_width = "match_parent"
-        android:layout_height = "160dp"
+        android:layout_width = "400dp"
+        android:layout_height = "225dp"
         app:riv_corner_radius="8dp"
         android:scaleType="centerCrop"/>
 </RelativeLayout>
