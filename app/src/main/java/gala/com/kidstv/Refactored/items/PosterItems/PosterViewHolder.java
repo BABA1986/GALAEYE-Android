@@ -8,7 +8,7 @@ import com.github.vivchar.rendererrecyclerviewadapter.ViewHolder;
 import gala.com.kidstv.R;
 
 public class PosterViewHolder extends ViewHolder {
-    private final ImageView mIvPoster;
+    public final ImageView mIvPoster;
 
     public PosterViewHolder(final View itemView) {
         super(itemView);

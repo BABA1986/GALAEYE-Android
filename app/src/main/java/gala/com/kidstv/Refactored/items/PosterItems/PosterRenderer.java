@@ -1,10 +1,12 @@
 package gala.com.kidstv.Refactored.items.PosterItems;
 
+import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.github.vivchar.rendererrecyclerviewadapter.ViewRenderer;
 
 import gala.com.kidstv.R;
@@ -13,20 +15,18 @@ import gala.com.kidstv.Refactored.items.MediaInfo.MediaRenderer;
 
 public class PosterRenderer extends ViewRenderer<PosterModel, PosterViewHolder> {
 
-    @NonNull
-    private final MediaRenderer.Listener mListener;
+    private final Context mContext;
 
-    public PosterRenderer(@NonNull final MediaRenderer.Listener listener) {
+    public PosterRenderer(Context context) {
         super(gala.com.kidstv.Refactored.items.PosterItems.PosterModel.class);
-        mListener = listener;
+        mContext = context;
     }
 
     @Override
     public void bindView(@NonNull final PosterModel model, @NonNull final PosterViewHolder holder) {
-//        holder.mName.setText(model.mediaName());
-//        holder.mMediaDesc.setText(model.mediaDescription());
-//        holder.mMediaTypeStr.setText(model.mediaTypeStr());
-//        holder.mViewAll.setOnClickListener(v -> mListener.onCategoryClicked(model));
+        if (model.getMediaLargeIcon()!=null){
+            Glide.with(mContext).load(model.getMediaLargeIcon()).into(holder.mIvPoster);
+        }
     }
 
     @NonNull

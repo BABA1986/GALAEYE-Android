@@ -1,10 +1,12 @@
 package gala.com.kidstv.Refactored.items.CircularItems;
 
+import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.github.vivchar.rendererrecyclerviewadapter.ViewRenderer;
 
 import gala.com.kidstv.R;
@@ -15,16 +17,19 @@ import gala.com.kidstv.Refactored.items.PagerItems.PagerViewHolder;
 
 public class CircularRenderer extends ViewRenderer<CircularModel, CircularViewHolder> {
 
-    @NonNull
-    private final MediaRenderer.Listener mListener;
+    private final Context mContext;
 
-    public CircularRenderer(@NonNull final MediaRenderer.Listener listener) {
+    public CircularRenderer(Context context) {
         super(CircularModel.class);
-        mListener = listener;
+        mContext = context;
     }
 
     @Override
     public void bindView(@NonNull final CircularModel model, @NonNull final CircularViewHolder holder) {
+        if (model.getMediaLargeIcon()!=null){
+            Glide.with(mContext).load(model.getMediaLargeIcon()).into(holder.mIvPoster);
+        }
+        holder.mTvPosterName.setText(model.mediaName());
     }
 
     @NonNull

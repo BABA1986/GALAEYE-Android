@@ -9,9 +9,9 @@ import com.github.vivchar.rendererrecyclerviewadapter.ViewHolder;
 import gala.com.kidstv.R;
 
 public class ThumbnailViewHolder extends ViewHolder {
-    private final TextView mTvTitle;
-    private final TextView mTvDuration;
-    private final ImageView mIvThumbnail;
+    public final TextView mTvTitle;
+    public final TextView mTvDuration;
+    public final ImageView mIvThumbnail;
 
     public ThumbnailViewHolder(final View itemView) {
         super(itemView);

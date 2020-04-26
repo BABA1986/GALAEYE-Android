@@ -75,6 +75,7 @@ dependencies {
     compile 'com.github.javiersantos:AppUpdater:2.6.4'
     compile 'com.github.vivchar:RendererRecyclerViewAdapter:2.8.0'
     compile 'com.android.support:support-annotations:22.0.0'
+    compile 'com.makeramen:roundedimageview:2.3.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

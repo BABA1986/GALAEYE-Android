@@ -58,9 +58,9 @@ public class GERecyclerFragment extends GEBaseFragment {
         mRecyclerViewAdapter.registerRenderer(new CategoryRenderer()
                 .registerRenderer(new MediaRenderer(null))
                 .registerRenderer(new PagerRenderer(getActivity(), getDisplayMetrics()))
-                .registerRenderer(new PosterRenderer(null))
-                .registerRenderer(new CircularRenderer(null))
-                .registerRenderer(new ThumbnailRenderer(null)));
+                .registerRenderer(new PosterRenderer(getActivity()))
+                .registerRenderer(new CircularRenderer(getActivity()))
+                .registerRenderer(new ThumbnailRenderer(getActivity())));
 
 
         final RecyclerView recyclerView = (RecyclerView) inflate.findViewById(R.id.recycler_view);

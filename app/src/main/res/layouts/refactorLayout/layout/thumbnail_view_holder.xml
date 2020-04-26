@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/rounded_backgroud">
+    android:layout_width="170dp"
+    android:layout_height="90dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-        <ImageView
-            android:layout_width="170dp"
-            android:id="@+id/iv_thumbnail"
-            android:scaleType="centerCrop"
-            android:layout_height="90dp"/>
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id = "@+id/iv_thumbnail"
+            android:layout_width = "match_parent"
+            android:layout_height = "match_parent"
+            app:riv_corner_radius="8dp"
+            android:scaleType="centerCrop"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,7 +40,6 @@
             android:layout_toRightOf="@+id/iv_play"
             android:textSize="11sp"
             android:textColor="@color/colorWhite"
-            android:text="Cricket Connected"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
 </RelativeLayout>

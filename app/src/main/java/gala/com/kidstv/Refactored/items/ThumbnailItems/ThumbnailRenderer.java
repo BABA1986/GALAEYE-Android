@@ -1,10 +1,12 @@
 package gala.com.kidstv.Refactored.items.ThumbnailItems;
 
+import android.content.Context;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.github.vivchar.rendererrecyclerviewadapter.ViewRenderer;
 
 import gala.com.kidstv.R;
@@ -13,20 +15,19 @@ import gala.com.kidstv.Refactored.items.MediaInfo.MediaRenderer;
 
 public class ThumbnailRenderer extends ViewRenderer<ThumbnailModel, ThumbnailViewHolder> {
 
-    @NonNull
-    private final MediaRenderer.Listener mListener;
+    private final Context mContext;
 
-    public ThumbnailRenderer(@NonNull final MediaRenderer.Listener listener) {
+    public ThumbnailRenderer(Context context) {
         super(ThumbnailModel.class);
-        mListener = listener;
+        mContext = context;
     }
 
     @Override
     public void bindView(@NonNull final ThumbnailModel model, @NonNull final ThumbnailViewHolder holder) {
-//        holder.mName.setText(model.mediaName());
-//        holder.mMediaDesc.setText(model.mediaDescription());
-//        holder.mMediaTypeStr.setText(model.mediaTypeStr());
-//        holder.mViewAll.setOnClickListener(v -> mListener.onCategoryClicked(model));
+        if (model.getMediaLargeIcon()!=null){
+            Glide.with(mContext).load(model.getMediaLargeIcon()).into(holder.mIvThumbnail);
+        }
+        holder.mTvTitle.setText(model.mediaDescription());
     }
 
     @NonNull

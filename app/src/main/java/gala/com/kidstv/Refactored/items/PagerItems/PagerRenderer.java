@@ -41,7 +41,7 @@ public class PagerRenderer extends ViewRenderer<PagerModel, PagerViewHolder> {
 
     @Override
     public void bindView(@NonNull final PagerModel model, @NonNull final PagerViewHolder holder) {
-        int currentItemWidth = itemWidth;
+        /*int currentItemWidth = itemWidth;
         if (holder.getAdapterPosition() == 0) {
             currentItemWidth += itemMargin;
             holder.itemView.setPadding(itemMargin, 0, 0, 0);
@@ -50,7 +50,7 @@ public class PagerRenderer extends ViewRenderer<PagerModel, PagerViewHolder> {
             holder.itemView.setPadding(0, 0, itemMargin, 0);
         }
         int height = holder.mItemView.getLayoutParams().height;
-        holder.mItemView. setLayoutParams(new ViewGroup.LayoutParams(currentItemWidth, height));
+        holder.mItemView. setLayoutParams(new ViewGroup.LayoutParams(currentItemWidth, height));*/
 
         holder.mTvCount.setText(holder.getAdapterPosition()+1+"/5");
         if (model.getMediaLargeIcon()!=null){
