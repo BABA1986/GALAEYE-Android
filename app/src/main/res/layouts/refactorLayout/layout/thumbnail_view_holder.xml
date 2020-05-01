@@ -3,15 +3,20 @@
     android:layout_width="170dp"
     android:layout_height="96dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
         <com.makeramen.roundedimageview.RoundedImageView
             android:id = "@+id/iv_thumbnail"
             android:layout_width = "match_parent"
             android:layout_height = "match_parent"
             app:riv_corner_radius="8dp"
             android:scaleType="centerCrop"/>
+    </FrameLayout>
+    <View
+        android:layout_width="match_parent"
+        android:background="@drawable/gradient"
+        android:layout_height="match_parent"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,5 +46,4 @@
             android:textSize="11sp"
             android:textColor="@color/colorWhite"
             android:layout_height="wrap_content"/>
-    </RelativeLayout>
 </RelativeLayout>

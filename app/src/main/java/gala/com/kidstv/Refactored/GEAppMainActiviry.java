@@ -42,6 +42,7 @@ public class GEAppMainActiviry  extends AppCompatActivity implements BottomNavig
     private BottomNavigationView mBottomBar;
     private ArrayList<TabsModel> mTabs;
     private UTDataManager mManager;
+    private int mCurrentPosition;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +99,7 @@ public class GEAppMainActiviry  extends AppCompatActivity implements BottomNavig
                 mBottomBar.getMenu().getItem(i).setTitle(lTabsModel.getmTabName());
             }
             initGERecyclerFragment(getCategory(mTabs.get(0)));
+            mCurrentPosition = 0;
         }
     }
 
@@ -113,33 +115,53 @@ public class GEAppMainActiviry  extends AppCompatActivity implements BottomNavig
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.home:
+                if (mCurrentPosition == 0){
+                    return false;
+                }
                 if (mTabs.get(0)!=null){
                     mToolbarTitle.setText("Home");
                     initGERecyclerFragment(getCategory(mTabs.get(0)));
+                    mCurrentPosition = 0;
                 }
                 return true;
             case R.id.channels:
+                if (mCurrentPosition == 1){
+                    return false;
+                }
                 if (mTabs.get(1)!=null){
                     mToolbarTitle.setText("Channel");
                     initGERecyclerFragment(getCategory(mTabs.get(1)));
+                    mCurrentPosition = 1;
                 }
                 return true;
             case R.id.movies:
+                if (mCurrentPosition == 2){
+                    return false;
+                }
                 if (mTabs.get(2)!=null){
                     mToolbarTitle.setText("Movies");
                     initGERecyclerFragment(getCategory(mTabs.get(2)));
+                    mCurrentPosition = 2;
                 }
                 return true;
             case R.id.clips:
+                if (mCurrentPosition == 3){
+                    return false;
+                }
                 if (mTabs.get(3)!=null){
                     mToolbarTitle.setText("Clips");
                     initGERecyclerFragment(getCategory(mTabs.get(3)));
+                    mCurrentPosition = 3;
                 }
                 return true;
             case R.id.profile:
+                if (mCurrentPosition == 4){
+                    return false;
+                }
                 if (mTabs.get(4)!=null){
                     mToolbarTitle.setText("Profile");
                     initGERecyclerFragment(getCategory(mTabs.get(4)));
+                    mCurrentPosition = 4;
                 }
                 return true;
         }
