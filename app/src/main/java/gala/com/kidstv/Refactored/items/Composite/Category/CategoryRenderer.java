@@ -31,6 +31,7 @@ import gala.com.kidstv.Refactored.items.MediaInfo.MediaRenderer;
 public class CategoryRenderer extends CompositeViewRenderer<CategoryModel, CategoryViewHolder> {
 
     private static final String TAG = CategoryRenderer.class.getSimpleName();
+    private PagerSnapHelper mPagerSnapHelper;
 
     public CategoryRenderer() {
         super(CategoryModel.class);
@@ -57,7 +58,10 @@ public class CategoryRenderer extends CompositeViewRenderer<CategoryModel, Categ
 
         if(model.categoryType().categoryType == CategoryTypeEnum.ECategoryTypePager) {
             holder.mTitleBase.setVisibility(View.GONE);
-            new PagerSnapHelper().attachToRecyclerView(holder.recyclerView);
+            if (mPagerSnapHelper == null){
+                mPagerSnapHelper = new PagerSnapHelper();
+            }
+            mPagerSnapHelper.attachToRecyclerView(holder.recyclerView);
         }
 //		holder.getRecyclerView().addOnScrollListener(new EndlessScrollListener() {
 //			@Override
