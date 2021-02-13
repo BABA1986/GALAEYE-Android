@@ -14,6 +14,8 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.github.vivchar.rendererrecyclerviewadapter.ViewRenderer;
 
+import java.security.MessageDigest;
+
 import gala.com.kidstv.R;
 import gala.com.kidstv.Refactored.items.MediaInfo.MediaModel;
 import gala.com.kidstv.Refactored.items.MediaInfo.MediaRenderer;
@@ -23,14 +25,14 @@ public class PosterRenderer extends ViewRenderer<PosterModel, PosterViewHolder> 
     private final Context mContext;
 
     public PosterRenderer(Context context) {
-        super(gala.com.kidstv.Refactored.items.PosterItems.PosterModel.class);
+        super(PosterModel.class);
         mContext = context;
     }
 
     @Override
     public void bindView(@NonNull final PosterModel model, @NonNull final PosterViewHolder holder) {
         if (model.getMediaLargeIcon()!=null){
-            Glide.with(mContext).load(model.getMediaLargeIcon()).asBitmap()
+            Glide.with(mContext).asBitmap().load(model.getMediaLargeIcon())
                     .transform(new MyTransformation(mContext)).override(120, 140).into(holder.mIvPoster);
         }
     }
@@ -48,20 +50,13 @@ public class PosterRenderer extends ViewRenderer<PosterModel, PosterViewHolder> 
     private static class MyTransformation extends BitmapTransformation {
 
         public MyTransformation(Context context) {
-            super(context);
+            super();
         }
 
         @Override
-        protected Bitmap transform(BitmapPool pool, Bitmap toTransform,
+        protected Bitmap transform(@NonNull BitmapPool pool, @NonNull Bitmap toTransform,
                                    int outWidth, int outHeight) {
-            Bitmap myTransformedBitmap = transformBitmap(pool, toTransform, outWidth, outHeight); // apply some transformation here.
-            return myTransformedBitmap;
-        }
-
-        @Override
-        public String getId() {
-            // Return some id that uniquely identifies your transformation.
-            return "com.example.myapp.MyTransformation";
+            return transformBitmap(pool, toTransform, outWidth, outHeight);
         }
 
         protected Bitmap transformBitmap(BitmapPool bitmapPool, Bitmap original, int width, int height) {
@@ -86,6 +81,11 @@ public class PosterRenderer extends ViewRenderer<PosterModel, PosterViewHolder> 
             // Since we've replaced our original Bitmap, we return our new Bitmap here. Glide will
             // will take care of returning our original Bitmap to the BitmapPool for us.
             return result;
+        }
+
+        @Override
+        public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
+
         }
     }
 }
