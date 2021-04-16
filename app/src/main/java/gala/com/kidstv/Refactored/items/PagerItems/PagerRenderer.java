@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.github.vivchar.rendererrecyclerviewadapter.ViewRenderer;
 
 import gala.com.kidstv.R;
+import gala.com.kidstv.Refactored.CallBackListener;
 import gala.com.kidstv.Refactored.items.MediaInfo.MediaModel;
 import gala.com.kidstv.Refactored.items.MediaInfo.MediaRenderer;
 
@@ -23,7 +24,7 @@ public class PagerRenderer extends ViewRenderer<PagerModel, PagerViewHolder> {
     private int itemMargin = 0;
     private int itemWidth = 0;
 
-    public PagerRenderer(@NonNull final Context context, DisplayMetrics displayMetrics) {
+    public PagerRenderer(@NonNull final Context context, DisplayMetrics displayMetrics, CallBackListener listener) {
         super(PagerModel.class);
         mContext = context;
         mMetrics = displayMetrics;
@@ -62,9 +63,5 @@ public class PagerRenderer extends ViewRenderer<PagerModel, PagerViewHolder> {
     @Override
     public PagerViewHolder createViewHolder(@Nullable final ViewGroup parent) {
         return new PagerViewHolder(inflate(R.layout.pager_view_holder, parent));
-    }
-
-    public interface Listener {
-        void onCategoryClicked(@NonNull MediaModel model);
     }
 }

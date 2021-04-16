@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -17,16 +18,20 @@ import com.github.vivchar.rendererrecyclerviewadapter.ViewRenderer;
 import java.security.MessageDigest;
 
 import gala.com.kidstv.R;
+import gala.com.kidstv.Refactored.CallBackListener;
 import gala.com.kidstv.Refactored.items.MediaInfo.MediaModel;
 import gala.com.kidstv.Refactored.items.MediaInfo.MediaRenderer;
 
 public class PosterRenderer extends ViewRenderer<PosterModel, PosterViewHolder> {
 
     private final Context mContext;
+    @NonNull
+    private CallBackListener mListener;
 
-    public PosterRenderer(Context context) {
+    public PosterRenderer(Context context, CallBackListener listener) {
         super(PosterModel.class);
         mContext = context;
+        mListener = listener;
     }
 
     @Override
@@ -34,6 +39,12 @@ public class PosterRenderer extends ViewRenderer<PosterModel, PosterViewHolder> 
         if (model.getMediaLargeIcon()!=null){
             Glide.with(mContext).asBitmap().load(model.getMediaLargeIcon())
                     .transform(new MyTransformation(mContext)).override(120, 140).into(holder.mIvPoster);
+            holder.mIvPoster.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mListener.onCategoryClicked(model);
+                }
+            });
         }
     }
 
@@ -41,10 +52,6 @@ public class PosterRenderer extends ViewRenderer<PosterModel, PosterViewHolder> 
     @Override
     public PosterViewHolder createViewHolder(@Nullable final ViewGroup parent) {
         return new PosterViewHolder(inflate(R.layout.poster_view_holder, parent));
-    }
-
-    public interface Listener {
-        void onCategoryClicked(@NonNull MediaModel model);
     }
 
     private static class MyTransformation extends BitmapTransformation {

@@ -1,6 +1,5 @@
 package gala.com.kidstv.Refactored.Fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -14,13 +13,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.vivchar.rendererrecyclerviewadapter.RendererRecyclerViewAdapter;
 
 
-import org.json.JSONException;
 
 import java.util.ArrayList;
 
 import gala.com.kidstv.R;
+import gala.com.kidstv.Refactored.CallBackListener;
 import gala.com.kidstv.Refactored.DataHandlers.TabsModel;
-import gala.com.kidstv.Refactored.DataHandlers.UTDataManager;
+import gala.com.kidstv.Refactored.RoutersAndPresenters.ActionPerformer;
 import gala.com.kidstv.Refactored.items.CircularItems.CircularRenderer;
 import gala.com.kidstv.Refactored.items.Composite.Category.CategoryModel;
 import gala.com.kidstv.Refactored.items.Composite.Category.CategoryRenderer;
@@ -31,7 +30,7 @@ import gala.com.kidstv.Refactored.items.PosterItems.PosterRenderer;
 import gala.com.kidstv.Refactored.items.ThumbnailItems.ThumbnailRenderer;
 import gala.com.kidstv.Refactored.items.widgetsUtils.BetweenSpacesItemDecoration;
 
-public class GERecyclerFragment extends GEBaseFragment {
+public class GERecyclerFragment extends GEBaseFragment implements CallBackListener {
 
     private RendererRecyclerViewAdapter mRecyclerViewAdapter;
     private TabsModel                   mTabInfo;
@@ -56,11 +55,11 @@ public class GERecyclerFragment extends GEBaseFragment {
         mRecyclerViewAdapter = new RendererRecyclerViewAdapter();
 
         mRecyclerViewAdapter.registerRenderer(new CategoryRenderer()
-                .registerRenderer(new MediaRenderer(null))
-                .registerRenderer(new PagerRenderer(getActivity(), getDisplayMetrics()))
-                .registerRenderer(new PosterRenderer(getActivity()))
-                .registerRenderer(new CircularRenderer(getActivity()))
-                .registerRenderer(new ThumbnailRenderer(getActivity())));
+                .registerRenderer(new MediaRenderer(this))
+                .registerRenderer(new PagerRenderer(getActivity(), getDisplayMetrics(), this))
+                .registerRenderer(new PosterRenderer(getActivity(), this))
+                .registerRenderer(new CircularRenderer(getActivity(), this))
+                .registerRenderer(new ThumbnailRenderer(getActivity(), this)));
 
 
         final RecyclerView recyclerView = (RecyclerView) inflate.findViewById(R.id.recycler_view);
@@ -91,5 +90,10 @@ public class GERecyclerFragment extends GEBaseFragment {
 
     private DisplayMetrics getDisplayMetrics() {
         return getResources().getDisplayMetrics();
+    }
+
+    @Override
+    public void onCategoryClicked(@NonNull MediaModel model) {
+        ActionPerformer.route(model, getActivity());
     }
 }

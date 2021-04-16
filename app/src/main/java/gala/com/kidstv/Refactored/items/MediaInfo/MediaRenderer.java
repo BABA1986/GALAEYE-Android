@@ -8,13 +8,14 @@ import androidx.annotation.Nullable;
 import com.github.vivchar.rendererrecyclerviewadapter.ViewRenderer;
 
 import gala.com.kidstv.R;
+import gala.com.kidstv.Refactored.CallBackListener;
 
 public class MediaRenderer extends ViewRenderer<MediaModel, MediaViewHolder> {
 
     @NonNull
-    private final MediaRenderer.Listener mListener;
+    private CallBackListener mListener;
 
-    public MediaRenderer(@NonNull final MediaRenderer.Listener listener) {
+    public MediaRenderer(@NonNull CallBackListener listener) {
         super(MediaModel.class);
         mListener = listener;
     }
@@ -31,9 +32,5 @@ public class MediaRenderer extends ViewRenderer<MediaModel, MediaViewHolder> {
     @Override
     public MediaViewHolder createViewHolder(@Nullable final ViewGroup parent) {
         return new MediaViewHolder(inflate(R.layout.media_view_holder, parent));
-    }
-
-    public interface Listener {
-        void onCategoryClicked(@NonNull MediaModel model);
     }
 }

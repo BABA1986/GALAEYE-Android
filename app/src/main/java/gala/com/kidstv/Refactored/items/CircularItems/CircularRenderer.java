@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide;
 import com.github.vivchar.rendererrecyclerviewadapter.ViewRenderer;
 
 import gala.com.kidstv.R;
+import gala.com.kidstv.Refactored.CallBackListener;
 import gala.com.kidstv.Refactored.items.MediaInfo.MediaModel;
 import gala.com.kidstv.Refactored.items.MediaInfo.MediaRenderer;
 import gala.com.kidstv.Refactored.items.PagerItems.PagerModel;
@@ -18,10 +19,13 @@ import gala.com.kidstv.Refactored.items.PagerItems.PagerViewHolder;
 public class CircularRenderer extends ViewRenderer<CircularModel, CircularViewHolder> {
 
     private final Context mContext;
+    @NonNull
+    private CallBackListener mListener;
 
-    public CircularRenderer(Context context) {
+    public CircularRenderer(@NonNull Context context, CallBackListener listener) {
         super(CircularModel.class);
         mContext = context;
+        mListener = listener;
     }
 
     @Override
@@ -36,9 +40,5 @@ public class CircularRenderer extends ViewRenderer<CircularModel, CircularViewHo
     @Override
     public CircularViewHolder createViewHolder(@Nullable final ViewGroup parent) {
         return new CircularViewHolder(inflate(R.layout.circular_view_holder, parent));
-    }
-
-    public interface Listener {
-        void onCategoryClicked(@NonNull MediaModel model);
     }
 }
